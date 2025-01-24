@@ -19,32 +19,26 @@ BONUSDIR = bonus
 PRINTFDIR = printf
 GNLDIR = gnl
 
-LIBCFILE =		ft_atoi					ft_bzero					ft_isalnum			ft_isalpha		\
-				ft_isascii				ft_isdigit					ft_isprint			ft_memchr		\
-				ft_memcmp				ft_memcpy					ft_memmove			ft_memset		\
-				ft_strchr				ft_strdup					ft_strlcat			ft_strlcpy		\
-				ft_strlen				ft_strncmp					ft_strnstr			ft_strrchr		\
-				ft_tolower				ft_toupper					ft_calloc			ft_strcmp		\
-				ft_strstr
+LIBC =		libc/ft_atoi.c					libc/ft_bzero.c					libc/ft_isalnum.c			libc/ft_isalpha.c		\
+				libc/ft_isascii.c				libc/ft_isdigit.c					libc/ft_isprint.c			libc/ft_memchr.c		\
+				libc/ft_memcmp.c				libc/ft_memcpy.c					libc/ft_memmove.c			libc/ft_memset.c		\
+				libc/ft_strchr.c				libc/ft_strdup.c					libc/ft_strlcat.c			libc/ft_strlcpy.c		\
+				libc/ft_strlen.c				libc/ft_strncmp.c					libc/ft_strnstr.c			libc/ft_strrchr.c		\
+				libc/ft_tolower.c				libc/ft_toupper.c					libc/ft_calloc.c			libc/ft_strcmp.c		\
+				libc/ft_strstr.c
 	
-ADDIFILE =  	ft_strjoin				ft_substr					ft_strtrim			ft_split		\
-				ft_itoa					ft_strmapi					ft_striteri			ft_putchar_fd		\
-				ft_putstr_fd			ft_putendl_fd				ft_putnbr_fd
+ADDI =  	additional/ft_strjoin.c				additional/ft_substr.c					additional/ft_strtrim.c			additional/ft_split.c		\
+				additional/ft_itoa.c					additional/ft_strmapi.c					additional/ft_striteri.c			additional/ft_putchar_fd.c		\
+				additional/ft_putstr_fd.c			additional/ft_putendl_fd.c				additional/ft_putnbr_fd.c
 
-BONUSFILE = 	ft_lstnew_bonus			ft_lstadd_front_bonus		ft_lstsize_bonus	ft_lstlast_bonus	\
-				ft_lstadd_back_bonus	ft_lstdelone_bonus			ft_lstclear_bonus	ft_lstiter_bonus	\
-				ft_lstmap_bonus
+BONUS = 	bonus/ft_lstnew_bonus.c			bonus/ft_lstadd_front_bonus.c		bonus/ft_lstsize_bonus.c	bonus/ft_lstlast_bonus.c	\
+				bonus/ft_lstadd_back_bonus.c	bonus/ft_lstdelone_bonus.c			bonus/ft_lstclear_bonus.c	bonus/ft_lstiter_bonus.c	\
+				bonus/ft_lstmap_bonus.c
 
-PRINTFFILE = 	ft_printf				ft_printf_utils				ft_print_hex		ft_print_ptr		\
-				ft_print_unsigned
+PRINTF = 	printf/srcs/ft_printf.c				printf/srcs/ft_printf_utils.c				printf/srcs/ft_print_hex.c		printf/srcs/ft_print_ptr.c		\
+				printf/srcs/ft_print_unsigned.c
 		
-GNLFILE = 		get_next_line	
-
-LIBC = $(addprefix $(LIBCDIR)/, $(addsuffix .c, $(LIBCFILE)))
-ADDI = $(addprefix $(ADDIDIR)/, $(addsuffix .c, $(ADDIFILE)))
-BONUS = $(addprefix $(BONUSDIR)/, $(addsuffix .c, $(BONUSFILE)))
-PRINTF = $(addprefix $(PRINTFDIR)/srcs/, $(addsuffix .c, $(PRINTFFILE)))
-GNL = $(addprefix $(GNLDIR)/srcs/, $(addsuffix .c, $(GNLFILE)))
+GNL = 		gnl/srcs/get_next_line.c
 
 SRCS = $(LIBC) $(ADDI) $(BONUS) $(PRINTF) $(GNL)
 
@@ -55,7 +49,7 @@ all: $(NAME)
 $(NAME): $(OBJS)
 						ar rcs $(NAME) $(OBJS)
 
-.c.o:
+%.c%.o:
 						$(COMP) $(CFLAGS) -c $< -o $@
 
 clean:
