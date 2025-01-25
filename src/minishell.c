@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/01/24 17:07:01 by macorso          ###   ########.fr       */
+/*   Updated: 2025/01/25 18:43:54 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,20 +18,30 @@
 // 	(void)av;
 // }
 
+void	free_all(t_all *all)
+{
+	t_env	*tmp;
+	t_env	*next;
+
+	tmp = all->env;
+	while (tmp)
+	{
+		next = tmp->next;
+		free(tmp->key);
+		free(tmp->value);
+		free(tmp);
+		tmp = next;
+	}
+}
+
 int	main(int ac, char **av, char **envp)
 {
-	(void)ac;
-	(void)av;
-	// t_all all;
-	// t_env	env;
+	t_all all;
 
-	// init_all(&all, ac, av, envp);
-	for (int i = 0; envp[i]; i++)
-	{
-		char *value = find_value(envp[i]);
-		char *key = find_key(envp[i]);
-		printf("env: %s\nenv_key: %s\nenv_value: %s\n", envp[i], key, value);
-	}
-	
+	init_all(&all, ac, av, envp);
+	env_builtin(&all);
+	unset_builtin("PATH", &all);
+	env_builtin(&all);
+	free_all(&all);
 	return (0);
 }
