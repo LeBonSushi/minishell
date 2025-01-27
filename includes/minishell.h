@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:48:17 by macorso           #+#    #+#             */
-/*   Updated: 2025/01/25 18:52:06 by macorso          ###   ########.fr       */
+/*   Updated: 2025/01/26 17:09:11 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,6 @@ void	free_all_env(t_all *all);
 //builtins
 void	env_builtin(t_all *all);
 void	echo_builtin(char *str, bool newline);
-void	unset_builtin(char *key, t_all *all);
+void	unset_builtin(char **keys, t_all *all);
 
 #endif

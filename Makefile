@@ -49,7 +49,7 @@ $(NAME): $(OBJ)
 
 
 # Default command to launch
-all: $(NAME) load
+all: $(NAME) #load
 
 # Compile and run minishell
 run: all
