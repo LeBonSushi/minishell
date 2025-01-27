@@ -11,8 +11,10 @@ SRC		:=	src/minishell.c \
 			src/utils/free.c   \
 \
 			src/builtins/env.c \
+			src/builtins/export.c \
 			src/builtins/unset.c \
 			src/builtins/echo.c \
+			src/builtins/pwd.c \
 \
 			src/preparation/env_prepare.c \
 
@@ -49,7 +51,7 @@ $(NAME): $(OBJ)
 
 
 # Default command to launch
-all: $(NAME) #load
+all: $(NAME) load
 
 # Compile and run minishell
 run: all
