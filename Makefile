@@ -18,10 +18,6 @@ SRC		:=	src/minishell.c \
 			src/builtins/pwd.c \
 \
 			src/preparation/env_prepare.c \
-\
-			src/parsing/loop.c \
-			src/parsing/command.c \
-			src/parsing/split.c \
 
 OBJ		:= $(SRC:.c=.o)
 

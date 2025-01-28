@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:48:17 by macorso           #+#    #+#             */
-/*   Updated: 2025/01/28 04:52:53 by macorso          ###   ########.fr       */
+/*   Updated: 2025/01/28 05:23:18 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
-typedef enum e_token
+typedef enum e_token_type
 {
 	WORD = 1,
 	SEMICOLON,
@@ -32,7 +32,16 @@ typedef enum e_token
 	REDIR_OUT,
 	REDIR_APPEND,
 	REDIR_HEREDOC,
-}	t_token;
+}	t_token_type;
+
+typedef enum e_node_type
+{
+	CMD = 1,
+	OPERATOR_PIPE,
+	OPERATOR_SEMICOLON,
+	OPERATOR_AND,
+	OPERATOR_OR,
+}	t_node_type;
 
 typedef struct s_env
 {
@@ -44,27 +53,32 @@ typedef struct s_env
 
 typedef struct s_token
 {
-	t_token	token;
+	t_token_type	token_type;
 	struct s_token	*next;
 }	t_token;
 
-typedef struct s_command
-{
-	char	**args;
-	t_token	*token;
-}	t_command;
 
 
 typedef struct s_tree
 {
 	struct s_tree	*left_child;
 	struct s_tree	*right_child;
-	t_command		*command;
+	t_node_type		node_type;
+	t_string_list		*args;
+	t_string_list		*redir_in_names;
+	t_string_list		*redir_out_names;
 }	t_tree;
+
+typedef struct s_string_list
+{
+	char	*str;
+	struct s_string_list	*next;
+}	t_string_list;
 
 typedef struct s_all
 {
 	t_env	*env;
+	t_tree	*tree;
 }	t_all;
 
 void	print_header(void);
