@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:48:17 by macorso           #+#    #+#             */
-/*   Updated: 2025/01/28 04:14:09 by macorso          ###   ########.fr       */
+/*   Updated: 2025/01/28 04:52:53 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,13 @@ typedef struct s_env
 	char		*value; // name after the = sign
 	struct s_env	*next;
 }	t_env;
+
+
+typedef struct s_token
+{
+	t_token	token;
+	struct s_token	*next;
+}	t_token;
 
 typedef struct s_command
 {

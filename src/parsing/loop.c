@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   loop.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dfeve <dfeve@student.42.fr>                +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 21:41:59 by dfeve             #+#    #+#             */
-/*   Updated: 2025/01/28 03:16:20 by dfeve            ###   ########.fr       */
+/*   Updated: 2025/01/28 04:40:01 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,9 @@ void	minishell_loop(t_all *all)
 	t_command	*command;
 	while (1)
 	{
-		line = readline("hello:");
+		line = readline("ministress> ");
 		command = parse_str_to_command(line);
+		print_tab(command->args);
 		print_token(command->token);
 	}
 }
