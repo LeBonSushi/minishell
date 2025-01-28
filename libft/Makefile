@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 COMP = cc
-CFLAGS = -Wall -Wextra -Werror -I ./ -g
+CFLAGS = -Wall -Wextra -Werror -I ./ -g #-fsanitize=address
 NAME = libft.a
 ADDIDIR = additional
 LIBCDIR = libc

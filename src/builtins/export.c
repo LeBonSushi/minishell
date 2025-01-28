@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:43:10 by macorso           #+#    #+#             */
-/*   Updated: 2025/01/27 18:53:28 by macorso          ###   ########.fr       */
+/*   Updated: 2025/01/28 02:17:00 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,59 @@ void	verify_addkey(t_all *all, char *key, char *value)
 		env = env->next;
 	}
 	env_addback(&all->env, env_new(key, value));
-	printf("key added: %s\n", key);
-	printf("value added: %s\n", value);
+}
+
+void	env_swap(t_env *env1, t_env *env2)
+{
+	char	*tmp_key;
+	char	*tmp_value;
+
+	tmp_key = env1->key;
+	tmp_value = env1->value;
+	env1->key = env2->key;
+	env1->value = env2->value;
+	env2->key = tmp_key;
+	env2->value = tmp_value;
+}
+
+t_env	*env_copy(t_env *env)
+{
+	t_env	*new;
+	t_env	*tmp;
+
+	new = NULL;
+	while (env)
+	{
+		tmp = env_new(env->key, env->value);
+		env_addback(&new, tmp);
+		env = env->next;
+	}
+	return (new);
+}
+
+t_env *env_create_sorted(t_env *env)
+{
+	t_env *curr;
+	t_env *new;
+	bool	swapped;
+
+	new = env_copy(env);
+	swapped = true;
+	while (swapped)
+	{
+		swapped = false;
+		curr = new;
+		while (curr->next)
+		{
+			if (ft_strcmp(curr->key, curr->next->key) > 0)
+			{
+				env_swap(curr, curr->next);
+				swapped = true;
+			}
+			curr = curr->next;
+		}
+	}
+	return (new);
 }
 
 void	export_builtin(t_all *all, char **strs)
@@ -40,8 +91,24 @@ void	export_builtin(t_all *all, char **strs)
 	char	*key;
 	char	*value;
 	t_env	*env;
+	t_env	*tmp;
 
 	i = -1;
+	if (!*strs)
+	{
+		env = env_create_sorted(all->env);
+		tmp = env;
+		while (tmp)
+		{
+			if (tmp->value)
+				printf("declare -x %s=\"%s\"\n", tmp->key, tmp->value);
+			else
+				printf("declare -x %s\n", tmp->key);
+			tmp = tmp->next;
+		}
+		free_all_env(env);
+		return ;
+	}
 	while (strs[++i])
 	{
 		key = find_key(strs[i]);
