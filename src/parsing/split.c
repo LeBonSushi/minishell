@@ -6,108 +6,88 @@
 /*   By: dfeve <dfeve@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 00:06:11 by dfeve             #+#    #+#             */
-/*   Updated: 2025/01/28 01:06:14 by dfeve            ###   ########.fr       */
+/*   Updated: 2025/01/28 03:15:12 by dfeve            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static	is_sep(char *str, char **seplist, int size)
+char	*str_to_token(char *str)
 {
-	if (ft_strncmp(str, seplist, size) == 0)
-		return (1);
-	return (-1);
-}
-
-int	get_biggest_el(char **seplist)
-{
-	int	i;
-	int	biggest_len;
+	char	*result;
+	int		i;
 
 	i = 0;
-	biggest_len = 0;
-	while (seplist && seplist[i])
+	result = malloc(ft_strlen(str) + 1);
+	while (str && str[i])
 	{
-		if (ft_strlen(seplist[i]) > biggest_len)
-			biggest_len = ft_strlen(seplist[i]);
+		result[i] = (char)(get_token(*(str + i)) + '0');
 		i++;
 	}
-	return (biggest_len);
+	result[i] = 0;
+	return (result);
 }
 
-int	check_sep(char *str, char **seplist)
+static int	split_get_len(char *token_str)
 {
-	int	bg_el;
+	int		i;
+	int		count;
+	bool	on_inv;
 
-	bg_el = get_biggest_el(seplist);
-	while (bg_el > 0)
+	i = 1;
+	count = 1;
+	on_inv = false;
+	while (token_str && token_str[i])
 	{
-		if (is_sep(str, seplist, bg_el) == 1)
-			return (bg_el);
-		bg_el--;
-	}
-	return (-1);
-}
-
-static int	count_words(char *str, char sep, char **seplist)
-{
-	int	i;
-	int	count;
-	int	on_sep;
-
-	i = -1;
-	count = 0;
-	on_sep = 0;
-	while (str && str[++i])
-	{
-		if (str[i] == sep && on_sep == 0)
+		if (token_str[i] == '/' && on_inv == false)
+		{
+			count--;
+			on_inv = true;
+		}
+		if (token_str[i] != token_str[i - 1])
 		{
 			count++;
-			on_sep = 1;
+			on_inv = false;
 		}
-		else if (is_in_str(str[i], seplist) == 1 && on_sep == 0)
-		{
-			count += 2;
-			on_sep = 1;
-		}
-		else
-			on_sep = 0;
+		i++;
 	}
-	if (on_sep == 0)
-		count++;
 	return (count);
 }
 
-char	**split_2_sep(const char *str, char sep, char **seplist)
+char	**split_str_token(char *str, char *token_str)
 {
+	char	**result;
 	int		i;
-	int		on_sep;
 	int		y;
 	int		start;
-	char	**result;
+
+	result = malloc((split_get_len(token_str) + 1) * sizeof(char *));
+	y = 0;
+	i = 1;
+	start = 0;
+	while (token_str && token_str[i])
+	{
+		if (token_str[i] != token_str[i - 1])
+		{
+			result[y++] = ft_substr((const char *)str, start, i - start);
+			if (token_str[i] == '/')
+				while (token_str[i] == '/')
+					i++;
+			start = i;
+		}
+		i++;
+	}
+	if (str[i] != ' ')
+		result[y++] = ft_substr((const char *)str, start, i);
+	result[y] = 0;
+	return (result);
+}
+
+void	print_tab(char **tab)
+{
+	int	i;
 
 	i = 0;
-	y = 0;
-	on_sep = 0;
-	start = 0;
-	result = malloc(count_words(str, sep, seplist) * sizeof(char *));
-	while (str && str[i])
-	{
-		on_sep = 1;
-		if (str[i] == sep && on_sep == 0)
-			result[y++] = ft_substr(str, start, i - start + 1);
-		else if (is_in_str(str[i], seplist) == 1 && on_sep == 0)
-		{
-			result[y++] = ft_substr(str, start, i - start);
-			result[y++] = ft_substr(str, i, i + 1);
-		}
-		else
-		{
-			start = i;
-			on_sep = 0;
-		}
-	}
-	if (on_sep == 0)
-		result[y++] = ft_substr(str, start, i - start);
-	return (result);
+	while (tab && tab[i])
+		printf("%s\n", tab[i++]);
 }

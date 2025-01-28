@@ -21,6 +21,7 @@ SRC		:=	src/minishell.c \
 \
 			src/parsing/loop.c \
 			src/parsing/command.c \
+			src/parsing/split.c \
 
 OBJ		:= $(SRC:.c=.o)
 

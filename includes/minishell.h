@@ -6,7 +6,7 @@
 /*   By: dfeve <dfeve@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:48:17 by macorso           #+#    #+#             */
-/*   Updated: 2025/01/28 00:27:40 by dfeve            ###   ########.fr       */
+/*   Updated: 2025/01/28 03:15:36 by dfeve            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,5 +95,9 @@ void	minishell_loop(t_all *all);
 void	print_token(t_token	*token);
 char	**split_2_sep(const char *str, char sep, char *seplist);
 t_command	*parse_str_to_command(char *str);
+t_token	get_token(char c);
+void	print_tab(char **tab);
+char	**split_str_token(char *str, char *token_str);
+char	*str_to_token(char *str);
 
 #endif
