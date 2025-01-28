@@ -1,5 +1,5 @@
 CC		:= cc
-CFLAGS	:= -Werror -Wextra -Wall -I/opt/homebrew/opt/readline/include -g
+CFLAGS	:= -Werror -Wextra -Wall -I/opt/homebrew/opt/readline/include -g #-fsanitize=address
 LDFLAGS	:= -L/opt/homebrew/opt/readline/lib -lreadline
 
 # Name of the final executable
@@ -44,7 +44,7 @@ $(NAME): $(OBJ)
 	@printf $(GREEN)"\r\033[KObjects compiled succesfully ✅\n"$(RESET)
 	@make -C libft --silent
 	@printf $(CYAN)"\r\033[KCompiling '$(NAME)'... ⏳"$(RESET)
-	@$(CC) $(FLAGS) $(OBJ) $(LIB) $(LDFLAGS) -I includes/ -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJ) $(LIB) $(LDFLAGS) -I includes/ -o $(NAME)
 	@printf $(GREEN)"\r\033[KSuccess compiling '$(NAME)' ✅\n"$(RESET)
 	@printf "\n"
 	@printf "███╗   ███╗██╗███╗   ██╗██╗███████╗███████╗████████╗ ███████╗ ███████╗ ███████╗\n"

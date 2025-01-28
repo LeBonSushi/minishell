@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dfeve <dfeve@student.42.fr>                +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/25 18:49:42 by macorso           #+#    #+#             */
-/*   Updated: 2025/01/27 23:19:46 by dfeve            ###   ########.fr       */
+/*   Updated: 2025/01/28 04:19:02 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,33 @@ void	free_command(t_command *com)
 		free(com->token);
 }
 
-void	free_all_env(t_all *all)
+void	free_tab(char **tab)
 {
-	t_env	*tmp;
+	int	i;
+
+	i = 0;
+	if (!tab && !*tab)
+		return ;
+	while (tab[i])
+		free(tab[i++]);
+	free(tab);
+}
+
+void	free_command(t_command *com)
+{
+	free_tab(com->args);
+	if (com->token)
+		free(com->token);
+}
+
+void	free_all_env(t_env *env)
+{
 	t_env	*next;
 
-	tmp = all->env;
-	while (tmp)
+	while (env)
 	{
-		next = tmp->next;
-		free_env(tmp);
-		tmp = next;
+		next = env->next;
+		free_env(env);
+		env = next;
 	}
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dfeve <dfeve@student.42.fr>                +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/01/27 21:46:08 by dfeve            ###   ########.fr       */
+/*   Updated: 2025/01/28 04:13:57 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,13 @@
 
 void	free_all(t_all *all)
 {
-	free_all_env(all);
+	free_all_env(all->env);
 }
 
 int	main(int ac, char **av, char **envp)
 {
 	t_all all;
-	char	*keys[] = {"key1=", "key2=value","=value3", NULL};
+	char	*keys[] = {NULL};
 
 	init_all(&all, ac, av, envp);
 	

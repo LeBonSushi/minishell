@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dfeve <dfeve@student.42.fr>                +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:48:17 by macorso           #+#    #+#             */
-/*   Updated: 2025/01/28 03:15:36 by dfeve            ###   ########.fr       */
+/*   Updated: 2025/01/28 04:14:09 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ char	*find_key(const char *envp_value);
 char	*find_value(const char *envp_value);
 char	*ft_getenv(t_all *all, char *key);
 void	verify_addkey(t_all *all, char *key, char *value);
+t_env	*env_create_sorted(t_env *env);
 
 //---------------------INIT----------------------
 
@@ -79,7 +80,7 @@ void	env_addback(t_env **env, t_env *new);
 //---------------------DESTROY----------------------
 
 void	free_env(t_env *env);
-void	free_all_env(t_all *all);
+void	free_all_env(t_env *env);
 
 //--------------------BUILTINS----------------------
 
