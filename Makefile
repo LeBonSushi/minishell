@@ -1,5 +1,5 @@
 CC		:= cc
-CFLAGS	:= -Werror -Wextra -Wall -I/opt/homebrew/opt/readline/include -g #-fsanitize=address
+CFLAGS	:= -Werror -Wextra -Wall -I/opt/homebrew/opt/readline/include -g -fsanitize=address
 LDFLAGS	:= -L/opt/homebrew/opt/readline/lib -lreadline
 
 # Name of the final executable
@@ -8,16 +8,21 @@ NAME	:= minishell
 # All needed files
 SRC		:=	src/minishell.c \
 \
+			src/parsing/tokenizer.c \
+\
 			src/utils/header.c \
-			src/utils/free.c   \
+			src/utils/free.c \
+			src/utils/print_utils.c \
 \
 			src/builtins/env.c \
 			src/builtins/export.c \
 			src/builtins/unset.c \
 			src/builtins/echo.c \
 			src/builtins/pwd.c \
+			src/builtins/exit.c \
 \
 			src/preparation/env_prepare.c \
+			src/preparation/token_prepare.c \
 
 OBJ		:= $(SRC:.c=.o)
 

@@ -11,7 +11,7 @@
 # **************************************************************************** #
 
 COMP = cc
-CFLAGS = -Wall -Wextra -Werror -I ./ -g #-fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -I ./ -g -fsanitize=address
 NAME = libft.a
 ADDIDIR = additional
 LIBCDIR = libc
@@ -19,7 +19,7 @@ BONUSDIR = bonus
 PRINTFDIR = printf
 GNLDIR = gnl
 
-LIBC =		libc/ft_atoi.c					libc/ft_bzero.c					libc/ft_isalnum.c			libc/ft_isalpha.c		\
+LIBC =		libc/ft_atoi.c					libc/ft_bzero.c					libc/ft_isspace.c	libc/ft_isalnum.c			libc/ft_isalpha.c	\
 				libc/ft_isascii.c				libc/ft_isdigit.c					libc/ft_isprint.c			libc/ft_memchr.c		\
 				libc/ft_memcmp.c				libc/ft_memcpy.c					libc/ft_memmove.c			libc/ft_memset.c		\
 				libc/ft_strchr.c				libc/ft_strdup.c					libc/ft_strlcat.c			libc/ft_strlcpy.c		\

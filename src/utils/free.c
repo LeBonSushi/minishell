@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/25 18:49:42 by macorso           #+#    #+#             */
-/*   Updated: 2025/01/28 04:21:13 by macorso          ###   ########.fr       */
+/*   Updated: 2025/01/30 01:39:10 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,6 @@ void	free_tab(char **tab)
 	free(tab);
 }
 
-void	free_command(t_command *com)
-{
-	free_tab(com->args);
-	if (com->token)
-		free(com->token);
-}
-
 void	free_all_env(t_env *env)
 {
 	t_env	*next;
@@ -48,4 +41,22 @@ void	free_all_env(t_env *env)
 		free_env(env);
 		env = next;
 	}
+}
+
+void	free_all_token(t_token *token)
+{
+	t_token	*next;
+
+	while (token)
+	{
+		next = token->next;
+		free(token);
+		token = next;
+	}
+}
+
+void	free_all(t_all *all)
+{
+	free_all_env(all->env);
+	free_all_token(all->tokens);
 }

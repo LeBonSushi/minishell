@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:48:17 by macorso           #+#    #+#             */
-/*   Updated: 2025/01/28 05:23:18 by macorso          ###   ########.fr       */
+/*   Updated: 2025/01/30 01:43:32 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,20 +54,9 @@ typedef struct s_env
 typedef struct s_token
 {
 	t_token_type	token_type;
+	char			*value;
 	struct s_token	*next;
 }	t_token;
-
-
-
-typedef struct s_tree
-{
-	struct s_tree	*left_child;
-	struct s_tree	*right_child;
-	t_node_type		node_type;
-	t_string_list		*args;
-	t_string_list		*redir_in_names;
-	t_string_list		*redir_out_names;
-}	t_tree;
 
 typedef struct s_string_list
 {
@@ -75,35 +64,58 @@ typedef struct s_string_list
 	struct s_string_list	*next;
 }	t_string_list;
 
+typedef struct s_tree
+{
+	t_node_type		node_type;
+	struct s_tree	*left;
+	struct s_tree	*right;
+	t_string_list	*args;
+	t_string_list	*redir_in_names;
+	t_string_list	*redir_out_names;
+}	t_tree;
+
 typedef struct s_all
 {
 	t_env	*env;
+	t_token	*tokens;
 	t_tree	*tree;
+	int		status;
 }	t_all;
 
 void	print_header(void);
+void	print_tab(char **tab);
 
-//---------------------ENV----------------------
+//---------------------ENV-------------------------------
 
+t_env	*env_new(char *key, char *value);
+t_env	*env_get_last(t_env	*env);
+void	env_addback(t_env **env, t_env *new);
 char	*find_key(const char *envp_value);
 char	*find_value(const char *envp_value);
 char	*ft_getenv(t_all *all, char *key);
 void	verify_addkey(t_all *all, char *key, char *value);
 t_env	*env_create_sorted(t_env *env);
 
-//---------------------INIT----------------------
+//---------------------TOKENS----------------------------
+
+t_token	*token_new(t_token_type token_type, char *value);
+void	token_addback(t_token **lst, t_token *new);
+t_token	*fill_tokens(char *str);
+void	print_tokens(t_token *tokens);
+
+//---------------------INIT------------------------------
 
 void	init_all(t_all *all, int ac, char **av, char **envp);
-t_env	*env_new(char *key, char *value);
-t_env	*env_get_last(t_env	*env);
-void	env_addback(t_env **env, t_env *new);
+t_env	*fill_env(char **envp);
 
-//---------------------DESTROY----------------------
+//---------------------DESTROY---------------------------
 
 void	free_env(t_env *env);
 void	free_all_env(t_env *env);
+void	free_all_token(t_token *token);
+void	free_all(t_all *all);
 
-//--------------------BUILTINS----------------------
+//--------------------BUILTINS---------------------------
 
 void	env_builtin(t_all *all);
 void	export_builtin(t_all *all, char **keys);
@@ -111,15 +123,8 @@ void	unset_builtin(t_all *all, char **keys);
 void	echo_builtin(char **strs, bool n_option);
 void	pwd_builtin(void);
 
-//---------------------PARSING----------------------
+//---------------------PARSING---------------------------
 
 void	minishell_loop(t_all *all);
-void	print_token(t_token	*token);
-char	**split_2_sep(const char *str, char sep, char *seplist);
-t_command	*parse_str_to_command(char *str);
-t_token	get_token(char c);
-void	print_tab(char **tab);
-char	**split_str_token(char *str, char *token_str);
-char	*str_to_token(char *str);
 
 #endif
