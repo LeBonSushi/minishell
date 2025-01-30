@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:53:14 by macorso           #+#    #+#             */
-/*   Updated: 2025/01/27 18:51:32 by macorso          ###   ########.fr       */
+/*   Updated: 2025/01/28 23:14:59 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,12 +145,4 @@ t_env	*fill_env(char **envp)
 		i++;
 	}
 	return (env);
-}
-
-void	init_all(t_all *all, int ac, char **av, char **envp)
-{
-	(void)ac;
-	(void)av;
-
-	all->env = fill_env(envp);
 }
