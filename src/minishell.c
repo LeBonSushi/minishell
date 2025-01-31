@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/01/30 01:51:06 by macorso          ###   ########.fr       */
+/*   Updated: 2025/01/31 11:34:19 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 
 void	minishell_loop(t_all *all)
 {
-	env_builtin(all);
 	char *line;
 
 	while(1)
@@ -46,13 +45,14 @@ void	init_all(t_all *all, int ac, char **av, char **envp)
 int	main(int ac, char **av, char **envp)
 {
 	t_all all;
-	char	*keys[] = {NULL};
+	// char	*keys[] = {NULL};
 
 	init_all(&all, ac, av, envp);
 	
 	// env_builtin(&all);
 	// printf("\n\n\n\n");
-	export_builtin(&all, keys);
+	// export_builtin(&all, keys);
+	// env_builtin(&all);
 	// env_builtin(&all);
 	minishell_loop(&all);
 	free_all(&all);
