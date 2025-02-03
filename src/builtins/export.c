@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:43:10 by macorso           #+#    #+#             */
-/*   Updated: 2025/01/28 02:17:00 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/02 17:59:59 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,20 +91,20 @@ void	export_builtin(t_all *all, char **strs)
 	char	*key;
 	char	*value;
 	t_env	*env;
-	t_env	*tmp;
 
+	if (!all->env || !strs)
+		return ;
 	i = -1;
 	if (!*strs)
 	{
 		env = env_create_sorted(all->env);
-		tmp = env;
-		while (tmp)
+		while (env)
 		{
-			if (tmp->value)
-				printf("declare -x %s=\"%s\"\n", tmp->key, tmp->value);
+			if (env->value)
+				printf("declare -x %s=\"%s\"\n", env->key, env->value);
 			else
-				printf("declare -x %s\n", tmp->key);
-			tmp = tmp->next;
+				printf("declare -x %s\n", env->key);
+			env = env->next;
 		}
 		free_all_env(env);
 		return ;

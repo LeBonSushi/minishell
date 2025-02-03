@@ -1,0 +1,5 @@
+si l'env est vide grace a la commande env -i ./minishell au lancement de minishell remplire l'env avec les 4 valeurs ci dessous:
+OLDPWD=
+PWD=/home/macorso/Projects/minishell
+PROMPT_COMMAND=RETRN_VAL=$?;logger -p local6.debug "$(history 1 | sed "s/^[ ]*[0-9]\+[ ]*//" ) [$RETRN_VAL]"
+SHLVL=1

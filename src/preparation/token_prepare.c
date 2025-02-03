@@ -6,13 +6,14 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 05:02:03 by macorso           #+#    #+#             */
-/*   Updated: 2025/01/30 01:29:31 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/03 14:19:17 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-t_token	*token_new(t_token_type token_type, char *value)
+t_token	*token_new(t_token_type token_type, char *value,
+			bool single_q, bool double_q)
 {
 	t_token	*new;
 
@@ -21,6 +22,8 @@ t_token	*token_new(t_token_type token_type, char *value)
 		return (NULL);
 	new->token_type = token_type;
 	new->value = ft_strdup(value);
+	new->single_quoted = single_q;
+	new->double_quoted = double_q;
 	new->next = NULL;
 	return (new);
 }

@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:48:17 by macorso           #+#    #+#             */
-/*   Updated: 2025/01/31 11:37:21 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/03 14:38:44 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ typedef enum e_node_type
 
 typedef struct s_env
 {
-	char		*key; // name before the = sign
-	char		*value; // name after the = sign
+	char			*key; // name before the = sign
+	char			*value; // name after the = sign
 	struct s_env	*next;
 }	t_env;
 
@@ -54,6 +54,8 @@ typedef struct s_env
 typedef struct s_token
 {
 	t_token_type	token_type;
+	bool			single_quoted;
+	bool			double_quoted;
 	char			*value;
 	struct s_token	*next;
 }	t_token;
@@ -98,7 +100,7 @@ t_env	*env_create_sorted(t_env *env);
 
 //---------------------TOKENS----------------------------
 
-t_token	*token_new(t_token_type token_type, char *value);
+t_token	*token_new(t_token_type token_type, char *value, bool single_q, bool double_q);
 void	token_addback(t_token **lst, t_token *new);
 t_token	*fill_tokens(char *str);
 void	print_tokens(t_token *tokens);
@@ -122,6 +124,7 @@ void	export_builtin(t_all *all, char **keys);
 void	unset_builtin(t_all *all, char **keys);
 void	echo_builtin(char **strs, bool n_option);
 void	pwd_builtin(void);
+char	*pwd_builtin_char();
 
 //---------------------PARSING---------------------------
 
