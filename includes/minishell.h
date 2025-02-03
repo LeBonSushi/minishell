@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:48:17 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/03 14:38:44 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/03 17:38:37 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,10 +100,15 @@ t_env	*env_create_sorted(t_env *env);
 
 //---------------------TOKENS----------------------------
 
-t_token	*token_new(t_token_type token_type, char *value, bool single_q, bool double_q);
-void	token_addback(t_token **lst, t_token *new);
-t_token	*fill_tokens(char *str);
-void	print_tokens(t_token *tokens);
+bool			is_operator(char c);
+t_token_type	get_token_type(char *str);
+t_token			*token_new(t_token_type token_type, char *value, bool single_q, bool double_q);
+void			token_addback(t_token **lst, t_token *new);
+void			print_tokens(t_token *tokens);
+t_token			*handle_quote_token(char *str, bool *s_q, bool *d_q);
+t_token			*handle_word_token(char *str);
+t_token			*fill_tokens_recursive(char *str, bool sq, bool dq);
+t_token			*fill_tokens(char *str);
 
 //---------------------INIT------------------------------
 

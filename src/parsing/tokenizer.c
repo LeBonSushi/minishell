@@ -6,151 +6,147 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 23:39:59 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/03 15:55:53 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/03 18:16:48 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-bool	is_operator(char c)
+static bool	ft_is_quote(char c)
 {
-	return (c == ';' || c == '|' || c == '<' || c == '>' || ft_isspace(c));
+	return (c == '\'' || c == '\"');
 }
 
-t_token_type	token_type_get(char *str, int *i)
+static bool	ft_is_operator(char c)
 {
-	if (str[*i] == ';')
-		return (SEMICOLON);
-	else if (str[*i] == '|')
-		return (PIPE);
-	else if (str[*i] == '<')
-		return (REDIR_IN);
-	else if (str[*i] == '>')
+	return (c == ';' || c == '|' || c == '<' || c == '>');
+}
+
+static t_token	*ft_create_token(t_token_type type, char *value, bool sq, bool dq)
+{
+	t_token	*token;
+
+	token = malloc(sizeof(t_token));
+	if (!token)
+		return (NULL);
+	token->token_type = type;
+	token->value = value;
+	token->single_quoted = sq;
+	token->double_quoted = dq;
+	token->next = NULL;
+	return (token);
+}
+
+static t_token	*ft_parse_quoted(char **str, bool *sq, bool *dq)
+{
+	char	quote;
+	char	*start;
+	int		len;
+	t_token	*token;
+
+	quote = **str;
+	(*str)++;
+	start = *str;
+	len = 0;
+	while (**str && **str != quote)
 	{
-		if (str[(*i) + 1] == '>')
+		(*str)++;
+		len++;
+	}
+	if (**str != quote)
+		return (NULL);
+	*sq = (quote == '\'');
+	*dq = (quote == '\"');
+	token = ft_create_token(WORD, ft_substr(start, 0, len),
+			*sq, *dq);
+	printf("sq: %d, dq: %d\n", *sq, *dq);
+	(*str)++;
+	return (token);
+}
+
+static t_token	*ft_parse_operator(char **str)
+{
+	t_token_type	type;
+
+	if (**str == ';')
+		type = SEMICOLON;
+	else if (**str == '|')
+		type = PIPE;
+	else if (**str == '<')
+		type = REDIR_IN;
+	else if (**str == '>')
+	{
+		if (*(*str + 1) == '>')
 		{
-			(*i)++;
-			return (REDIR_APPEND);
+			(*str)++;
+			type = REDIR_APPEND;
 		}
-		return (REDIR_OUT);
+		else
+			type = REDIR_OUT;
 	}
 	else
-	{
-		printf("Unknown token type\n");
-		return (0);
-	}
-}
-
-// t_token	*fill_tokens(char *str)
-// {
-// 	t_token	*tokens;
-// 	int		i;
-// 	bool	single_quote_open;
-// 	bool	double_quote_open;
-// 	int		j;
-
-// 	if (!str)
-// 		return (NULL);
-// 	i = -1;
-// 	j = 0;
-// 	single_quote_open = false;
-// 	double_quote_open = false;
-// 	tokens = NULL;
-// 	while (str[++i])
-// 	{
-		
-// 		if (str[i] == ';' || str[i] == '|' || str[i] == '<' || str[i] == '>') 
-// 			token_addback(&tokens, token_new(token_type_get(str, &i), NULL, false, false));
-// 		else if (!single_quote_open && !double_quote_open && ft_isspace(str[i]))
-// 			continue ;
-// 		else if (str[i] == '\'' || str[i] == '\"')
-// 		{
-// 			if (str[i] == '\'' && !double_quote_open)
-// 				single_quote_open = !single_quote_open;
-// 			else if (str[i] == '\"' && !single_quote_open)
-// 				double_quote_open = !double_quote_open;
-// 			j = i;
-// 			while ((single_quote_open || double_quote_open) && str[++i])
-// 			{
-// 				if ((str[i] == '\'' && single_quote_open) || (str[i] == '\"' && double_quote_open))
-// 				{
-// 					token_addback(&tokens, token_new(WORD, ft_substr(str, j + 1, i - j - 1), single_quote_open, double_quote_open));
-// 					single_quote_open = false;
-// 					double_quote_open = false;
-// 				}
-// 			}
-// 		}
-// 		else
-// 		{
-// 			j = i;
-// 			while (!is_operator(str[i + 1]) && str[i + 1])
-// 				i++;
-// 			token_addback(&tokens, token_new(WORD, ft_substr(str, j, i - j + 1), false, false));
-// 		}
-// 	}
-// 	return (tokens);
-// }
-
-
-
-static t_token	*handle_quote_token(char *str, bool *single_quote, bool *double_quote)
-{
-	t_token	*token;
-	char	quote;
-	int		len;
-
-	quote = *str;
-	str++;
-	len = 0;
-	while (str[len] && str[len] != quote)
-		len++;
-	token = token_new(WORD, ft_substr(str, 0, len), 
-		(quote == '\''), (quote == '\"'));
-	*single_quote = (quote == '\'');
-	*double_quote = (quote == '\"');
-	return (token);
-}
-
-static t_token	*handle_word_token(char *str)
-{
-	int		len;
-	t_token	*token;
-
-	len = 0;
-	while (str[len] && !ft_isspace(str[len]) 
-		&& !is_operator(str[len]) 
-		&& str[len] != '\'' 
-		&& str[len] != '\"')
-		len++;
-	token = token_new(WORD, ft_substr(str, 0, len), false, false);
-	return (token);
-}
-
-static t_token	*fill_tokens_recursive(char *str, bool sq, bool dq)
-{
-	t_token	*tokens;
-
-	if (!str || *str == '\0')
 		return (NULL);
-	if (*str == ';' || *str == '|' || *str == '<' || *str == '>')
-		return (token_new(token_type_get(str, NULL), NULL, false, false));
-	if (!sq && !dq && ft_isspace(*str))
-		return (fill_tokens_recursive(str + 1, sq, dq));
-	if ((*str == '\'' && !dq) || (*str == '\"' && !sq))
-	{
-		tokens = handle_quote_token(str, &sq, &dq);
-		tokens->next = fill_tokens_recursive(str + ft_strlen(tokens->value) + 2, 
-			false, false);
-		return (tokens);
-	}
-	tokens = handle_word_token(str);
-	tokens->next = fill_tokens_recursive(str + ft_strlen(tokens->value), sq, dq);
-	return (tokens);
+	(*str)++;
+	return (ft_create_token(type, NULL, false, false));
 }
+
+static t_token	*ft_parse_word(char **str, bool sq, bool dq)
+{
+	char	*start;
+	int		len;
+
+	start = *str;
+	len = 0;
+	while (**str && !ft_isspace(**str) && !ft_is_operator(**str)
+		&& (!ft_is_quote(**str) || sq || dq))
+	{
+		(*str)++;
+		len++;
+	}
+	return (ft_create_token(WORD, ft_substr(start, 0, len), false, false));
+}
+
+// t_token	*get_new_token(char *str, bool sq, bool dq)
+// {
+// 	t_token	*new_token;
+	
+	
+// 	return (new_token);
+// }
 
 t_token	*fill_tokens(char *str)
 {
+	t_token	*head;
+	t_token	*current;
+	bool	sq;
+	bool	dq;
+	t_token	*new_token;
+
 	if (!str)
 		return (NULL);
-	return (fill_tokens_recursive(str, false, false));
+	head = NULL;
+	current = NULL;
+	sq = false;
+	dq = false;
+	new_token = NULL;
+	while (*str)
+	{
+		while (ft_isspace(*str))
+			str++;
+		if (!*str)
+			break ;
+		if (ft_is_operator(*str))
+			new_token = ft_parse_operator(&str);
+		else if (ft_is_quote(*str) && !sq && !dq)
+			new_token = ft_parse_quoted(&str, &sq, &dq);
+		else
+			new_token = ft_parse_word(&str, sq, dq);
+		if (!new_token)
+			break ;
+		if (!head)
+			head = (current = new_token);
+		else
+			current = (current->next = new_token);
+	}
+	return (head);
 }
