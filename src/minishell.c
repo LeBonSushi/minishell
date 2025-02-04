@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/03 15:40:29 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/04 18:59:57 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,22 +18,6 @@
 // 	(void)av;
 // }
 
-void	minishell_loop(t_all *all)
-{
-	char *line;
-
-	while(1)
-	{
-		line = readline("minishell$ ");
-		if (!line || !*line)
-			continue ;
-		add_history(line);
-		all->tokens = fill_tokens(line);
-		print_tokens(all->tokens);
-		free(line);
-		free_all_token(all->tokens);
-	}
-}
 void	init_all(t_all *all, int ac, char **av, char **envp)
 {
 	(void)ac;
@@ -63,6 +47,23 @@ void	verify_env(t_all *all)
 		[$RETRN_VAL]\"", "SHLVL=1", NULL};
 	if (env_empty(all))
 		export_builtin(all, keys);
+}
+
+void	minishell_loop(t_all *all)
+{
+	char *line;
+
+	while(1)
+	{
+		line = readline("ministress$ ");
+		if (!line || !*line)
+			continue ;
+		add_history(line);
+		all->tokens = fill_tokens(line, all);
+		print_tokens(all->tokens);
+		free(line);
+		free_all_token(all->tokens);
+	}
 }
 
 int	main(int ac, char **av, char **envp)

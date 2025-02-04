@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 23:39:59 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/03 20:45:44 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/04 19:41:43 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ t_token	*ft_parse_quoted(char **str, bool *sq, bool *dq)
 	(*str)++;
 	start = *str;
 	len = 0;
+	*sq = (quote == '\'');
+	*dq = (quote == '\"');
 	while (**str && **str != quote)
 	{
 		(*str)++;
@@ -30,8 +32,6 @@ t_token	*ft_parse_quoted(char **str, bool *sq, bool *dq)
 	}
 	if (**str != quote)
 		return (NULL);
-	*sq = (quote == '\'');
-	*dq = (quote == '\"');
 	token = token_new(WORD, ft_substr(start, 0, len),
 			*sq, *dq);
 	printf("sq: %d, dq: %d\n", *sq, *dq);
@@ -39,30 +39,41 @@ t_token	*ft_parse_quoted(char **str, bool *sq, bool *dq)
 	return (token);
 }
 
+void	edit_token(t_token **token, t_token_type type, char *value)
+{
+	(*token)->token_type = type;
+	if ((*token)->value)
+		free((*token)->value);
+	(*token)->value = value;
+}
+
 t_token	*ft_parse_operator(char **str)
 {
-	t_token_type	type;
+	t_token			*token;
 
+	token = token_new(WORD, NULL, false, false);
 	if (**str == ';')
-		type = SEMICOLON;
+		edit_token(&token, SEMICOLON, ft_strdup(";"));
 	else if (**str == '|')
-		type = PIPE;
+		edit_token(&token, PIPE, ft_strdup("|"));
 	else if (**str == '<')
-		type = REDIR_IN;
+	{
+		if (*(*str + 1) == '<' && (*str)++)
+			edit_token(&token, REDIR_HEREDOC, ft_strdup("<<"));
+		else
+			edit_token(&token, REDIR_IN, ft_strdup("<"));
+	}
 	else if (**str == '>')
 	{
-		if (*(*str + 1) == '>')
-		{
-			(*str)++;
-			type = REDIR_APPEND;
-		}
+		if (*(*str + 1) == '>' && (*str)++)
+			edit_token(&token, REDIR_APPEND, ft_strdup(">>"));
 		else
-			type = REDIR_OUT;
+			edit_token(&token, REDIR_OUT, ft_strdup(">"));
 	}
 	else
 		return (NULL);
 	(*str)++;
-	return (token_new(type, NULL, false, false));
+	return (token);
 }
 
 t_token	*ft_parse_word(char **str, bool sq, bool dq)
@@ -107,14 +118,63 @@ t_token	*new_token(char	**str)
 	return (new_token);
 }
 
-t_token	*fill_tokens(char *str)
+bool	is_quotes_closed(char *str)
 {
-	t_token	*head;
+	bool	sq;
+	bool	dq;
+
+	sq = false;
+	dq = false;
+	while (*str)
+	{
+		if (*str == '\'' && !dq)
+			sq = !sq;
+		if (*str == '\"' && !sq)
+			dq = !dq;
+		str++;
+	}
+	return (!sq && !dq);
+}
+
+bool	is_valid_tokens(t_all *all, t_token *token)
+{
+	if (!token)
+		return (true);
+	while (token)
+	{
+		if (token->token_type == REDIR_IN || token->token_type == REDIR_OUT
+			|| token->token_type == REDIR_APPEND)
+		{
+			if (!token->next)
+			{
+				all->status = 2;
+				printf("ministress: syntax error near unexpected token `newline\'\n");
+				return (false);
+			}
+			if (token->next->token_type != WORD)
+			{
+				all->status = 2;
+				printf("ministress: syntax error near unexpected token `%s\'\n", token->next->value);
+				return (false);
+			}
+		}
+		token = token->next;
+	}
+	return (true);
+}
+
+t_token	*fill_tokens(char *str, t_all *all)
+{
+	t_token	*tokens;
 
 	if (!str)
 		return (NULL);
-	head = NULL;
+	if (!is_quotes_closed(str))
+		return (ft_putstr_fd("Quotes are not properly closed !\n", 2),NULL);
+	tokens = NULL;
 	while (*str)
-		token_addback(&head, new_token(&str));
-	return (head);
+		token_addback(&tokens, new_token(&str));
+	if (!is_valid_tokens(all, tokens))
+		return (free_all_token(tokens), NULL);
+	return (tokens);
 }

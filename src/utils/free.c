@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/25 18:49:42 by macorso           #+#    #+#             */
-/*   Updated: 2025/01/30 01:39:10 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/04 16:45:10 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ void	free_all_token(t_token *token)
 {
 	t_token	*next;
 
+	if (!token)
+		return ;
 	while (token)
 	{
 		next = token->next;
