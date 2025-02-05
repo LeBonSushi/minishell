@@ -34,6 +34,7 @@ t_token	*ft_parse_quoted(char **str, bool *sq, bool *dq)
 	if (**str != quote)
 		return (NULL);
 	space_after = (ft_isspace(*(*str + 1))); // || !*(*str + 1) ???
+	printf("%s\n", space_after ? "true" : "false");
 	token = token_new(WORD, ft_substr(start, 0, len),
 			*sq, *dq);
 	token->space_after = space_after;
@@ -82,6 +83,8 @@ t_token	*ft_parse_word(char **str, bool sq, bool dq)
 {
 	char	*start;
 	int		len;
+	bool	space_after;
+	t_token	*token;
 
 	start = *str;
 	len = 0;
@@ -91,7 +94,10 @@ t_token	*ft_parse_word(char **str, bool sq, bool dq)
 		(*str)++;
 		len++;
 	}
-	return (token_new(WORD, ft_substr(start, 0, len), false, false));
+	space_after = (ft_isspace(**str));
+	token = token_new(WORD, ft_substr(start, 0, len), false, false);
+	token->space_after = space_after;
+	return (token);
 }
 
 t_token	*new_parsed_token(char	**str)
