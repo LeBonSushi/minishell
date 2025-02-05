@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: macorso <maxence22corso@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 23:16:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/03 14:35:44 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/05 01:05:12 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ void	print_tokens(t_token *tokens)
 			printf("UNKNOWN\n");
 		printf("single quoted: %d\n", tmp->single_quoted);
 		printf("double quoted: %d\n\n", tmp->double_quoted);
+		printf("space after: %s\n\n", tmp->space_after ? "true" : "false");
 		tmp = tmp->next;
 	}
 }

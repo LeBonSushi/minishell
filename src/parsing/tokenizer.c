@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: macorso <maxence22corso@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 23:39:59 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/04 19:41:43 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/05 03:27:24 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ t_token	*ft_parse_quoted(char **str, bool *sq, bool *dq)
 	char	*start;
 	int		len;
 	t_token	*token;
+	bool	space_after;
 
 	quote = **str;
 	(*str)++;
@@ -32,9 +33,10 @@ t_token	*ft_parse_quoted(char **str, bool *sq, bool *dq)
 	}
 	if (**str != quote)
 		return (NULL);
+	space_after = (ft_isspace(*(*str + 1))); // || !*(*str + 1) ???
 	token = token_new(WORD, ft_substr(start, 0, len),
 			*sq, *dq);
-	printf("sq: %d, dq: %d\n", *sq, *dq);
+	token->space_after = space_after;
 	(*str)++;
 	return (token);
 }
@@ -92,7 +94,7 @@ t_token	*ft_parse_word(char **str, bool sq, bool dq)
 	return (token_new(WORD, ft_substr(start, 0, len), false, false));
 }
 
-t_token	*new_token(char	**str)
+t_token	*new_parsed_token(char	**str)
 {
 	t_token	*new_token;
 	bool	sq;
@@ -163,6 +165,53 @@ bool	is_valid_tokens(t_all *all, t_token *token)
 	return (true);
 }
 
+void	delete_token(t_token **tokens, t_token *token_to_del)
+{
+	t_token	*tmp;
+	t_token	*prev;
+
+	tmp = *tokens;
+	prev = NULL;
+	while (tmp)
+	{
+		if (tmp == token_to_del)
+		{
+			if (prev)
+				prev->next = tmp->next;
+			else
+				*tokens = tmp->next;
+			free(tmp->value);
+			free(tmp);
+			return ;
+		}
+		prev = tmp;
+		tmp = tmp->next;
+	}
+}
+
+void manage_empty_tokens(t_token **tokens)
+{
+	t_token *tmp = *tokens;
+	t_token *next;
+
+	while (tmp)
+	{
+		next = tmp->next;
+
+		if (tmp->token_type == WORD && !ft_strcmp(tmp->value, ""))
+		{
+			if (!tmp->space_after)
+				delete_token(tokens, tmp);
+		}
+
+		tmp = next;
+	}
+	tmp = *tokens;
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->space_after = false;
+}
+
 t_token	*fill_tokens(char *str, t_all *all)
 {
 	t_token	*tokens;
@@ -173,7 +222,8 @@ t_token	*fill_tokens(char *str, t_all *all)
 		return (ft_putstr_fd("Quotes are not properly closed !\n", 2),NULL);
 	tokens = NULL;
 	while (*str)
-		token_addback(&tokens, new_token(&str));
+		token_addback(&tokens, new_parsed_token(&str));
+	manage_empty_tokens(&tokens);
 	if (!is_valid_tokens(all, tokens))
 		return (free_all_token(tokens), NULL);
 	return (tokens);

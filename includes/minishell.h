@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: macorso <maxence22corso@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:48:17 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/04 16:49:59 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/05 03:29:14 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ typedef struct s_token
 	t_token_type	token_type;
 	bool			single_quoted;
 	bool			double_quoted;
+	bool			space_after;
 	char			*value;
 	struct s_token	*next;
 }	t_token;
@@ -102,14 +103,20 @@ t_env	*env_create_sorted(t_env *env);
 
 bool			is_operator(char c);
 bool			is_quote(char c);
+bool			is_quotes_closed(char *str);
+bool			is_valid_tokens(t_all *all, t_token *token);
+void			delete_token(t_token **tokens, t_token *token_to_del);
+void			edit_token(t_token **token, t_token_type type, char *value);
+t_token			*token_new(t_token_type token_type, char *value, bool single_q, bool double_q);
+void			token_addback(t_token **lst, t_token *new);
+void			manage_empty_tokens(t_token **tokens);
 t_token			*ft_parse_quoted(char **str, bool *sq, bool *dq);
 t_token			*ft_parse_word(char **str, bool sq, bool dq);
-t_token			*token_new(t_token_type token_type, char *value, bool single_q, bool double_q);
 t_token			*ft_parse_operator(char **str);
-void			token_addback(t_token **lst, t_token *new);
+t_token			*new_parsed_token(char	**str);
 t_token			*fill_tokens(char *str, t_all *all);
-void			print_tokens(t_token *tokens);
 
+void			print_tokens(t_token *tokens);
 //---------------------INIT------------------------------
 
 void	init_all(t_all *all, int ac, char **av, char **envp);
