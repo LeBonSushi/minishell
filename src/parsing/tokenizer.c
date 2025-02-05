@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <maxence22corso@gmail.com>         +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 23:39:59 by macorso           #+#    #+#             */
 /*   Updated: 2025/02/05 03:27:24 by macorso          ###   ########.fr       */

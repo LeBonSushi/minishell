@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <maxence22corso@gmail.com>         +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:48:17 by macorso           #+#    #+#             */
 /*   Updated: 2025/02/05 03:29:14 by macorso          ###   ########.fr       */

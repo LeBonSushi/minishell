@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   print_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <maxence22corso@gmail.com>         +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 23:16:19 by macorso           #+#    #+#             */
 /*   Updated: 2025/02/05 01:05:12 by macorso          ###   ########.fr       */
