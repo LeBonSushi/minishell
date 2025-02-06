@@ -27,6 +27,7 @@ typedef enum e_token_type
 {
 	WORD = 1,
 	SEMICOLON,
+	WILD_CARD,
 	PIPE,
 	REDIR_IN,
 	REDIR_OUT,

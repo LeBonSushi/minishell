@@ -27,7 +27,6 @@ void	print_tab(char **tab)
 void	print_tokens(t_token *tokens)
 {
 	t_token	*tmp;
-
 	tmp = tokens;
 	while (tmp)
 	{

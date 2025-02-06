@@ -43,15 +43,55 @@ t_token	*ft_parse_quoted(char **str, bool *sq, bool *dq)
 
 void	edit_token(t_token **token, t_token_type type, char *value)
 {
+	if (!*token)
+		*token = token_new(WORD, NULL, false, false);
 	(*token)->token_type = type;
 	if ((*token)->value)
 		free((*token)->value);
 	(*token)->value = value;
 }
 
+// t_token	*verif_and_edit_operator(char **str)
+// {
+// 	t_token			*token;
+
+// 	token = NULL;
+// 	if (**str == ';')
+// 		edit_token(&token, SEMICOLON, ft_strdup(";"));
+// 	else if (**str == '|')
+// 		edit_token(&token, PIPE, ft_strdup("|"));
+// 	else if (**str == '<')
+// 	{
+// 		if (*(*str + 1) == '<' && (*str)++)
+// 			edit_token(&token, REDIR_HEREDOC, ft_strdup("<<"));
+// 		else
+// 			edit_token(&token, REDIR_IN, ft_strdup("<"));
+// 	}
+// 	else if (**str == '>')
+// 	{
+// 		if (*(*str + 1) == '>' && (*str)++)
+// 			edit_token(&token, REDIR_APPEND, ft_strdup(">>"));
+// 		else
+// 			edit_token(&token, REDIR_OUT, ft_strdup(">"));
+// 	}
+// 	else if (**str == '*')
+// 		edit_token(&token, WILD_CARD, ft_strdup("*"));
+// 	return (NULL);
+// }
+
+// t_token	*ft_parse_operator(char **str)
+// {
+// 	t_token	*token;
+
+// 	token = verif_and_edit_operator(str);
+// 	(*str)++;
+// 	return (token);
+// }
+
+
 t_token	*ft_parse_operator(char **str)
 {
-	t_token			*token;
+	t_token	*token;
 
 	token = token_new(WORD, NULL, false, false);
 	if (**str == ';')
@@ -196,9 +236,12 @@ void	delete_token(t_token **tokens, t_token *token_to_del)
 
 void manage_empty_tokens(t_token **tokens)
 {
-	t_token *tmp = *tokens;
+	t_token *tmp;
 	t_token *next;
 
+	if (!tokens || !*tokens)
+		return ;
+	tmp = *tokens;
 	while (tmp)
 	{
 		next = tmp->next;
@@ -212,6 +255,8 @@ void manage_empty_tokens(t_token **tokens)
 		tmp = next;
 	}
 	tmp = *tokens;
+	if (!tmp || !tmp->next)
+		return ;
 	while (tmp->next)
 		tmp = tmp->next;
 	tmp->space_after = false;
