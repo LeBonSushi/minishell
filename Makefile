@@ -9,11 +9,13 @@ NAME	:= minishell
 SRC		:=	src/minishell.c \
 \
 			src/parsing/tokenizer.c \
+			src/parsing/expander.c \
 \
 			src/utils/header.c \
 			src/utils/free.c \
 			src/utils/print_utils.c \
 			src/utils/token_utils.c \
+			src/utils/lst.c \
 \
 			src/builtins/env.c \
 			src/builtins/export.c \
@@ -129,4 +131,4 @@ fclean:
 # Clean all and recompile minishell
 re: fclean all
 
-.PHONY: all clean fclean re polnareff load run
+.PHONY: all clean fclean re  load run

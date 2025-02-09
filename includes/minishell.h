@@ -17,9 +17,11 @@
 # include "../libft/libft.h"
 
 # include <stdio.h>
+# include <dirent.h>
 # include <stdlib.h>
 # include <stdbool.h>
 # include <unistd.h>
+# include <sys/wait.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
@@ -27,12 +29,12 @@ typedef enum e_token_type
 {
 	WORD = 1,
 	SEMICOLON,
-	WILD_CARD,
 	PIPE,
 	REDIR_IN,
 	REDIR_OUT,
 	REDIR_APPEND,
 	REDIR_HEREDOC,
+	WILD_CARD,
 }	t_token_type;
 
 typedef enum e_node_type
@@ -58,6 +60,7 @@ typedef struct s_token
 	bool			single_quoted;
 	bool			double_quoted;
 	bool			space_after;
+	bool			is_wildcard;
 	char			*value;
 	struct s_token	*next;
 }	t_token;
@@ -83,6 +86,7 @@ typedef struct s_all
 	t_env	*env;
 	t_token	*tokens;
 	t_tree	*tree;
+	pid_t	pid;
 	int		status;
 }	t_all;
 
@@ -118,10 +122,27 @@ t_token			*new_parsed_token(char	**str);
 t_token			*fill_tokens(char *str, t_all *all);
 
 void			print_tokens(t_token *tokens);
+
+//---------------------EXPANDER--------------------------
+
+t_token	*expand_tokens(t_all *all, t_token *tokens);
+char	*expand_word(t_all *all, char *word);
+char	*expand_env(t_all *all, char *word, int *i);
+t_token	*create_tokens_without_space(t_token *tokens);
+void	create_expand_tokens(t_all *all, t_token *tokens);
+bool	is_same_quote(t_token *token, t_token *token_to_compare);
+bool	is_same_type(t_token *token, t_token *token_to_compare);
+t_token	*manage_wildcard(t_token *token);
+
 //---------------------INIT------------------------------
 
 void	init_all(t_all *all, int ac, char **av, char **envp);
 t_env	*fill_env(char **envp);
+t_string_list	*ft_lstnew(char *content);
+t_string_list	*ft_lstlast(t_string_list *lst);
+void	ft_lstadd_back(t_string_list **lst, t_string_list *new);
+int		ft_lstsize(t_string_list *lst);
+void	ft_lstclear(t_string_list **lst, void (*del)(void *));
 
 //---------------------DESTROY---------------------------
 
@@ -142,5 +163,10 @@ char	*pwd_builtin_char();
 //---------------------PARSING---------------------------
 
 void	minishell_loop(t_all *all);
+
+//---------------------UTILS-----------------------------
+
+char	**list_to_array(t_string_list *list);
+void	ft_free_array(char **array);
 
 #endif

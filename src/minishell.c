@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/04 18:59:57 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/09 01:44:00 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,9 @@ void	init_all(t_all *all, int ac, char **av, char **envp)
 	(void)av;
 
 	all->env = fill_env(envp);
+	all->status = 0;
+	all->tokens = NULL;
+	all->tree = NULL;
 }
 
 bool	env_empty(t_all *all)
@@ -60,6 +63,7 @@ void	minishell_loop(t_all *all)
 			continue ;
 		add_history(line);
 		all->tokens = fill_tokens(line, all);
+		all->tokens = expand_tokens(all, all->tokens);
 		print_tokens(all->tokens);
 		free(line);
 		free_all_token(all->tokens);

@@ -51,49 +51,11 @@ void	edit_token(t_token **token, t_token_type type, char *value)
 	(*token)->value = value;
 }
 
-// t_token	*verif_and_edit_operator(char **str)
-// {
-// 	t_token			*token;
-
-// 	token = NULL;
-// 	if (**str == ';')
-// 		edit_token(&token, SEMICOLON, ft_strdup(";"));
-// 	else if (**str == '|')
-// 		edit_token(&token, PIPE, ft_strdup("|"));
-// 	else if (**str == '<')
-// 	{
-// 		if (*(*str + 1) == '<' && (*str)++)
-// 			edit_token(&token, REDIR_HEREDOC, ft_strdup("<<"));
-// 		else
-// 			edit_token(&token, REDIR_IN, ft_strdup("<"));
-// 	}
-// 	else if (**str == '>')
-// 	{
-// 		if (*(*str + 1) == '>' && (*str)++)
-// 			edit_token(&token, REDIR_APPEND, ft_strdup(">>"));
-// 		else
-// 			edit_token(&token, REDIR_OUT, ft_strdup(">"));
-// 	}
-// 	else if (**str == '*')
-// 		edit_token(&token, WILD_CARD, ft_strdup("*"));
-// 	return (NULL);
-// }
-
-// t_token	*ft_parse_operator(char **str)
-// {
-// 	t_token	*token;
-
-// 	token = verif_and_edit_operator(str);
-// 	(*str)++;
-// 	return (token);
-// }
-
-
-t_token	*ft_parse_operator(char **str)
+t_token	*verif_and_edit_operator(char **str)
 {
-	t_token	*token;
+	t_token			*token;
 
-	token = token_new(WORD, NULL, false, false);
+	token = NULL;
 	if (**str == ';')
 		edit_token(&token, SEMICOLON, ft_strdup(";"));
 	else if (**str == '|')
@@ -112,11 +74,49 @@ t_token	*ft_parse_operator(char **str)
 		else
 			edit_token(&token, REDIR_OUT, ft_strdup(">"));
 	}
-	else
-		return (NULL);
+	else if (**str == '*')
+		edit_token(&token, WILD_CARD, ft_strdup("*"));
+	return (token);
+}
+
+t_token	*ft_parse_operator(char **str)
+{
+	t_token	*token;
+
+	token = verif_and_edit_operator(str);
 	(*str)++;
 	return (token);
 }
+
+
+// t_token	*ft_parse_operator(char **str)
+// {
+// 	t_token	*token;
+
+// 	token = token_new(WORD, NULL, false, false);
+// 	if (**str == ';')
+// 		edit_token(&token, SEMICOLON, ft_strdup(";"));
+// 	else if (**str == '|')
+// 		edit_token(&token, PIPE, ft_strdup("|"));
+// 	else if (**str == '<')
+// 	{
+// 		if (*(*str + 1) == '<' && (*str)++)
+// 			edit_token(&token, REDIR_HEREDOC, ft_strdup("<<"));
+// 		else
+// 			edit_token(&token, REDIR_IN, ft_strdup("<"));
+// 	}
+// 	else if (**str == '>')
+// 	{
+// 		if (*(*str + 1) == '>' && (*str)++)
+// 			edit_token(&token, REDIR_APPEND, ft_strdup(">>"));
+// 		else
+// 			edit_token(&token, REDIR_OUT, ft_strdup(">"));
+// 	}
+// 	else
+// 		return (NULL);
+// 	(*str)++;
+// 	return (token);
+// }
 
 t_token	*ft_parse_word(char **str, bool sq, bool dq)
 {
@@ -183,28 +183,41 @@ bool	is_quotes_closed(char *str)
 	return (!sq && !dq);
 }
 
+bool	manage_error_redir(t_all *all, t_token *token)
+{
+	if (token->token_type == REDIR_IN || token->token_type == REDIR_OUT
+			|| token->token_type == REDIR_APPEND)
+	{
+		if (!token->next)
+		{
+			all->status = 2;
+			ft_putstr_fd("ministress: syntax error near unexpected token `newline\'\n", 2);
+			return (true);
+		}
+		if (token->next->token_type != WORD && token->next->token_type != WILD_CARD)
+		{
+			all->status = 2;
+			ft_putstr_fd("ministress: syntax error near unexpected token `", 2);
+			ft_putendl_fd(token->next->value, 2);
+			return (true);
+		}
+		if (token->next->token_type == WILD_CARD)
+		{
+			all->status = 1;
+			return (ft_putstr_fd("ministress: *: ambiguous redirect\n", 2), true);
+		}
+	}
+	return (false);
+}
+
 bool	is_valid_tokens(t_all *all, t_token *token)
 {
 	if (!token)
 		return (true);
 	while (token)
 	{
-		if (token->token_type == REDIR_IN || token->token_type == REDIR_OUT
-			|| token->token_type == REDIR_APPEND)
-		{
-			if (!token->next)
-			{
-				all->status = 2;
-				printf("ministress: syntax error near unexpected token `newline\'\n");
-				return (false);
-			}
-			if (token->next->token_type != WORD)
-			{
-				all->status = 2;
-				printf("ministress: syntax error near unexpected token `%s\'\n", token->next->value);
-				return (false);
-			}
-		}
+		if (manage_error_redir(all, token))
+			return (false);
 		token = token->next;
 	}
 	return (true);

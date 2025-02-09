@@ -44,8 +44,10 @@ void	print_tokens(t_token *tokens)
 			printf("REDIR_APPEND\n%s\n", tmp->value);
 		else if (tmp->token_type == REDIR_HEREDOC)
 			printf("REDIR_HEREDOC\n%s\n", tmp->value);
+		else if (tmp->token_type == WILD_CARD)
+			printf("WILD_CARD\n%s\n", tmp->value);
 		else
-			printf("UNKNOWN\n");
+			printf("ERROR\n%s\n", tmp->value);
 		printf("single quoted: %d\n", tmp->single_quoted);
 		printf("double quoted: %d\n\n", tmp->double_quoted);
 		printf("space after: %s\n\n", tmp->space_after ? "true" : "false");
