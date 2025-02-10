@@ -74,8 +74,8 @@ t_token	*verif_and_edit_operator(char **str)
 		else
 			edit_token(&token, REDIR_OUT, ft_strdup(">"));
 	}
-	else if (**str == '*')
-		edit_token(&token, WILD_CARD, ft_strdup("*"));
+	else
+		return (NULL);
 	return (token);
 }
 
@@ -210,6 +210,32 @@ bool	manage_error_redir(t_all *all, t_token *token)
 	return (false);
 }
 
+bool	is_error_expansion_char(char c)
+{
+	return (c == ')' || c == '(' || c == '{' || c == '-');
+}
+
+bool	manage_expansion_error(t_all *all, t_token *token)
+{
+	int	i;
+
+	i = 0;
+	if (token->token_type == WORD)
+	{
+		while (token->value[i])
+		{
+			if (token->value[i] == '$' && is_error_expansion_char(token->value[i + 1]) && !token->value[i + 2])
+			{
+				all->status = 2;
+				printf("ministress: syntax error near unexpected token `%c\'\n", token->value[i + 1]);
+				return (true);
+			}
+			i++;
+		}
+	}
+	return (false);
+}
+
 bool	is_valid_tokens(t_all *all, t_token *token)
 {
 	if (!token)
@@ -217,6 +243,8 @@ bool	is_valid_tokens(t_all *all, t_token *token)
 	while (token)
 	{
 		if (manage_error_redir(all, token))
+			return (false);
+		if (manage_expansion_error(all, token))
 			return (false);
 		token = token->next;
 	}

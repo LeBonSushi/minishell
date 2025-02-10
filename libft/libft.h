@@ -47,7 +47,7 @@ void				*ft_calloc(size_t count, size_t size);
 
 // Additional functions
 char				*ft_substr(char const *s, unsigned int start, size_t len);
-char				*ft_strjoin(char const *s1, char const *s2);
+char				*ft_strjoin(const char *s1, const char *s2, int free_s1, int free_s2);
 char				*ft_strjoinchar(const char *s1, const char c);
 char				*ft_strtrim(char const *s1, char const *set);
 char				**ft_split(char const *s, char c);

@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/09 01:44:00 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/10 01:39:34 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,7 @@ bool	env_empty(t_all *all)
 void	verify_env(t_all *all)
 {
 	char	*pwd = pwd_builtin_char();
-	char	*pwd_key = ft_strjoin("PWD=", pwd);
-	free(pwd);
+	char	*pwd_key = ft_strjoin("PWD=", pwd, 0, 1);
 	char	*keys[] = {"OLDPWD=", pwd_key,
 		"PROMPT_COMMAND=RETRN_VAL=$?;logger -p local6.debug\
 		\"$(history 1 | sed \"s/^[ ]*[0-9]\\+[ ]*//\" )\

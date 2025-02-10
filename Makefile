@@ -15,7 +15,6 @@ SRC		:=	src/minishell.c \
 			src/utils/free.c \
 			src/utils/print_utils.c \
 			src/utils/token_utils.c \
-			src/utils/lst.c \
 \
 			src/builtins/env.c \
 			src/builtins/export.c \

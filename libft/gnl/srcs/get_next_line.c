@@ -86,7 +86,7 @@ static char	*ft_read_from_file(int fd, char *data)
 			return (NULL);
 		}
 		s[bytes_read] = 0;
-		data = ft_strjoin(data, s);
+		data = ft_strjoin(data, s, 0, 0);
 	}
 	free(s);
 	return (data);

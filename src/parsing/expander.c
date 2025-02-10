@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/09 05:08:16 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/10 11:48:24 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,7 @@ char *join_token_values(t_token *first, t_token *second)
 	char *temp;
 
 	temp = ft_strdup(first->value);
-	joined = ft_strjoin(temp, second->value);
-	free(temp);
+	joined = ft_strjoin(temp, second->value, 1, 0);
 	return (joined);
 }
 
@@ -59,17 +58,15 @@ t_token *create_tokens_without_space(t_token *tokens)
 		{
 			joined_value = join_token_values(tmp, next);
 			new = token_new(tmp->token_type, joined_value, tmp->single_quoted, tmp->double_quoted);
-			new->space_after = tmp->space_after;
-			token_addback(&new_tokens, new);
 			tmp = next->next;  // Skip the next token since we've joined it
 		}
 		else
 		{
 			new = token_new(tmp->token_type, ft_strdup(tmp->value), tmp->single_quoted, tmp->double_quoted);
-			new->space_after = tmp->space_after;
-			token_addback(&new_tokens, new);
 			tmp = next;
 		}
+		new->space_after = tmp->space_after;
+		token_addback(&new_tokens, new);
 	}
 	return (new_tokens);
 }
@@ -100,6 +97,13 @@ char *expand_digit(int *i)
 	return (ft_strdup(""));  // $n expands to nothing in bash when n is a digit
 }
 
+bool	ft_isspecial(char c)
+{
+	if (c == '+' || c == '[' || c == ']' || c == '_' || c == '*')
+		return (true);
+	return (false);
+}
+
 char *expand_variable(t_all *all, char *word, int *i)
 {
 	int start;
@@ -108,9 +112,13 @@ char *expand_variable(t_all *all, char *word, int *i)
 
 	(*i)++;  // Skip $
 	start = *i;
-	while (word[*i] && (ft_isalnum(word[*i]) || word[*i] == '_'))
+	while (word[*i] && ((ft_isalnum(word[*i]) || ft_isspecial(word[*i]))))
+	{
+		if (word[*i] == '*' && *i > start)
+			break;
 		(*i)++;
-	var_name = ft_substr(word, start, *i - start);
+	}
+	var_name = ft_substr(word, start, *i - start - 1);
 	value = get_env_value(all, var_name);
 	free(var_name);
 	return (value);
@@ -128,6 +136,7 @@ char	*ft_strjoinchar(const char *s1, const char c)
 	ft_strlcpy(str, s1, len + 1);
 	str[len] = c;
 	str[len + 1] = '\0';
+	free((char *)s1);
 	return (str);
 }
 
@@ -135,7 +144,6 @@ char	*expand_word(t_all *all, char *word)
 {
 	int i;
 	char *new_word;
-	char *temp;
 	char *expansion;
 
 	i = 0;
@@ -150,81 +158,18 @@ char	*expand_word(t_all *all, char *word)
 				expansion = expand_digit(&i);
 			else
 				expansion = expand_variable(all, word, &i);
-			temp = new_word;
-			new_word = ft_strjoin(new_word, expansion);
-			free(expansion);
+			new_word = ft_strjoin(new_word, expansion, 1, 1);
 		}
 		else
-		{
-			temp = new_word;
-			new_word = ft_strjoinchar(new_word, word[i]);
-			i++;
-		}
-		free(temp);
+			new_word = ft_strjoinchar(new_word, word[i++]);
 	}
 	return (new_word);
 }
 
-static bool	ft_match_pattern(char *str, char *pattern)
-{
-	if (*pattern == '*' && *(pattern + 1) == '\0')
-		return (true);
-	if (*pattern == '\0' && *str == '\0')
-		return (true);
-	if (*pattern == '*')
-		return (ft_match_pattern(str, pattern + 1)
-			|| (*str && ft_match_pattern(str + 1, pattern)));
-	if (*pattern == *str)
-		return (ft_match_pattern(str + 1, pattern + 1));
-	return (false);
-}
-
-static void	join_matches(char **result, char *file_name)
-{
-	char	*temp;
-
-	if (!*result || !(*result)[0])
-	{
-		free(*result);
-		*result = ft_strdup(file_name);
-		return ;
-	}
-	temp = *result;
-	*result = ft_strjoin(*result, " ");
-	free(temp);
-	temp = *result;
-	*result = ft_strjoin(*result, file_name);
-	free(temp);
-}
-
-char	*expand_wildcard(char *pattern)
-{
-	DIR				*dir;
-	struct dirent	*entry;
-	char			*result;
-	bool			found_match;
-
-	dir = opendir(".");
-	if (!dir)
-		return (ft_strdup(pattern));
-	result = ft_strdup("");
-	found_match = false;
-	while ((entry = readdir(dir)))
-	{
-		if (entry->d_name[0] != '.' || pattern[0] == '.')
-		{
-			if (ft_match_pattern(entry->d_name, pattern))
-			{
-				found_match = true;
-				join_matches(&result, entry->d_name);
-			}
-		}
-	}
-	closedir(dir);
-	if (!found_match)
-		return (free(result), ft_strdup(pattern));
-	return (result);
-}
+// char	*expand_wildcard(char *string)
+// {
+	
+// }
 
 t_token	*expand_tokens(t_all *all, t_token *tokens)
 {
@@ -232,14 +177,14 @@ t_token	*expand_tokens(t_all *all, t_token *tokens)
 	t_token *expanded_tokens;
 	t_token *new;
 
+	if (!tokens)
+		return (NULL);
 	tmp = tokens;
 	expanded_tokens = NULL;
 	while (tmp)
 	{
 		if (tmp->token_type == WORD && !tmp->single_quoted)
 			new = token_new(tmp->token_type, expand_word(all, tmp->value), tmp->single_quoted, tmp->double_quoted);
-		else if (tmp->token_type == WILD_CARD && (!tmp->single_quoted && !tmp->double_quoted))
-			new = token_new(tmp->token_type, expand_wildcard(tmp->value), tmp->single_quoted, tmp->double_quoted);
 		else
 			new = token_new(tmp->token_type, ft_strdup(tmp->value), tmp->single_quoted, tmp->double_quoted);
 		new->space_after = tmp->space_after;
@@ -250,13 +195,46 @@ t_token	*expand_tokens(t_all *all, t_token *tokens)
 	return (expanded_tokens);
 }
 
+// t_token	*manage_wildcard(t_token *token)
+// {
+	
+// }
+
+// t_token	*expand_wildcard(t_all *all, t_token *tokens)
+// {
+// 	t_token *tmp;
+// 	t_token *expanded_tokens;
+// 	t_token *new;
+
+// 	if (!tokens)
+// 		return (NULL);
+// 	tmp = tokens;
+// 	expanded_tokens = NULL;
+// 	while (tmp)
+// 	{
+// 		if (tmp->token_type == WORD && ft_strchr(tmp->value, '*') && (!tmp->single_quoted || !tmp->double_quoted))
+// 			new = manage_wildcard(tmp);
+// 		else
+// 			new = token_new(tmp->token_type, ft_strdup(tmp->value), tmp->single_quoted, tmp->double_quoted);
+// 		new->space_after = tmp->space_after;
+// 		token_addback(&expanded_tokens, new);
+// 		tmp = tmp->next;
+// 	}
+// 	free_all_token(tokens);
+// 	return (expanded_tokens);
+// }
+
 void create_expand_tokens(t_all *all, t_token *tokens)
 {
 	t_token *tmp;
 	t_token *expanded_tokens;
 
 	tmp = create_tokens_without_space(tokens);
-	expanded_tokens = expand_tokens(all, tmp);
 	free_all_token(tokens);
+	expanded_tokens = expand_tokens(all, tmp);
+	tmp = create_tokens_without_space(expanded_tokens);
+	// free_all_token(expanded_tokens);
+	// expanded_tokens = expand_wildcard(all, tmp);
+	
 	all->tokens = expanded_tokens;
 }

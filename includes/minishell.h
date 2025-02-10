@@ -20,6 +20,9 @@
 # include <dirent.h>
 # include <stdlib.h>
 # include <stdbool.h>
+# include <string.h>
+# include <errno.h>
+# include <strings.h>
 # include <unistd.h>
 # include <sys/wait.h>
 # include <readline/readline.h>
@@ -134,6 +137,10 @@ bool	is_same_quote(t_token *token, t_token *token_to_compare);
 bool	is_same_type(t_token *token, t_token *token_to_compare);
 t_token	*manage_wildcard(t_token *token);
 
+//---------------------WILDCARD--------------------------
+
+bool	ft_match_pattern(char *str, char *pattern);
+
 //---------------------INIT------------------------------
 
 void	init_all(t_all *all, int ac, char **av, char **envp);
@@ -163,10 +170,5 @@ char	*pwd_builtin_char();
 //---------------------PARSING---------------------------
 
 void	minishell_loop(t_all *all);
-
-//---------------------UTILS-----------------------------
-
-char	**list_to_array(t_string_list *list);
-void	ft_free_array(char **array);
 
 #endif
