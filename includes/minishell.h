@@ -38,6 +38,8 @@ typedef enum e_token_type
 	REDIR_APPEND,
 	REDIR_HEREDOC,
 	WILD_CARD,
+	OR,
+	AND,
 }	t_token_type;
 
 typedef enum e_node_type
@@ -95,6 +97,7 @@ typedef struct s_all
 
 void	print_header(void);
 void	print_tab(char **tab);
+char	**from_list_to_tab(t_env	*list);
 
 //---------------------ENV-------------------------------
 
@@ -109,7 +112,7 @@ t_env	*env_create_sorted(t_env *env);
 
 //---------------------TOKENS----------------------------
 
-bool			is_operator(char c);
+bool			is_operator(char *str);
 bool			is_quote(char c);
 bool			is_quotes_closed(char *str);
 bool			is_valid_tokens(t_all *all, t_token *token);

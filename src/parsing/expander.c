@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/10 11:48:24 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/12 22:59:22 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,26 +104,6 @@ bool	ft_isspecial(char c)
 	return (false);
 }
 
-char *expand_variable(t_all *all, char *word, int *i)
-{
-	int start;
-	char *var_name;
-	char *value;
-
-	(*i)++;  // Skip $
-	start = *i;
-	while (word[*i] && ((ft_isalnum(word[*i]) || ft_isspecial(word[*i]))))
-	{
-		if (word[*i] == '*' && *i > start)
-			break;
-		(*i)++;
-	}
-	var_name = ft_substr(word, start, *i - start - 1);
-	value = get_env_value(all, var_name);
-	free(var_name);
-	return (value);
-}
-
 char	*ft_strjoinchar(const char *s1, const char c)
 {
 	int	len;
@@ -140,36 +120,73 @@ char	*ft_strjoinchar(const char *s1, const char c)
 	return (str);
 }
 
+static void	skip_variable_chars(char *word, int *i, int start)
+{
+	while (word[*i] && (ft_isalnum(word[*i]) || ft_isspecial(word[*i])))
+	{
+		if (word[*i] == '*' && *i > start)
+			break ;
+		(*i)++;
+	}
+}
+
+char	*expand_variable(t_all *all, char *word, int *i)
+{
+	int		start;
+	char	*var_name;
+	char	*value;
+
+	(*i)++;
+	start = *i;
+	skip_variable_chars(word, i, start);
+	var_name = ft_substr(word, start, *i - start);
+	value = get_env_value(all, var_name);
+	free(var_name);
+	return (value);
+}
+
+static void	handle_dollar_sign(t_all *all, char *word, int *i,
+	char **new_word)
+{
+	char	*expansion;
+
+	if (word[*i + 1] == '?')
+		expansion = expand_status(all, i);
+	else if (ft_isdigit(word[*i + 1]))
+		expansion = expand_digit(i);
+	else if (ft_isalnum(word[*i + 1]) || !ft_isspecial(word[*i + 1]))
+	{
+		expansion = expand_variable(all, word, i);
+		*new_word = ft_strjoin(*new_word, expansion, 1, 1);
+	}
+	else
+	{
+		if (ft_isspecial(word[*i + 1]) && word[*i + 2])
+		{
+			(*i) += 2;
+			*new_word = ft_strjoinchar(*new_word, word[(*i)++]);
+		}
+		else
+			*new_word = ft_strjoinchar(*new_word, word[(*i)++]);
+	}
+}
+
 char	*expand_word(t_all *all, char *word)
 {
-	int i;
-	char *new_word;
-	char *expansion;
+	int		i;
+	char	*new_word;
 
 	i = 0;
 	new_word = ft_strdup("");
 	while (word[i])
 	{
 		if (word[i] == '$' && word[i + 1])
-		{
-			if (word[i + 1] == '?')
-				expansion = expand_status(all, &i);
-			else if (ft_isdigit(word[i + 1]))
-				expansion = expand_digit(&i);
-			else
-				expansion = expand_variable(all, word, &i);
-			new_word = ft_strjoin(new_word, expansion, 1, 1);
-		}
+			handle_dollar_sign(all, word, &i, &new_word);
 		else
 			new_word = ft_strjoinchar(new_word, word[i++]);
 	}
 	return (new_word);
 }
-
-// char	*expand_wildcard(char *string)
-// {
-	
-// }
 
 t_token	*expand_tokens(t_all *all, t_token *tokens)
 {
@@ -184,12 +201,14 @@ t_token	*expand_tokens(t_all *all, t_token *tokens)
 	while (tmp)
 	{
 		if (tmp->token_type == WORD && !tmp->single_quoted)
+		{
 			new = token_new(tmp->token_type, expand_word(all, tmp->value), tmp->single_quoted, tmp->double_quoted);
+		}
 		else
 			new = token_new(tmp->token_type, ft_strdup(tmp->value), tmp->single_quoted, tmp->double_quoted);
-		new->space_after = tmp->space_after;
-		token_addback(&expanded_tokens, new);
+		new->space_after = tmp->space_after;	
 		tmp = tmp->next;
+		token_addback(&expanded_tokens, new);
 	}
 	free_all_token(tokens);
 	return (expanded_tokens);

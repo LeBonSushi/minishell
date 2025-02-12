@@ -59,7 +59,17 @@ t_token	*verif_and_edit_operator(char **str)
 	if (**str == ';')
 		edit_token(&token, SEMICOLON, ft_strdup(";"));
 	else if (**str == '|')
-		edit_token(&token, PIPE, ft_strdup("|"));
+	{
+		if (*(*str + 1) == '|' && (*str)++)
+			edit_token(&token, OR, ft_strdup("||"));
+		else
+			edit_token(&token, PIPE, ft_strdup("|"));
+	}
+	else if (**str == '&')
+	{
+		if (*(*str + 1) == '&' && (*str)++)
+			edit_token(&token, AND, ft_strdup("&&"));
+	}
 	else if (**str == '<')
 	{
 		if (*(*str + 1) == '<' && (*str)++)
@@ -127,7 +137,7 @@ t_token	*ft_parse_word(char **str, bool sq, bool dq)
 
 	start = *str;
 	len = 0;
-	while (**str && !ft_isspace(**str) && !is_operator(**str)
+	while (**str && !ft_isspace(**str) && !is_operator(*str)
 		&& (!is_quote(**str) || sq || dq))
 	{
 		(*str)++;
@@ -154,7 +164,7 @@ t_token	*new_parsed_token(char	**str)
 	if (!**str)
 		return (NULL);
 	new_token = NULL;
-	if (is_operator(**str))
+	if (is_operator(*str))
 		new_token = ft_parse_operator(str);
 	else if (is_quote(**str) && !sq && !dq)
 		new_token = ft_parse_quoted(str, &sq, &dq);
@@ -186,7 +196,8 @@ bool	is_quotes_closed(char *str)
 bool	manage_error_redir(t_all *all, t_token *token)
 {
 	if (token->token_type == REDIR_IN || token->token_type == REDIR_OUT
-			|| token->token_type == REDIR_APPEND)
+			|| token->token_type == REDIR_APPEND
+			|| token->token_type == AND || token->token_type == OR)
 	{
 		if (!token->next)
 		{
@@ -197,11 +208,10 @@ bool	manage_error_redir(t_all *all, t_token *token)
 		if (token->next->token_type != WORD && token->next->token_type != WILD_CARD)
 		{
 			all->status = 2;
-			ft_putstr_fd("ministress: syntax error near unexpected token `", 2);
-			ft_putendl_fd(token->next->value, 2);
+			printf("ministress: syntax error near unexpected token `%s\'\n", token->next->value);
 			return (true);
 		}
-		if (token->next->token_type == WILD_CARD)
+		if (token->next->token_type == WILD_CARD && token->token_type != AND && token->token_type != OR)
 		{
 			all->status = 1;
 			return (ft_putstr_fd("ministress: *: ambiguous redirect\n", 2), true);
