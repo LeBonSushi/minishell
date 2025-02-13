@@ -11,3 +11,5 @@ zsh: bad substitution
 
 echo ${USER}
 macorso
+
+si jai 2 token ou plus qui contiennent un * et que un d'eux est quoted je les reunis en un seul token et expand aucun des *

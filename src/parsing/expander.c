@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/13 03:30:48 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/13 16:23:16 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,10 +197,20 @@ char	*expand_word(t_all *all, char *word, t_token *tmp)
 	new_word = ft_strdup("");
 	while (word[i])
 	{
-		if (word[i] == '$' && word[i + 1])
+		if (word[i] == '$' && word[i + 1] && word[i + 1] != '*')
 		{
 			handle_dollar_sign(all, word, &i, &new_word);
 			tmp->expand_wildcard = false;
+		}
+		else if (word[i] == '$' && word[i + 1] && word[i + 1] == '*')
+		{
+			word += i + 2;
+			new_word = ft_strjoin(new_word, word, 1, 0);
+			if (ft_strchr(word, '*') && (!tmp->single_quoted || !tmp->double_quoted))
+				tmp->expand_wildcard = true;
+			else
+				tmp->expand_wildcard = false;
+			break ;
 		}
 		else
 		{
@@ -252,40 +262,39 @@ t_token	*expand_tokens(t_all *all, t_token *tokens)
 			return (NULL);
 		}
 		new->space_after = tmp->space_after;
+		if (!*new->value)
+			new->space_after = false;
 		token_addback(&expanded_tokens, new);
 		tmp = tmp->next;
 	}
 	return (expanded_tokens);
 }
 
-// t_token	*manage_wildcard(t_token *token)
-// {
-	
-// }
+t_token	*merge_tokens(t_token *tokens)
+{
+	t_token	*curr;
+	t_token	*tmp;
 
-// t_token	*expand_wildcard(t_all *all, t_token *tokens)
-// {
-// 	t_token *tmp;
-// 	t_token *expanded_tokens;
-// 	t_token *new;
+	if (!tokens)
+		return (NULL);
+	curr = tokens;
+	while (curr && curr->next)
+	{
+		if (curr->token_type == WORD && curr->next->token_type == WORD
+			&& !curr->space_after && !curr->next->space_after)
+		{
+			tmp = curr->next;
+			curr->next = tmp->next;
+			curr->value = join_token_values(curr, tmp);
+			free(tmp->value);
+			free(tmp);
+		}
+		else
+			curr = curr->next;
+	}
+	return (tokens);
+}
 
-// 	if (!tokens)
-// 		return (NULL);
-// 	tmp = tokens;
-// 	expanded_tokens = NULL;
-// 	while (tmp)
-// 	{
-// 		if (tmp->token_type == WORD && ft_strchr(tmp->value, '*') && (!tmp->single_quoted || !tmp->double_quoted))
-// 			new = manage_wildcard(tmp);
-// 		else
-// 			new = token_new(tmp->token_type, ft_strdup(tmp->value), tmp->single_quoted, tmp->double_quoted);
-// 		new->space_after = tmp->space_after;
-// 		token_addback(&expanded_tokens, new);
-// 		tmp = tmp->next;
-// 	}
-// 	free_all_token(tokens);
-// 	return (expanded_tokens);
-// }
 
 t_token *create_expand_tokens(t_all *all, t_token *tokens)
 {
@@ -295,5 +304,10 @@ t_token *create_expand_tokens(t_all *all, t_token *tokens)
 		return (NULL);
 	expanded_tokens = create_tokens_without_space(tokens);
 	expanded_tokens = expand_tokens(all, expanded_tokens);
+	// printf("\n\n\nBEFORE MERGE\n\n");
+	// print_tokens(expanded_tokens);
+	// expanded_tokens = merge_tokens(expanded_tokens);
+	// printf("\n\n\nAFTER MERGE\n\n");
+	// print_tokens(expanded_tokens);
 	return (expanded_tokens);
 }

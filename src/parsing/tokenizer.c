@@ -46,8 +46,6 @@ void	edit_token(t_token **token, t_token_type type, char *value)
 	if (!*token)
 		*token = token_new(WORD, NULL, false, false);
 	(*token)->token_type = type;
-	if ((*token)->value)
-		free((*token)->value);
 	(*token)->value = value;
 }
 

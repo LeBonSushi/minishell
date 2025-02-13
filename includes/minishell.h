@@ -40,6 +40,7 @@ typedef enum e_token_type
 	WILD_CARD,
 	OR,
 	AND,
+	TILDE,
 }	t_token_type;
 
 typedef enum e_node_type
@@ -126,6 +127,7 @@ t_token			*ft_parse_word(char **str, bool sq, bool dq);
 t_token			*ft_parse_operator(char **str);
 t_token			*new_parsed_token(char	**str);
 t_token			*fill_tokens(char *str, t_all *all);
+t_token			*merge_tokens(t_token *tokens);
 
 void			print_tokens(t_token *tokens);
 
