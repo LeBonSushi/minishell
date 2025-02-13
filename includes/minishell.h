@@ -65,7 +65,7 @@ typedef struct s_token
 	bool			single_quoted;
 	bool			double_quoted;
 	bool			space_after;
-	bool			is_wildcard;
+	bool			expand_wildcard;
 	char			*value;
 	struct s_token	*next;
 }	t_token;
@@ -132,13 +132,14 @@ void			print_tokens(t_token *tokens);
 //---------------------EXPANDER--------------------------
 
 t_token	*expand_tokens(t_all *all, t_token *tokens);
-char	*expand_word(t_all *all, char *word);
+char	*expand_word(t_all *all, char *word, t_token *token);
 char	*expand_env(t_all *all, char *word, int *i);
+t_token	*expand_wildcard(t_token *tokens);
 t_token	*create_tokens_without_space(t_token *tokens);
-void	create_expand_tokens(t_all *all, t_token *tokens);
+t_token	*create_expand_tokens(t_all *all, t_token *tokens);
 bool	is_same_quote(t_token *token, t_token *token_to_compare);
 bool	is_same_type(t_token *token, t_token *token_to_compare);
-t_token	*manage_wildcard(t_token *token);
+t_token	*manage_wildcard(t_token *to_expand);
 
 //---------------------WILDCARD--------------------------
 

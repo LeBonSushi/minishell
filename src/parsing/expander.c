@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/12 22:59:22 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/13 03:30:48 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,33 +41,50 @@ char *join_token_values(t_token *first, t_token *second)
 	return (joined);
 }
 
-t_token *create_tokens_without_space(t_token *tokens)
+static t_token	*join_tokens(t_token *tmp, t_token *next, t_token **next_ptr)
 {
-	t_token *new_tokens;
-	t_token *tmp;
-	t_token *next;
-	t_token *new;
-	char *joined_value;
+	t_token	*new;
+	char	*joined_value;
+
+	joined_value = join_token_values(tmp, next);
+	new = token_new(tmp->token_type, joined_value,
+			tmp->single_quoted, tmp->double_quoted);
+	new->space_after = next->space_after;
+	*next_ptr = next->next;
+	return (new);
+}
+
+static t_token	*copy_token(t_token *tmp, t_token **next_ptr)
+{
+	t_token	*new;
+
+	new = token_new(tmp->token_type, ft_strdup(tmp->value),
+			tmp->single_quoted, tmp->double_quoted);
+	new->space_after = tmp->space_after;
+	*next_ptr = tmp->next;
+	return (new);
+}
+
+t_token	*create_tokens_without_space(t_token *tokens)
+{
+	t_token	*new_tokens;
+	t_token	*tmp;
+	t_token	*next;
+	t_token	*new;
 
 	new_tokens = NULL;
 	tmp = tokens;
 	while (tmp)
 	{
 		next = tmp->next;
-		if (next && is_same_type(tmp, next) && is_same_quote(tmp, next) && !tmp->space_after)
-		{
-			joined_value = join_token_values(tmp, next);
-			new = token_new(tmp->token_type, joined_value, tmp->single_quoted, tmp->double_quoted);
-			tmp = next->next;  // Skip the next token since we've joined it
-		}
+		if (next && is_same_type(tmp, next)
+			&& is_same_quote(tmp, next) && !tmp->space_after)
+			new = join_tokens(tmp, next, &tmp);
 		else
-		{
-			new = token_new(tmp->token_type, ft_strdup(tmp->value), tmp->single_quoted, tmp->double_quoted);
-			tmp = next;
-		}
-		new->space_after = tmp->space_after;
+			new = copy_token(tmp, &tmp);
 		token_addback(&new_tokens, new);
 	}
+	free_all_token(tokens);
 	return (new_tokens);
 }
 
@@ -154,14 +171,14 @@ static void	handle_dollar_sign(t_all *all, char *word, int *i,
 		expansion = expand_status(all, i);
 	else if (ft_isdigit(word[*i + 1]))
 		expansion = expand_digit(i);
-	else if (ft_isalnum(word[*i + 1]) || !ft_isspecial(word[*i + 1]))
+	else if (ft_isalnum(word[*i + 1]) || (!ft_isspecial(word[*i + 1] || word[*i + 1] == '_')))
 	{
 		expansion = expand_variable(all, word, i);
 		*new_word = ft_strjoin(*new_word, expansion, 1, 1);
 	}
 	else
 	{
-		if (ft_isspecial(word[*i + 1]) && word[*i + 2])
+		if (ft_isspecial(word[*i + 1] && word[*i + 1] != '_') && word[*i + 2])
 		{
 			(*i) += 2;
 			*new_word = ft_strjoinchar(*new_word, word[(*i)++]);
@@ -171,7 +188,7 @@ static void	handle_dollar_sign(t_all *all, char *word, int *i,
 	}
 }
 
-char	*expand_word(t_all *all, char *word)
+char	*expand_word(t_all *all, char *word, t_token *tmp)
 {
 	int		i;
 	char	*new_word;
@@ -181,36 +198,63 @@ char	*expand_word(t_all *all, char *word)
 	while (word[i])
 	{
 		if (word[i] == '$' && word[i + 1])
+		{
 			handle_dollar_sign(all, word, &i, &new_word);
+			tmp->expand_wildcard = false;
+		}
 		else
+		{
 			new_word = ft_strjoinchar(new_word, word[i++]);
+			tmp->expand_wildcard = true;
+		}
 	}
 	return (new_word);
 }
 
+static t_token	*handle_token_expansion(t_all *all, t_token *tmp)
+{
+	t_token	*new;
+	char	*expanded_value;
+
+	if (tmp->token_type == WORD && !tmp->single_quoted)
+	{
+		expanded_value = expand_word(all, tmp->value, tmp);
+		if (!expanded_value)
+			return (NULL);
+		new = token_new(tmp->token_type, expanded_value,
+				tmp->single_quoted, tmp->double_quoted);
+		new->expand_wildcard = tmp->expand_wildcard;
+	}
+	else
+	{
+		new = token_new(tmp->token_type, ft_strdup(tmp->value),
+			tmp->single_quoted, tmp->double_quoted);
+		new->expand_wildcard = true;
+	}
+	return (new);
+}
+
 t_token	*expand_tokens(t_all *all, t_token *tokens)
 {
-	t_token *tmp;
-	t_token *expanded_tokens;
-	t_token *new;
+	t_token	*tmp;
+	t_token	*expanded_tokens;
+	t_token	*new;
 
-	if (!tokens)
-		return (NULL);
-	tmp = tokens;
 	expanded_tokens = NULL;
+	tmp = tokens;
 	while (tmp)
 	{
-		if (tmp->token_type == WORD && !tmp->single_quoted)
+		new = handle_token_expansion(all, tmp);
+		if (!new)
 		{
-			new = token_new(tmp->token_type, expand_word(all, tmp->value), tmp->single_quoted, tmp->double_quoted);
+			free_all_token(expanded_tokens);
+			free_all_token(tokens);
+			return (NULL);
 		}
-		else
-			new = token_new(tmp->token_type, ft_strdup(tmp->value), tmp->single_quoted, tmp->double_quoted);
-		new->space_after = tmp->space_after;	
-		tmp = tmp->next;
+		new->space_after = tmp->space_after;
 		token_addback(&expanded_tokens, new);
+		tmp = tmp->next;
 	}
-	free_all_token(tokens);
 	return (expanded_tokens);
 }
 
@@ -243,17 +287,13 @@ t_token	*expand_tokens(t_all *all, t_token *tokens)
 // 	return (expanded_tokens);
 // }
 
-void create_expand_tokens(t_all *all, t_token *tokens)
+t_token *create_expand_tokens(t_all *all, t_token *tokens)
 {
-	t_token *tmp;
 	t_token *expanded_tokens;
 
-	tmp = create_tokens_without_space(tokens);
-	free_all_token(tokens);
-	expanded_tokens = expand_tokens(all, tmp);
-	tmp = create_tokens_without_space(expanded_tokens);
-	// free_all_token(expanded_tokens);
-	// expanded_tokens = expand_wildcard(all, tmp);
-	
-	all->tokens = expanded_tokens;
+	if (!tokens)
+		return (NULL);
+	expanded_tokens = create_tokens_without_space(tokens);
+	expanded_tokens = expand_tokens(all, expanded_tokens);
+	return (expanded_tokens);
 }

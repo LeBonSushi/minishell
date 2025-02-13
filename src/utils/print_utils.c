@@ -54,6 +54,7 @@ void	print_tokens(t_token *tokens)
 			printf("ERROR\n%s\n", tmp->value);
 		printf("single quoted: %d\n", tmp->single_quoted);
 		printf("double quoted: %d\n\n", tmp->double_quoted);
+		printf("expand wildcard: %s\n", tmp->expand_wildcard ? "true" : "false");
 		printf("space after: %s\n\n", tmp->space_after ? "true" : "false");
 		tmp = tmp->next;
 	}

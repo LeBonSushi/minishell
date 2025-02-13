@@ -10,6 +10,7 @@ SRC		:=	src/minishell.c \
 \
 			src/parsing/tokenizer.c \
 			src/parsing/expander.c \
+			src/parsing/wildcard.c \
 \
 			src/utils/header.c \
 			src/utils/free.c \
