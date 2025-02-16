@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 22:33:53 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/15 02:44:18 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/17 00:39:16 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ t_token	*expand_wildcard(t_token *tokens)
 		return (NULL);
 	tmp = tokens;
 	expanded_tokens = NULL;
+	print_tokens(tokens);
 	while (tmp)
 	{
 		if (is_expandable_wildcard(tmp))
