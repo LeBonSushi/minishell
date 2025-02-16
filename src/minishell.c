@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/13 16:17:32 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/15 01:48:23 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,12 +77,6 @@ int	main(int ac, char **av, char **envp)
 	// char	*keys[] = {NULL};
 
 	init_all(&all, ac, av, envp);
-	// verify_env(&all);
-	// printf("\n\n\n\n");
-	// export_builtin(&all, NULL);
-	// print_header();
-	// env_builtin(&all);
-	// env_builtin(&all);
 	minishell_loop(&all);
 	free_all(&all);
 	return (0);

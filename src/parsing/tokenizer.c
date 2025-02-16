@@ -56,6 +56,8 @@ t_token	*verif_and_edit_operator(char **str)
 	token = NULL;
 	if (**str == ';')
 		edit_token(&token, SEMICOLON, ft_strdup(";"));
+	else if (**str == '~')
+		edit_token(&token, TILDE, ft_strdup("~"));
 	else if (**str == '|')
 	{
 		if (*(*str + 1) == '|' && (*str)++)
@@ -232,13 +234,22 @@ bool	manage_expansion_error(t_all *all, t_token *token)
 	{
 		while (token->value[i])
 		{
-			if (token->value[i] == '$' && is_error_expansion_char(token->value[i + 1]) && !token->value[i + 2])
+			if ((token->value[i] == '$' || token->value[i] == '~') && is_error_expansion_char(token->value[i + 1]) && !token->value[i + 2])
 			{
 				all->status = 2;
 				printf("ministress: syntax error near unexpected token `%c\'\n", token->value[i + 1]);
 				return (true);
 			}
 			i++;
+		}
+	}
+	else if (token->token_type == TILDE && token->next)
+	{
+		if (!ft_strcmp(token->next->value, ")") || !ft_strcmp(token->next->value, "("))
+		{
+			all->status = 2;
+			printf("ministress: syntax error near unexpected token `%s\'\n", token->next->value);
+			return (true);
 		}
 	}
 	return (false);

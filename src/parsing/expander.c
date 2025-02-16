@@ -6,17 +6,17 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/13 16:23:16 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/15 02:42:29 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-bool is_same_type(t_token *token, t_token *token_to_compare)
+bool is_same_type(t_token *token, t_token *token_to_compare, t_token_type type)
 {
 	if (!token || !token_to_compare)
 		return (false);
-	if (token->token_type == token_to_compare->token_type)
+	if (token->token_type == type && token_to_compare->token_type == type)
 		return (true);
 	return (false);
 }
@@ -41,7 +41,7 @@ char *join_token_values(t_token *first, t_token *second)
 	return (joined);
 }
 
-static t_token	*join_tokens(t_token *tmp, t_token *next, t_token **next_ptr)
+t_token	*join_tokens(t_token *tmp, t_token *next, t_token **next_ptr)
 {
 	t_token	*new;
 	char	*joined_value;
@@ -54,7 +54,7 @@ static t_token	*join_tokens(t_token *tmp, t_token *next, t_token **next_ptr)
 	return (new);
 }
 
-static t_token	*copy_token(t_token *tmp, t_token **next_ptr)
+t_token	*copy_token(t_token *tmp, t_token **next_ptr)
 {
 	t_token	*new;
 
@@ -77,7 +77,7 @@ t_token	*create_tokens_without_space(t_token *tokens)
 	while (tmp)
 	{
 		next = tmp->next;
-		if (next && is_same_type(tmp, next)
+		if (next && is_same_type(tmp, next, WORD)
 			&& is_same_quote(tmp, next) && !tmp->space_after)
 			new = join_tokens(tmp, next, &tmp);
 		else
@@ -137,7 +137,7 @@ char	*ft_strjoinchar(const char *s1, const char c)
 	return (str);
 }
 
-static void	skip_variable_chars(char *word, int *i, int start)
+void	skip_variable_chars(char *word, int *i, int start)
 {
 	while (word[*i] && (ft_isalnum(word[*i]) || ft_isspecial(word[*i])))
 	{
@@ -162,7 +162,7 @@ char	*expand_variable(t_all *all, char *word, int *i)
 	return (value);
 }
 
-static void	handle_dollar_sign(t_all *all, char *word, int *i,
+void	handle_dollar_sign(t_all *all, char *word, int *i,
 	char **new_word)
 {
 	char	*expansion;
@@ -197,7 +197,7 @@ char	*expand_word(t_all *all, char *word, t_token *tmp)
 	new_word = ft_strdup("");
 	while (word[i])
 	{
-		if (word[i] == '$' && word[i + 1] && word[i + 1] != '*')
+		if (word[i] == '$' && word[i + 1])
 		{
 			handle_dollar_sign(all, word, &i, &new_word);
 			tmp->expand_wildcard = false;
@@ -221,7 +221,7 @@ char	*expand_word(t_all *all, char *word, t_token *tmp)
 	return (new_word);
 }
 
-static t_token	*handle_token_expansion(t_all *all, t_token *tmp)
+t_token	*handle_token_expansion(t_all *all, t_token *tmp)
 {
 	t_token	*new;
 	char	*expanded_value;
@@ -270,29 +270,35 @@ t_token	*expand_tokens(t_all *all, t_token *tokens)
 	return (expanded_tokens);
 }
 
-t_token	*merge_tokens(t_token *tokens)
+t_token *merge_tokens(t_token *tokens)
 {
-	t_token	*curr;
-	t_token	*tmp;
+    t_token *curr;
+    t_token *next;
+    bool     merged;
 
-	if (!tokens)
-		return (NULL);
-	curr = tokens;
-	while (curr && curr->next)
-	{
-		if (curr->token_type == WORD && curr->next->token_type == WORD
-			&& !curr->space_after && !curr->next->space_after)
-		{
-			tmp = curr->next;
-			curr->next = tmp->next;
-			curr->value = join_token_values(curr, tmp);
-			free(tmp->value);
-			free(tmp);
-		}
-		else
-			curr = curr->next;
-	}
-	return (tokens);
+    if (!tokens || !tokens->next)
+        return (tokens);
+    merged = 0;
+    curr = tokens;
+    while (curr && curr->next)
+    {
+        if (is_same_type(curr->next, curr, WORD) && !curr->space_after)
+        {
+            curr->value = join_token_values(curr, curr->next);
+            next = curr->next;
+            curr->next = curr->next->next;
+			curr->space_after = next->space_after;
+            free(next->value);
+            free(next);
+            merged = true;
+            break;
+        }
+        curr = curr->next;
+    }
+    if (merged)
+        return (merge_tokens(tokens));
+        
+    return (tokens);
 }
 
 
@@ -304,6 +310,7 @@ t_token *create_expand_tokens(t_all *all, t_token *tokens)
 		return (NULL);
 	expanded_tokens = create_tokens_without_space(tokens);
 	expanded_tokens = expand_tokens(all, expanded_tokens);
+	// print_tokens(expanded_tokens);
 	// printf("\n\n\nBEFORE MERGE\n\n");
 	// print_tokens(expanded_tokens);
 	// expanded_tokens = merge_tokens(expanded_tokens);

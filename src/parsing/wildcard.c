@@ -6,13 +6,13 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 22:33:53 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/13 16:06:43 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/15 02:44:18 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static char	*merge_wildcard_values(t_token *wildcard_tokens)
+char	*merge_wildcard_values(t_token *wildcard_tokens)
 {
 	t_token	*curr;
 	char	*merged;
@@ -37,7 +37,7 @@ static char	*merge_wildcard_values(t_token *wildcard_tokens)
 	return (merged);
 }
 
-static t_token	*create_regular_token(t_token *tmp)
+t_token	*create_regular_token(t_token *tmp)
 {
 	t_token	*new;
 	char	*str_dup;
@@ -53,7 +53,7 @@ static t_token	*create_regular_token(t_token *tmp)
 	return (new);
 }
 
-static t_token	*create_merged_wildcard_token(t_token *tmp)
+t_token	*create_merged_wildcard_token(t_token *tmp)
 {
 	t_token	*wildcard_tokens;
 	t_token	*new;
@@ -79,7 +79,7 @@ static t_token	*create_merged_wildcard_token(t_token *tmp)
 	return (new);
 }
 
-static bool	is_expandable_wildcard(t_token *token)
+bool	is_expandable_wildcard(t_token *token)
 {
 	if (token->token_type == WORD && ft_strchr(token->value, '*')
 		&& !token->double_quoted
@@ -101,12 +101,14 @@ t_token	*expand_wildcard(t_token *tokens)
 	while (tmp)
 	{
 		if (is_expandable_wildcard(tmp))
+		{
 			new = create_merged_wildcard_token(tmp);
+			edit_token(&new, WORD, new->value);
+		}
 		else
 			new = create_regular_token(tmp);
 		if (!new)
 			return (free_all_token(expanded_tokens), NULL);
-		edit_token(&new, WORD, new->value);
 		token_addback(&expanded_tokens, new);
 		tmp = tmp->next;
 	}
@@ -114,7 +116,7 @@ t_token	*expand_wildcard(t_token *tokens)
 }
 
 
-static bool	is_hidden_valid(char *str, char *pattern)
+bool	is_hidden_valid(char *str, char *pattern)
 {
 	if (*str == '.' && *pattern != '.')
 		return (false);
@@ -139,7 +141,7 @@ bool	ft_match_pattern(char *str, char *pattern)
 	return (false);
 }
 
-static void	sort_matches(char **matches, int count)
+void	sort_matches(char **matches, int count)
 {
 	int		i;
 	int		j;
@@ -163,7 +165,7 @@ static void	sort_matches(char **matches, int count)
 	}
 }
 
-static t_token	*create_tokens_from_matches(char **matches,
+t_token	*create_tokens_from_matches(char **matches,
 				t_token *to_expand)
 {
 	t_token	*expanded_tokens;
@@ -188,7 +190,7 @@ static t_token	*create_tokens_from_matches(char **matches,
 	return (expanded_tokens);
 }
 
-static char	**store_matches(DIR *dir, t_token *to_expand, int *match_count)
+char	**store_matches(DIR *dir, t_token *to_expand, int *match_count)
 {
 	struct dirent	*entry;
 	char			**matches;
