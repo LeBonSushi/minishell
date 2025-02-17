@@ -56,6 +56,10 @@ t_token	*verif_and_edit_operator(char **str)
 	token = NULL;
 	if (**str == ';')
 		edit_token(&token, SEMICOLON, ft_strdup(";"));
+	else if (**str == '(')
+		edit_token(&token, OPEN_PARENTHESIS, ft_strdup("("));
+	else if (**str == ')')
+		edit_token(&token, CLOSE_PARENTHESIS, ft_strdup(")"));
 	else if (**str == '~')
 		edit_token(&token, TILDE, ft_strdup("~"));
 	else if (**str == '|')

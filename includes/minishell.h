@@ -20,6 +20,8 @@
 # include <dirent.h>
 # include <stdlib.h>
 # include <stdbool.h>
+# include <signal.h>
+# include <fcntl.h>
 # include <string.h>
 # include <errno.h>
 # include <strings.h>
@@ -40,6 +42,8 @@ typedef enum e_token_type
 	WILD_CARD,
 	OR,
 	AND,
+	OPEN_PARENTHESIS,
+	CLOSE_PARENTHESIS,
 	TILDE,
 }	t_token_type;
 
@@ -178,7 +182,7 @@ t_string_list	*ft_lstnew(char *content);
 t_string_list	*ft_lstlast(t_string_list *lst);
 void	ft_lstadd_back(t_string_list **lst, t_string_list *new);
 int		ft_lstsize(t_string_list *lst);
-void	ft_lstclear(t_string_list **lst, void (*del)(void *));
+void	ft_strclear(t_string_list **lst);
 
 //---------------------DESTROY---------------------------
 
@@ -199,5 +203,7 @@ char	*pwd_builtin_char();
 //---------------------PARSING---------------------------
 
 void	minishell_loop(t_all *all);
+void	free_tree(t_tree *tree);
+void    process_parenthesis(t_token *tokens, t_all *all);
 
 #endif

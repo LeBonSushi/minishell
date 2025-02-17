@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 02:45:16 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/15 02:47:19 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/17 08:50:56 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,19 @@ void	ft_stradd_back(t_string_list **lst, t_string_list *new)
 	}
 	last = ft_strlast(*lst);
 	last->next = new;
+}
+
+void	ft_strclear(t_string_list **lst)
+{
+	t_string_list	*tmp;
+
+	if (!lst || !*lst)
+		return ;
+	while (*lst)
+	{
+		tmp = (*lst)->next;
+		free((*lst)->str);
+		free(*lst);
+		*lst = tmp;
+	}
 }
