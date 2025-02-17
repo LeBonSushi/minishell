@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 02:45:16 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/17 08:50:56 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/17 23:18:35 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,19 @@ t_string_list	*ft_strlast(t_string_list *lst)
 	while (last->next)
 		last = last->next;
 	return (last);
+}
+
+void	free_str_list(t_string_list *lst)
+{
+	t_string_list	*tmp;
+
+	while (lst)
+	{
+		tmp = lst->next;
+		free(lst->str);
+		free(lst);
+		lst = tmp;
+	}
 }
 
 void	ft_stradd_back(t_string_list **lst, t_string_list *new)

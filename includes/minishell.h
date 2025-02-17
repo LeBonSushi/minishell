@@ -115,6 +115,12 @@ char	**from_list_to_tab(t_env	*list);
 
 //---------------------ENV-------------------------------
 
+
+void	ft_stradd_back(t_string_list **lst, t_string_list *new);
+t_string_list	*ft_strnew(char *content, t_redir_type redir_type);
+t_string_list	*ft_strlast(t_string_list *lst);
+void	free_str_list(t_string_list *lst);
+
 t_env	*env_new(char *key, char *value);
 t_env	*env_get_last(t_env	*env);
 void	env_addback(t_env **env, t_env *new);
@@ -126,6 +132,7 @@ t_env	*env_create_sorted(t_env *env);
 
 //---------------------TOKENS----------------------------
 
+char		*from_tokens_to_str(t_token *tokens);
 bool			is_operator(char *str);
 bool			is_quote(char c);
 bool			is_quotes_closed(char *str);
