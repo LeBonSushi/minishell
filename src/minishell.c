@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/17 23:18:20 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/17 23:20:08 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,44 +96,49 @@ void	delete_char_from_str(char **str)
 	*str = tmp;
 }
 
-void	ft_parsing(char *str)
+char	*ft_parsing(char *line)
 {
 	int	i;
-	t_tree	*command_tree;
 	int	count;
-	int start;
-
-	if (!str)
-		return ;
+	int	start;
+	pid_t	pid;
+	
+	if (!line)
+		return (NULL);
 	i = 0;
 	count = 0;
-	(void) command_tree;
-	start = 0;
-	while (str[i])
+	while (line[i])
 	{
-		if (str[i] == '(')
+		while (ft_isspace(line[i]))
+			i++;
+		if (line[i] == '(')
 		{
-			count++;
-			if (count == 1)
+			if (count == 0)
 				start = i;
+			count++;
 		}
-		else if (str[i] == ')')
+		if (line[i] == ')')
 		{
 			count--;
 			if (count == 0)
 			{
-				ft_parsing(ft_substr(str, start + 1, i - start - 1));
-				char *test = ft_substr(str, start + 1, i - start - 1);
-				ft_printf("%s\n", test);
-				free(test);
+				pid = fork();
+				if (pid == -1)
+					exit(1);
+				if (pid == 0)
+					ft_parsing(ft_substr(line, start + 1, i - start - 1));
+				else
+					waitpid(pid, NULL, 0);
 			}
 		}
 		i++;
 	}
-	if (count != 0)
+	i = 0;
+	while (line[i])
 	{
-		printf("ministress: syntax error near unexpected token `(`\n");
-		return ;
+		if (line[i] == '|' || line[i] == ')')
+			delete_char_from_str(&line + i);
+		i++;
 	}
 }
 
