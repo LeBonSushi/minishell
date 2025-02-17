@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:00:14 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/17 23:19:48 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/17 23:20:26 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,23 +23,4 @@ bool	is_operator(char *str)
 	if (*str == '&' && *(str + 1) == '&')
 		return (true);
 	return (false);
-}
-
-char	*from_tokens_to_str(t_token *tokens)
-{
-	t_token	*tmp;
-	char	*str;
-	char	*tmp_str;
-
-	tmp = tokens;
-	str = ft_strdup("");
-	while (tmp)
-	{
-		tmp_str = ft_strjoin(str, tmp->value, 1, 0);
-		if (tmp->space_after)
-			tmp_str = ft_strjoin(tmp_str, " ", 1, 0);
-		str = tmp_str;
-		tmp = tmp->next;
-	}
-	return (str);
 }
