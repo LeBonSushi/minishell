@@ -95,6 +95,8 @@ t_token	*ft_parse_operator(char **str)
 
 	token = verif_and_edit_operator(str);
 	(*str)++;
+	if ((*str) && ft_isspace(**str))
+		token->space_after = true;
 	return (token);
 }
 

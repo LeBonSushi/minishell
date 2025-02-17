@@ -1,5 +1,5 @@
 CC		:= cc
-CFLAGS	:= -Werror -Wextra -Wall -I/opt/homebrew/opt/readline/include -g -fsanitize=address,leak
+CFLAGS	:= -Werror -Wextra -Wall -I/opt/homebrew/opt/readline/include -g3 #-fsanitize=address,leak
 LDFLAGS	:= -L/opt/homebrew/opt/readline/lib -lreadline
 
 # Name of the final executable
@@ -26,6 +26,7 @@ SRC		:=	src/minishell.c \
 \
 			src/preparation/env_prepare.c \
 			src/preparation/token_prepare.c \
+			src/preparation/string_lst_prepare.c\
 
 OBJ		:= $(SRC:.c=.o)
 

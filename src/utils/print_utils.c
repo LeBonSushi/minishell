@@ -52,6 +52,10 @@ void	print_tokens(t_token *tokens)
 			printf("AND\n%s\n", tmp->value);
 		else if (tmp->token_type == TILDE)
 			printf("TILDE\n%s\n", tmp->value);
+		else if (tmp->token_type == PARENTHESIS_OPEN)
+			printf("PARENTHESIS_OPEN\n%s\n", tmp->value);
+		else if (tmp->token_type == PARENTHESIS_CLOSE)
+			printf("PARENTHESIS_CLOSE\n%s\n", tmp->value);
 		else
 			printf("ERROR\n%s\n", tmp->value);
 		printf("single quoted: %d\n", tmp->single_quoted);
