@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/15 02:42:29 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/19 03:26:58 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,12 +262,20 @@ t_token	*expand_tokens(t_all *all, t_token *tokens)
 			return (NULL);
 		}
 		new->space_after = tmp->space_after;
-		if (!*new->value)
+		if (!*new->value && ft_strcmp(tmp->value, ""))
 			new->space_after = false;
 		token_addback(&expanded_tokens, new);
 		tmp = tmp->next;
 	}
 	return (expanded_tokens);
+}
+
+bool	is_redir(t_token *token)
+{
+	return (token->token_type == REDIR_IN
+		|| token->token_type == REDIR_OUT
+		|| token->token_type == REDIR_APPEND
+		|| token->token_type == REDIR_HEREDOC);
 }
 
 t_token *merge_tokens(t_token *tokens)
@@ -282,7 +290,7 @@ t_token *merge_tokens(t_token *tokens)
     curr = tokens;
     while (curr && curr->next)
     {
-        if (is_same_type(curr->next, curr, WORD) && !curr->space_after)
+        if (!is_redir(curr) && !curr->space_after && ft_strcmp(curr->value, ""))
         {
             curr->value = join_token_values(curr, curr->next);
             next = curr->next;
@@ -310,6 +318,7 @@ t_token *create_expand_tokens(t_all *all, t_token *tokens)
 		return (NULL);
 	expanded_tokens = create_tokens_without_space(tokens);
 	expanded_tokens = expand_tokens(all, expanded_tokens);
+	print_tokens(expanded_tokens);
 	// print_tokens(expanded_tokens);
 	// printf("\n\n\nBEFORE MERGE\n\n");
 	// print_tokens(expanded_tokens);

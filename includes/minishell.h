@@ -40,11 +40,6 @@ typedef enum e_token_type
 	REDIR_APPEND,
 	REDIR_HEREDOC,
 	WILD_CARD,
-	OR,
-	AND,
-	OPEN_PARENTHESIS,
-	CLOSE_PARENTHESIS,
-	TILDE,
 }	t_token_type;
 
 typedef enum e_redir_type
@@ -54,15 +49,6 @@ typedef enum e_redir_type
 	TYPE_REDIR_APPEND,
 	TYPE_REDIR_HEREDOC,
 }	t_redir_type;
-
-typedef enum e_node_type
-{
-	CMD = 1,
-	OPERATOR_PIPE,
-	OPERATOR_SEMICOLON,
-	OPERATOR_AND,
-	OPERATOR_OR,
-}	t_node_type;
 
 typedef struct s_env
 {
@@ -90,21 +76,10 @@ typedef struct s_string_list
 	struct s_string_list	*next;
 }	t_string_list;
 
-typedef struct s_tree
-{
-	t_node_type		node_type;
-	struct s_tree	*left;
-	struct s_tree	*right;
-	t_string_list	*args;
-	t_string_list	*redir_in_names;
-	t_string_list	*redir_out_names;
-}	t_tree;
-
 typedef struct s_all
 {
 	t_env	*env;
 	t_token	*tokens;
-	t_tree	*tree;
 	pid_t	pid;
 	int		status;
 }	t_all;
@@ -210,7 +185,6 @@ char	*pwd_builtin_char();
 //---------------------PARSING---------------------------
 
 void	minishell_loop(t_all *all);
-void	free_tree(t_tree *tree);
 void    process_parenthesis(t_token *tokens, t_all *all);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:00:14 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/17 23:20:26 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/19 02:43:13 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ bool	is_quote(char c)
 }
 bool	is_operator(char *str)
 {
-	if (*str == ';' || *str == '|' || *str == '<' || *str == '>' || *str == '~' || *str == '(' || *str == ')')
+	if (*str == ';' || *str == '|' || *str == '<' || *str == '>')
 		return (true);
 	if (*str == '&' && *(str + 1) == '&')
 		return (true);

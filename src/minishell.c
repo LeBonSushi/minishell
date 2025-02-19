@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/17 23:20:40 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/19 03:21:31 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ void	init_all(t_all *all, int ac, char **av, char **envp)
 	all->env = fill_env(envp);
 	all->status = 0;
 	all->tokens = NULL;
-	all->tree = NULL;
 }
 
 bool	env_empty(t_all *all)
@@ -83,63 +82,24 @@ char *join_parsed_tokens(t_token *tokens)
     return (result);
 }
 
-void	delete_char_from_str(char **str)
+t_token	*delete_empty_tokens(t_token *tokens)
 {
-	char *tmp;
-	int i;
+	t_token *curr;
+	t_token *prev;
+	t_token *next;
 
-	i = 0;
-	tmp = ft_strdup(*str + 1);
-	if (!tmp)
-		return ;
-	free(*str);
-	*str = tmp;
-}
-
-char	*ft_parsing(char *line)
-{
-	int	i;
-	int	count;
-	int	start;
-	pid_t	pid;
-	
-	if (!line)
-		return (NULL);
-	i = 0;
-	count = 0;
-	while (line[i])
+	curr = tokens;
+	prev = NULL;
+	while (curr)
 	{
-		while (ft_isspace(line[i]))
-			i++;
-		if (line[i] == '(')
-		{
-			if (count == 0)
-				start = i;
-			count++;
-		}
-		if (line[i] == ')')
-		{
-			count--;
-			if (count == 0)
-			{
-				pid = fork();
-				if (pid == -1)
-					exit(1);
-				if (pid == 0)
-					ft_parsing(ft_substr(line, start + 1, i - start - 1));
-				else
-					waitpid(pid, NULL, 0);
-			}
-		}
-		i++;
+		next = curr->next;
+		if (curr->value && !*curr->value && !curr->space_after)
+			delete_token(&tokens, curr);
+		else
+			prev = curr;
+		curr = next;
 	}
-	i = 0;
-	while (line[i])
-	{
-		if (line[i] == '|' || line[i] == ')')
-			delete_char_from_str(&line + i);
-		i++;
-	}
+	return (tokens);
 }
 
 void minishell_loop(t_all *all)
@@ -155,9 +115,10 @@ void minishell_loop(t_all *all)
 		add_history(line);
 		all->tokens = fill_tokens(line, all);
 		all->tokens = create_expand_tokens(all, all->tokens);
-		all->tokens = expand_wildcard(all->tokens);
 		all->tokens = merge_tokens(all->tokens);
-		// print_tokens(all->tokens);
+		all->tokens = expand_wildcard(all->tokens);
+		// all->tokens = delete_empty_tokens(all->tokens);
+		// all->tokens = merge_tokens(all->tokens);
 		free(line);
 		free_all_token(all->tokens);
 	}

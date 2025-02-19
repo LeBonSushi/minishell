@@ -34,6 +34,7 @@ t_token	*ft_parse_quoted(char **str, bool *sq, bool *dq)
 	if (**str != quote)
 		return (NULL);
 	space_after = (ft_isspace(*(*str + 1)));
+	printf("SPACE AFTER: %d\n", space_after);
 	token = token_new(WORD, ft_substr(start, 0, len),
 			*sq, *dq);
 	token->space_after = space_after;
@@ -56,24 +57,8 @@ t_token	*verif_and_edit_operator(char **str)
 	token = NULL;
 	if (**str == ';')
 		edit_token(&token, SEMICOLON, ft_strdup(";"));
-	else if (**str == '(')
-		edit_token(&token, OPEN_PARENTHESIS, ft_strdup("("));
-	else if (**str == ')')
-		edit_token(&token, CLOSE_PARENTHESIS, ft_strdup(")"));
-	else if (**str == '~')
-		edit_token(&token, TILDE, ft_strdup("~"));
 	else if (**str == '|')
-	{
-		if (*(*str + 1) == '|' && (*str)++)
-			edit_token(&token, OR, ft_strdup("||"));
-		else
-			edit_token(&token, PIPE, ft_strdup("|"));
-	}
-	else if (**str == '&')
-	{
-		if (*(*str + 1) == '&' && (*str)++)
-			edit_token(&token, AND, ft_strdup("&&"));
-	}
+		edit_token(&token, PIPE, ft_strdup("|"));
 	else if (**str == '<')
 	{
 		if (*(*str + 1) == '<' && (*str)++)
@@ -179,8 +164,7 @@ bool	is_redirect(t_token_type type)
 
 bool	manage_error_redir(t_all *all, t_token *token)
 {
-	if (is_redirect(token->token_type) 
-		|| token->token_type == AND || token->token_type == OR)
+	if (is_redirect(token->token_type))
 	{
 		if (!token->next)
 		{
@@ -217,22 +201,13 @@ bool	manage_expansion_error(t_all *all, t_token *token)
 	{
 		while (token->value[i])
 		{
-			if ((token->value[i] == '$' || token->value[i] == '~') && is_error_expansion_char(token->value[i + 1]) && !token->value[i + 2])
+			if ((token->value[i] == '$') && is_error_expansion_char(token->value[i + 1]) && !token->value[i + 2])
 			{
 				all->status = 2;
 				printf("ministress: syntax error near unexpected token `%c\'\n", token->value[i + 1]);
 				return (true);
 			}
 			i++;
-		}
-	}
-	else if (token->token_type == TILDE && token->next)
-	{
-		if (!ft_strcmp(token->next->value, ")") || !ft_strcmp(token->next->value, "("))
-		{
-			all->status = 2;
-			printf("ministress: syntax error near unexpected token `%s\'\n", token->next->value);
-			return (true);
 		}
 	}
 	return (false);
