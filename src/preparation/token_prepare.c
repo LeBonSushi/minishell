@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 05:02:03 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/19 02:49:16 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/19 05:27:33 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ t_token	*token_new(t_token_type token_type, char *value,
 	new->value = ft_strdup(value);
 	new->single_quoted = single_q;
 	new->double_quoted = double_q;
-	new->expand_wildcard = false;
 	new->space_after = true;
 	new->next = NULL;
 	return (new);

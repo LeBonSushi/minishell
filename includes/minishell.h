@@ -64,7 +64,6 @@ typedef struct s_token
 	bool			single_quoted;
 	bool			double_quoted;
 	bool			space_after;
-	bool			expand_wildcard;
 	char			*value;
 	struct s_token	*next;
 }	t_token;
@@ -141,7 +140,7 @@ void	handle_dollar_sign(t_all *all, char *word, int *i,
 t_token	*create_merged_wildcard_token(t_token *tmp);
 t_token	*handle_token_expansion(t_all *all, t_token *tmp);
 t_token	*expand_tokens(t_all *all, t_token *tokens);
-char	*expand_word(t_all *all, char *word, t_token *token);
+char	*expand_word(t_all *all, char *word);
 char	*expand_env(t_all *all, char *word, int *i);
 t_token	*create_tokens_without_space(t_token *tokens);
 t_token	*create_expand_tokens(t_all *all, t_token *tokens);

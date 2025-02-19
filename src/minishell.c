@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/19 03:21:31 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/19 05:26:54 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,9 +116,7 @@ void minishell_loop(t_all *all)
 		all->tokens = fill_tokens(line, all);
 		all->tokens = create_expand_tokens(all, all->tokens);
 		all->tokens = merge_tokens(all->tokens);
-		all->tokens = expand_wildcard(all->tokens);
-		// all->tokens = delete_empty_tokens(all->tokens);
-		// all->tokens = merge_tokens(all->tokens);
+		print_tokens(all->tokens);
 		free(line);
 		free_all_token(all->tokens);
 	}
