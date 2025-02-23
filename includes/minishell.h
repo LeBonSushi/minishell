@@ -128,16 +128,9 @@ t_token			*merge_tokens(t_token *tokens);
 void			print_tokens(t_token *tokens);
 
 //---------------------EXPANDER--------------------------
-bool	is_expandable_wildcard(t_token *token);
-bool	is_hidden_valid(char *str, char *pattern);
-void	sort_matches(char **matches, int count);
-t_token	*create_tokens_from_matches(char **matches,
-				t_token *to_expand);
-char	**store_matches(DIR *dir, t_token *to_expand, int *match_count);
 void	skip_variable_chars(char *word, int *i, int start);
 void	handle_dollar_sign(t_all *all, char *word, int *i,
 	char **new_word);
-t_token	*create_merged_wildcard_token(t_token *tmp);
 t_token	*handle_token_expansion(t_all *all, t_token *tmp);
 t_token	*expand_tokens(t_all *all, t_token *tokens);
 char	*expand_word(t_all *all, char *word);
@@ -147,13 +140,6 @@ t_token	*create_expand_tokens(t_all *all, t_token *tokens);
 bool	is_same_quote(t_token *token, t_token *token_to_compare);
 t_token	*create_regular_token(t_token *tmp);
 bool	is_same_type(t_token *token, t_token *token_to_compare, t_token_type type);
-t_token	*manage_wildcard(t_token *to_expand);
-
-//---------------------WILDCARD--------------------------
-
-t_token	*expand_wildcard(t_token *tokens);
-char	*merge_wildcard_values(t_token *wildcard_tokens);
-bool	ft_match_pattern(char *str, char *pattern);
 
 //---------------------INIT------------------------------
 
