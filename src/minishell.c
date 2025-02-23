@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/19 05:26:54 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/23 22:45:00 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void	init_all(t_all *all, int ac, char **av, char **envp)
 	(void)av;
 
 	all->env = fill_env(envp);
+	all->env_no_sorted = fill_env(envp);
 	all->status = 0;
 	all->tokens = NULL;
 }
@@ -36,18 +37,6 @@ bool	env_empty(t_all *all)
 	if (!env)
 		return (true);
 	return (false);
-}
-
-void	verify_env(t_all *all)
-{
-	char	*pwd = pwd_builtin_char();
-	char	*pwd_key = ft_strjoin("PWD=", pwd, 0, 1);
-	char	*keys[] = {"OLDPWD=", pwd_key,
-		"PROMPT_COMMAND=RETRN_VAL=$?;logger -p local6.debug\
-		\"$(history 1 | sed \"s/^[ ]*[0-9]\\+[ ]*//\" )\
-		[$RETRN_VAL]\"", "SHLVL=1", NULL};
-	if (env_empty(all))
-		export_builtin(all, keys);
 }
 
 char *join_parsed_tokens(t_token *tokens)
@@ -116,7 +105,8 @@ void minishell_loop(t_all *all)
 		all->tokens = fill_tokens(line, all);
 		all->tokens = create_expand_tokens(all, all->tokens);
 		all->tokens = merge_tokens(all->tokens);
-		print_tokens(all->tokens);
+		execute_builtins(all->tokens, &all->env, all);
+		//print_tokens(all->tokens);
 		free(line);
 		free_all_token(all->tokens);
 	}

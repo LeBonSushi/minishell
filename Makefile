@@ -3,30 +3,33 @@ CFLAGS	:= -Werror -Wextra -Wall -I/opt/homebrew/opt/readline/include -g3 #-fsani
 LDFLAGS	:= -L/opt/homebrew/opt/readline/lib -lreadline
 
 # Name of the final executable
-NAME	:= minishell
+NAME	:= m
 
 # All needed files
 SRC		:=	src/minishell.c \
 \
 			src/parsing/tokenizer.c \
 			src/parsing/expander.c \
-			src/parsing/wildcard.c \
 \
 			src/utils/header.c \
 			src/utils/free.c \
 			src/utils/print_utils.c \
 			src/utils/token_utils.c \
 \
-			src/builtins/env.c \
-			src/builtins/export.c \
-			src/builtins/unset.c \
-			src/builtins/echo.c \
-			src/builtins/pwd.c \
-			src/builtins/exit.c \
+			src/builtins/ft_env.c \
+			src/builtins/ft_export.c \
+			src/builtins/ft_unset.c \
+			src/builtins/ft_echo.c \
+			src/builtins/ft_cd.c \
+			src/builtins/ft_pwd.c \
+			src/builtins/ft_exit.c \
+			src/builtins/execute_builtins.c \
 \
 			src/preparation/env_prepare.c \
 			src/preparation/token_prepare.c \
 			src/preparation/string_lst_prepare.c \
+			
+\
 
 OBJ		:= $(SRC:.c=.o)
 

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   unset.c                                            :+:      :+:    :+:   */
+/*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/25 18:35:57 by macorso           #+#    #+#             */
-/*   Updated: 2025/01/27 16:04:30 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/22 02:54:33 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	unset_value(t_all *all, t_env *env_to_unset)
 	free_env(tmp);
 }
 
-void	unset_builtin(t_all *all, char **keys)
+void	ft_unset(t_all *all, char **keys)
 {
 	t_env	*env;
 	int		i;

@@ -125,6 +125,43 @@ char	*ft_getenv(t_all *all, char *key)
 	return (NULL);
 }
 
+void	update_env(t_env **env, char *name, char *value, bool overwrite)
+{
+	int len;
+	t_env *tmp;
+	t_env *new_node;
+	
+	if (!name || !value)
+		return;
+	len = ft_strlen(name);
+	tmp = *env;
+	while (tmp)
+	{
+		if (ft_strncmp(tmp->key, name, len) == 0 && tmp->key[len] == '\0')
+		{
+			if (!overwrite)
+				return;
+			free(tmp->value);
+			tmp->value = ft_strdup(value);
+			return ;
+		}
+		tmp = tmp->next;
+	}
+	new_node = malloc(sizeof(t_env));
+	if (!new_node)
+		return ;
+	new_node->key = ft_strdup(name);
+	new_node->value = ft_strdup(value);
+	new_node->next = NULL;
+	if (!(*env))
+	{
+		*env = new_node;
+		return ;
+	}
+	env_addback(env, new_node);
+	// ajouter un sort env; /////////////////////////////////////////////////////////
+}
+
 // a function that return a t_env* linked list
 t_env	*fill_env(char **envp)
 {

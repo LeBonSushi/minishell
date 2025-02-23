@@ -29,7 +29,7 @@ LIBC =		libc/ft_atoi.c					libc/ft_bzero.c					libc/ft_isspace.c	libc/ft_isalnum
 	
 ADDI =  	additional/ft_strjoin.c	additional/ft_strjoinchar.c			additional/ft_substr.c					additional/ft_strtrim.c			additional/ft_split.c		\
 				additional/ft_itoa.c					additional/ft_strmapi.c					additional/ft_striteri.c			additional/ft_putchar_fd.c		\
-				additional/ft_putstr_fd.c			additional/ft_putendl_fd.c				additional/ft_putnbr_fd.c
+				additional/ft_putstr_fd.c			additional/ft_putendl_fd.c				additional/ft_putnbr_fd.c			additional/ft_strcpy.c
 
 PRINTF = 	printf/srcs/ft_printf.c				printf/srcs/ft_printf_utils.c				printf/srcs/ft_print_hex.c		printf/srcs/ft_print_ptr.c		\
 				printf/srcs/ft_print_unsigned.c

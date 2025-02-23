@@ -1,19 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit.c                                             :+:      :+:    :+:   */
+/*   ft_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/30 01:38:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/01/30 01:43:22 by macorso          ###   ########.fr       */
+/*   Created: 2025/01/27 15:27:48 by macorso           #+#    #+#             */
+/*   Updated: 2025/02/22 03:45:31 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	exit_builtin(t_all *all)
+void	ft_pwd(void)
 {
-	printf("exit\n");
-	exit(all->status);
+	char	cwd[1024];
+
+	if (getcwd(cwd, sizeof(cwd)) == 0)
+		perror("pwd");
+	ft_putendl_fd(cwd, 1);
 }
