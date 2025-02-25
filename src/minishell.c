@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/24 08:08:59 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/02/25 10:59:23 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,9 +99,9 @@ void minishell_loop(t_all *all, char **envp)
 		all->tokens = fill_tokens(line, all);
 		all->tokens = create_expand_tokens(all, all->tokens);
 		all->tokens = merge_tokens(all->tokens);
+		print_tokens(all->tokens);
 		ft_redirection(all->tokens, all->env, envp);           //???
 		execute_builtins(all->tokens, &all->env, all);
-		//print_tokens(all->tokens);
 		free(line);
 		free_all_token(all->tokens);
 	}

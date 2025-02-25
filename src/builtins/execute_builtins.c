@@ -3,17 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   execute_builtins.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 01:58:22 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/02/22 03:28:11 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/02/25 11:00:57 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
 void	execute_builtins(t_token *tokens, t_env **env, t_all *all)
-{	
+{
+	if (!tokens)
+		return ;
 	if (!ft_strcmp(tokens->value, "echo"))
 		ft_echo(tokens);
 	else if (!ft_strcmp(tokens->value, "cd"))
