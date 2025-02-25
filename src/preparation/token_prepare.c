@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_prepare.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 05:02:03 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/19 05:27:33 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/24 02:51:37 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ t_token	*token_new(t_token_type token_type, char *value,
 	new->double_quoted = double_q;
 	new->space_after = true;
 	new->next = NULL;
+	new->prev = NULL;
 	return (new);
 }
 
@@ -42,4 +43,5 @@ void	token_addback(t_token **lst, t_token *new)
 	while (tmp->next)
 		tmp = tmp->next;
 	tmp->next = new;
+	new->prev = tmp;
 }

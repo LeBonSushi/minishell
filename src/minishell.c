@@ -6,17 +6,11 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/23 22:45:00 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/02/24 08:08:59 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-// void	init_all(t_all *all, int ac, char **av, char **envp)
-// {
-// 	(void)ac;
-// 	(void)av;
-// }
 
 void	init_all(t_all *all, int ac, char **av, char **envp)
 {
@@ -41,34 +35,34 @@ bool	env_empty(t_all *all)
 
 char *join_parsed_tokens(t_token *tokens)
 {
-    t_token *curr;
-    char *result;
-    char *tmp;
+	t_token *curr;
+	char *result;
+	char *tmp;
 
-    if (!tokens)
-        return (ft_strdup(""));
-    
-    result = ft_strdup(tokens->value);
-    if (!result)
-        return (NULL);
-    
-    curr = tokens->next;
-    while (curr)
-    {
-        if (curr->space_after)
-        {
-            tmp = ft_strjoin(result, " ", 1, 0);
-            if (!tmp)
-                return (NULL);
-            result = tmp;
-        }
-        tmp = ft_strjoin(result, curr->value, 1, 0);
-        if (!tmp)
-            return (NULL);
-        result = tmp;
-        curr = curr->next;
-    }
-    return (result);
+	if (!tokens)
+		return (ft_strdup(""));
+	
+	result = ft_strdup(tokens->value);
+	if (!result)
+		return (NULL);
+	
+	curr = tokens->next;
+	while (curr)
+	{
+		if (curr->space_after)
+		{
+			tmp = ft_strjoin(result, " ", 1, 0);
+			if (!tmp)
+				return (NULL);
+			result = tmp;
+		}
+		tmp = ft_strjoin(result, curr->value, 1, 0);
+		if (!tmp)
+			return (NULL);
+		result = tmp;
+		curr = curr->next;
+	}
+	return (result);
 }
 
 t_token	*delete_empty_tokens(t_token *tokens)
@@ -91,9 +85,9 @@ t_token	*delete_empty_tokens(t_token *tokens)
 	return (tokens);
 }
 
-void minishell_loop(t_all *all)
+void minishell_loop(t_all *all, char **envp)
 {
-    char *line;
+	char *line;
 	(void)all;
 
 	while(1)
@@ -105,6 +99,7 @@ void minishell_loop(t_all *all)
 		all->tokens = fill_tokens(line, all);
 		all->tokens = create_expand_tokens(all, all->tokens);
 		all->tokens = merge_tokens(all->tokens);
+		ft_redirection(all->tokens, all->env, envp);           //???
 		execute_builtins(all->tokens, &all->env, all);
 		//print_tokens(all->tokens);
 		free(line);
@@ -118,7 +113,7 @@ int	main(int ac, char **av, char **envp)
 	// char	*keys[] = {NULL};
 
 	init_all(&all, ac, av, envp);
-	minishell_loop(&all);
+	minishell_loop(&all, envp);
 	free_all(&all);
 	return (0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/25 18:49:42 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/17 08:51:47 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/24 00:02:32 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	free_all_env(t_env *env)
 void	free_all_token(t_token *token)
 {
 	t_token	*next;
-
+	
 	if (!token)
 		return ;
 	while (token)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/19 05:28:51 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/24 22:16:57 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ bool is_same_type(t_token *token, t_token *token_to_compare, t_token_type type)
 		return (true);
 	return (false);
 }
-
 bool is_same_quote(t_token *token, t_token *token_to_compare)
 {
 	if (!token || !token_to_compare)
@@ -262,33 +261,33 @@ bool	is_redir(t_token *token)
 
 t_token *merge_tokens(t_token *tokens)
 {
-    t_token *curr;
-    t_token *next;
-    bool     merged;
+	t_token *curr;
+	t_token *next;
+	bool     merged;
 
-    if (!tokens || !tokens->next)
-        return (tokens);
-    merged = 0;
-    curr = tokens;
-    while (curr && curr->next)
-    {
-        if (!is_redir(curr) && !curr->space_after && ft_strcmp(curr->value, ""))
-        {
-            curr->value = join_token_values(curr, curr->next);
-            next = curr->next;
-            curr->next = curr->next->next;
+	if (!tokens || !tokens->next)
+		return (tokens);
+	merged = 0;
+	curr = tokens;
+	while (curr && curr->next)
+	{
+		if (!is_redir(curr) && !is_redir(curr->next) && !curr->space_after && ft_strcmp(curr->value, ""))
+		{
+			curr->value = join_token_values(curr, curr->next);
+			next = curr->next;
+			curr->next = curr->next->next;
 			curr->space_after = next->space_after;
-            free(next->value);
-            free(next);
-            merged = true;
-            break;
-        }
-        curr = curr->next;
-    }
-    if (merged)
-        return (merge_tokens(tokens));
-        
-    return (tokens);
+			free(next->value);
+			free(next);
+			merged = true;
+			break;
+		}
+		curr = curr->next;
+	}
+	if (merged)
+		return (merge_tokens(tokens));
+		
+	return (tokens);
 }
 
 

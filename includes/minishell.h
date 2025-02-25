@@ -69,6 +69,7 @@ typedef struct s_env
 	char			*key; // name before the = sign
 	char			*value; // name after the = sign
 	struct s_env	*next;
+	int				count;
 }	t_env;
 
 typedef struct s_env_no_sorted
@@ -87,6 +88,8 @@ typedef struct s_token
 	bool			expand_wildcard;
 	char			*value;
 	struct s_token	*next;
+	struct s_token	*prev;
+	char			*new_value;
 }	t_token;
 
 typedef struct s_string_list
@@ -118,7 +121,6 @@ typedef struct s_all
 
 void	print_header(void);
 void	print_tab(char **tab);
-char	**from_list_to_tab(t_env	*list);
 
 //---------------------ENV-------------------------------
 
@@ -222,7 +224,7 @@ bool	find_egal_in_token(char *str);
 
 //---------------------PARSING---------------------------
 
-void	minishell_loop(t_all *all);
+void	minishell_loop(t_all *all, char **envp);
 void	free_tree(t_tree *tree);
 
 //---------------------CLEAR---------------------------
@@ -230,6 +232,8 @@ void	free_tree(t_tree *tree);
 void	clear_terminal(void);
 
 //---------------------UTILS---------------------------
-void	verify_env(t_all *all);
+
+//---------------------REDIRECTION---------------------------
+void	ft_redirection(t_token *token, t_env *env, char **envp);
 
 #endif

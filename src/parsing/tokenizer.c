@@ -34,7 +34,7 @@ t_token	*ft_parse_quoted(char **str, bool *sq, bool *dq)
 	if (**str != quote)
 		return (NULL);
 	space_after = (ft_isspace(*(*str + 1)));
-	printf("SPACE AFTER: %d\n", space_after);
+	//printf("SPACE AFTER: %d\n", space_after);
 	token = token_new(WORD, ft_substr(start, 0, len),
 			*sq, *dq);
 	token->space_after = space_after;
