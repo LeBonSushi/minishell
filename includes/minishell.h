@@ -80,9 +80,17 @@ typedef struct s_token
 	bool			expand_wildcard;
 	char			*value;
 	struct s_token	*next;
-	struct s_token	*prev;
-	char			*new_value;
 }	t_token;
+
+typedef struct s_cmd
+{
+	t_token	*tokens;
+	pid_t	pid;
+	char	*path;
+	int		infile_fd;
+	int		outfile_fd;
+	struct s_cmd	*next;
+}	t_cmd;
 
 typedef struct s_string_list
 {
@@ -99,6 +107,7 @@ typedef struct s_all
 	pid_t	pid;
 	t_string_list	*redir_in_names;
 	t_string_list	*redir_out_names;
+	t_cmd			*cmds;
 	int		status;
 }	t_all;
 
@@ -209,6 +218,12 @@ bool	find_egal_in_token(char *str);
 
 void	minishell_loop(t_all *all, char **envp);
 
+//------------------------CMDS-------------------------
+
+t_cmd	*create_cmdlist(t_token *token);
+t_cmd	*cmd_new(t_token	*tokens, char *path);
+void	cmd_addback(t_cmd **cmd, t_cmd *new);
+
 //---------------------CLEAR---------------------------
 
 void	clear_terminal(void);
@@ -218,6 +233,7 @@ void	clear_terminal(void);
 bool	is_redir(t_token *token);
 void	print_list(t_string_list *list);
 void	delete_token2(t_token **tokens, t_token *token_to_del);
+void	debug_print_cmdlist(t_cmd *cmd_list);
 //---------------------REDIRECTION---------------------------
 
 void	ft_redirection(t_all *all, t_token *token);

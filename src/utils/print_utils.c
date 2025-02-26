@@ -74,3 +74,32 @@ void	print_tokens(t_token *tokens)
 		tmp = tmp->next;
 	}
 }
+
+void	debug_print_cmdlist(t_cmd *cmd_list)
+{
+	t_cmd	*curr;
+	int		cmd_num;
+
+	if (!cmd_list)
+	{
+		printf("Command list is empty\n");
+		return ;
+	}
+	cmd_num = 1;
+	curr = cmd_list;
+	while (curr)
+	{
+		printf("Command %d:\n", cmd_num++);
+		printf("  Path: %s\n", curr->path ? curr->path : "(null)");
+		printf("  PID: %d\n", curr->pid);
+		printf("  File descriptors: in=%d, out=%d\n", 
+			curr->infile_fd, curr->outfile_fd);
+		printf("  Tokens:\n");
+		if (curr->tokens)
+			print_tokens(curr->tokens);
+		else
+			printf("    No tokens\n");
+		printf("\n");
+		curr = curr->next;
+	}
+}

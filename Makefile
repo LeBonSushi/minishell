@@ -28,8 +28,10 @@ SRC		:=	src/minishell.c \
 			src/preparation/env_prepare.c \
 			src/preparation/token_prepare.c \
 			src/preparation/string_lst_prepare.c \
+			src/preparation/cmd_prepare.c \
 \
 			src/exec/redirections.c \
+			src/exec/prepare_exec.c \
 \
 
 OBJ		:= $(SRC:.c=.o)
