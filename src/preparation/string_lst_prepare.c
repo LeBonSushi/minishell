@@ -3,23 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   string_lst_prepare.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 02:45:16 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/17 23:18:35 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/25 23:05:12 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-t_string_list	*ft_strnew(char *content, t_redir_type redir_type)
+t_string_list	*ft_strnew(char *content, t_token_type redir_type)
 {
 	t_string_list	*new;
 
 	new = (t_string_list *)malloc(sizeof(t_string_list));
 	if (!new)
 		return (NULL);
-	new->str = content;
+	new->str = ft_strdup(content);
 	new->redir_type = redir_type;
 	new->next = NULL;
 	return (new);

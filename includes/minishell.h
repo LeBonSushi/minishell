@@ -47,14 +47,6 @@ typedef enum e_token_type
 	TILDE,
 }	t_token_type;
 
-typedef enum e_redir_type
-{
-	TYPE_REDIR_IN = 1,
-	TYPE_REDIR_OUT,
-	TYPE_REDIR_APPEND,
-	TYPE_REDIR_HEREDOC,
-}	t_redir_type;
-
 typedef enum e_node_type
 {
 	CMD = 1,
@@ -95,27 +87,18 @@ typedef struct s_token
 typedef struct s_string_list
 {
 	char					*str;
-	t_redir_type			redir_type;
+	t_token_type			redir_type;
 	struct s_string_list	*next;
 }	t_string_list;
-
-typedef struct s_tree
-{
-	t_node_type		node_type;
-	struct s_tree	*left;
-	struct s_tree	*right;
-	t_string_list	*args;
-	t_string_list	*redir_in_names;
-	t_string_list	*redir_out_names;
-}	t_tree;
 
 typedef struct s_all
 {
 	t_env	*env;
 	t_env	*env_no_sorted;
 	t_token	*tokens;
-	t_tree	*tree;
 	pid_t	pid;
+	t_string_list	*redir_in_names;
+	t_string_list	*redir_out_names;
 	int		status;
 }	t_all;
 
@@ -129,7 +112,7 @@ void		update_env(t_env **env, char *name, char *val, bool overwrite);
 void		ft_stradd_back(t_string_list **lst, t_string_list *new);
 void		free_str_list(t_string_list *lst);
 char			*ft_getenv_value(t_env *env, char *key);
-t_string_list	*ft_strnew(char *content, t_redir_type redir_type);
+t_string_list	*ft_strnew(char *content, t_token_type redir_type);
 t_string_list	*ft_strlast(t_string_list *lst);
 
 t_env	*env_new(char *key, char *value);
@@ -225,7 +208,6 @@ bool	find_egal_in_token(char *str);
 //---------------------PARSING---------------------------
 
 void	minishell_loop(t_all *all, char **envp);
-void	free_tree(t_tree *tree);
 
 //---------------------CLEAR---------------------------
 
@@ -233,7 +215,12 @@ void	clear_terminal(void);
 
 //---------------------UTILS---------------------------
 
+bool	is_redir(t_token *token);
+void	print_list(t_string_list *list);
+void	delete_token2(t_token **tokens, t_token *token_to_del);
 //---------------------REDIRECTION---------------------------
-void	ft_redirection(t_token *token, t_env *env, char **envp);
+
+void	ft_redirection(t_all *all, t_token *token);
+// void	ft_redirection(t_token *token, t_env *env, char **envp);
 
 #endif

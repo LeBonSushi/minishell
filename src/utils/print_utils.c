@@ -24,6 +24,26 @@ void	print_tab(char **tab)
 	}
 }
 
+void	print_list(t_string_list *list)
+{
+	t_string_list *curr;
+
+	curr = list;
+	while (curr)
+	{
+		if (curr->redir_type == REDIR_IN)
+			printf("TYPE: REDIR_IN\n");
+		if (curr->redir_type == REDIR_OUT)
+			printf("TYPE: REDIR_OUT\n");
+		if (curr->redir_type == REDIR_APPEND)
+			printf("TYPE: REDIR_APPEND\n");
+		if (curr->redir_type == REDIR_HEREDOC)
+			printf("TYPE: REDIR_HEREDOC\n");
+		printf("%s\n", curr->str);
+		curr = curr->next;
+	}
+}
+
 void	print_tokens(t_token *tokens)
 {
 	t_token	*tmp;

@@ -168,7 +168,9 @@ bool	manage_error_redir(t_all *all, t_token *token)
 	{
 		if (!token->next)
 		{
-			all->status = 2;
+			printf("Avant écriture: all->status = %d\n", all->status);
+			all->status = 2; // ou 1
+			printf("Après écriture: all->status = %d\n", all->status);
 			ft_putstr_fd("ministress: syntax error near unexpected token `newline\'\n", 2);
 			return (true);
 		}
@@ -228,11 +230,37 @@ bool	is_valid_tokens(t_all *all, t_token *token)
 	return (true);
 }
 
+void	delete_token2(t_token **tokens, t_token *token_to_del)
+{
+	t_token	*tmp;
+	t_token	*prev;
+
+	if (!tokens || !*tokens || !token_to_del)
+		return;
+	tmp = *tokens;
+	prev = NULL;
+	while (tmp)
+	{
+		if (tmp == token_to_del)
+		{
+			if (prev)
+				prev->next = tmp->next;
+			else
+				*tokens = tmp->next;
+			return ;
+		}
+		prev = tmp;
+		tmp = tmp->next;
+	}
+}
+
 void	delete_token(t_token **tokens, t_token *token_to_del)
 {
 	t_token	*tmp;
 	t_token	*prev;
 
+	if (!tokens || !*tokens || !token_to_del)
+		return;
 	tmp = *tokens;
 	prev = NULL;
 	while (tmp)

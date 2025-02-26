@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/25 10:59:23 by macorso          ###   ########.fr       */
+/*   Updated: 2025/02/26 03:42:55 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,15 @@ void	init_all(t_all *all, int ac, char **av, char **envp)
 	(void)av;
 
 	all->env = fill_env(envp);
+	if (!all->env)
+		printf("Erreur: fill_env pour env a retourné NULL\n");
 	all->env_no_sorted = fill_env(envp);
+	if (!all->env_no_sorted)
+		printf("Erreur: fill_env pour env_no_sorted a retourné NULL\n");
 	all->status = 0;
 	all->tokens = NULL;
+	all->redir_in_names = NULL;
+	all->redir_in_names = NULL;
 }
 
 bool	env_empty(t_all *all)
@@ -89,6 +95,7 @@ void minishell_loop(t_all *all, char **envp)
 {
 	char *line;
 	(void)all;
+	(void)envp;
 
 	while(1)
 	{
@@ -96,11 +103,14 @@ void minishell_loop(t_all *all, char **envp)
 		if (!line || !*line)
 			continue ;
 		add_history(line);
+		all->redir_in_names = NULL;
+		all->redir_out_names = NULL;
 		all->tokens = fill_tokens(line, all);
 		all->tokens = create_expand_tokens(all, all->tokens);
 		all->tokens = merge_tokens(all->tokens);
 		print_tokens(all->tokens);
-		ft_redirection(all->tokens, all->env, envp);           //???
+		ft_redirection(all, all->tokens);           //???
+		print_tokens(all->tokens);
 		execute_builtins(all->tokens, &all->env, all);
 		free(line);
 		free_all_token(all->tokens);

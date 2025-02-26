@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 02:40:39 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/24 22:06:43 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/02/26 03:51:56 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,33 +81,8 @@ void	error(char *message, char **args, char *cmd, int exit_code)
 	if (exit_code != 0)
 		exit(exit_code);
 }
-/*char **env_to_array(t_env *env)
-{
-	int size = 0;
-	t_env *tmp = env;
-	while (tmp)
-	{
-		size++;
-		tmp = tmp->next;
-	}
 
-	char **env_array = malloc(sizeof(char *) * (size + 1));
-	if (!env_array)
-		return NULL;
-
-	tmp = env;
-	int i = 0;
-	while (tmp)
-	{
-		env_array[i] = 
-		tmp = tmp->next;
-		i++;
-	}
-	env_array[i] = NULL;  // Terminer le tableau par un NULL, comme un environnement classique
-	return env_array;
-}*/
-
-char	*join_path_cmd(char *path, char *cmd)
+/*char	*join_path_cmd(char *path, char *cmd)
 {
 	char	*path_with_slash;
 	char	*full_path;
@@ -185,20 +160,49 @@ void	ft_redirection_in(t_token *token, t_env *env, char **envp)
 		return;
 	}
 	current = token->prev->prev;
+	if (current)
+		args_count = 1;
 	while (current && current->prev && current->prev->token_type != PIPE)
 	{
 		args_count++;
 		current = current->prev;
 	}
+	if (args_count == 0)
+	{
+		printf("Erreur: Aucun argument pour la redirection\n");
+		return;
+	}
 	args = (char **)malloc(sizeof(char *) * (args_count + 1));
+	if (!args)
+	{
+    	printf("Erreur: Échec de l'allocation de args\n");
+    	return;
+	}
+	while (current->prev && current->prev->token_type != PIPE)
+		current = current->prev;
 	while (current && current->token_type != PIPE && current->token_type != REDIR_IN)
 	{
+		if (i >= args_count)
+		{
+			printf("Erreur: i (%d) dépasse args_count (%d)\n", i, args_count);
+			break;
+		}
 		args[i] = ft_strdup(current->value);
-		printf("args[%d] = %s\n", i, args[i]);
+		if (!args[i]) // Vérifier malloc
+		{
+			printf("Erreur: strdup a échoué pour args[%d]\n", i);
+			break;
+		}
 		current = current->next;
 		i++;
 	}
-	args[i] = 0;
+	args[i] = NULL;
+	if (!args[0])
+	{
+    	printf("Erreur: Commande introuvable\n");
+		free(args);
+    	return;
+	}
 	char *cmd_path = get_command_path(args[0], envp);
 	
 	int fd;
@@ -222,6 +226,7 @@ void	ft_redirection_in(t_token *token, t_env *env, char **envp)
 			exit(EXIT_FAILURE);  // Quitte le processus fils
 		}	
 		execve(cmd_path, &args[0], envp);
+		printf("GG\n");
 		printf("Redirection d'entrée effectuée dans le processus fils\n");
 		close(fd);
 		exit(EXIT_SUCCESS);
@@ -231,37 +236,125 @@ void	ft_redirection_in(t_token *token, t_env *env, char **envp)
 	
 }
 
-void	ft_redirection (t_token *token, t_env *env, char **envp)
+void	ft_redirection(t_token *token, t_env *env, char **envp)
 {
-	int i = 1;
 	t_token *cur = token;
 	
 	while (cur)
 	{
-		if (cur->token_type == REDIR_IN && cur->prev->token_type == WORD && cur->next && cur->next->token_type == WORD) // TYPE_REDIR_IN  <      //CUR == SYMBOLE
+		if (cur->token_type == REDIR_IN)
 		{
-			//printf("current que je donne a ft_direction: %s\n", cur->next->value);
-			ft_redirection_in(cur->next, env, envp);
-		}
-		else if (cur->token_type == REDIR_OUT)
-		{
+			if (!cur->prev || !cur->next)
+			{
+				printf("Erreur: Redirection mal formée\n");
+            	return;
+			}
+			if (cur->prev->token_type == WORD && cur->next->token_type == WORD) // TYPE_REDIR_IN  <      //CUR == SYMBOLE
+			{
+				ft_redirection_in(cur->next, env, envp);
+			}
+			else if (cur->token_type == REDIR_OUT)
+			{
 			
-		}
-		else if (cur->token_type == REDIR_APPEND)
-		{
+			}
+			else if (cur->token_type == REDIR_APPEND)
+			{
 			
-		}
-		else if (cur->token_type == REDIR_HEREDOC)
-		{
+			}
+			else if (cur->token_type == REDIR_HEREDOC)
+			{
 			
-		}
+			}
 		//printf("le token numero %d est de type: %d et il vaut %s\n", i, cur->token_type, cur->value);
+		}
 		cur = cur->next;
-		i++;
 	}
-	/*if (token->token_type == REDIR_IN) // TYPE_REDIR_IN
+}*/
+
+int	env_get_size(t_env *env)
+{
+	t_env	*curr;
+	int		i;
+
+	curr = env;
+	i = 0;
+	while (curr)
 	{
-		printf("Redirection d'entrée détectée\n");
-		printf("ici %d\n", token->token_type);
-	}*/
+		i++;
+		curr = curr->next;
+	}
+	return (i);
+}
+
+char **env_to_char(t_env *env)
+{
+	char	**env_tab;
+	t_env	*curr;
+	int		i;
+	
+	curr = env;
+	env_tab = malloc(sizeof(char *) * (env_get_size(env) + 1));
+	if (!env_tab)
+		return (NULL);
+	i = 0;
+	while (curr)
+	{
+		env_tab[i] = malloc(sizeof(char) * (ft_strlen(env->key) + ft_strlen(env->value) + 2));
+		env_tab[i] = ft_strjoin(curr->key, "=", 0, 0);
+		env_tab[i] = ft_strjoin(env_tab[i], curr->value, 1, 0);
+		i++;
+		curr = curr->next;
+	}
+	env_tab[i] = NULL;
+	return (env_tab);
+}
+void manage_redirections(t_all *all, t_token **token)
+{
+    if (!token || !*token || !(*token)->next)
+        return;
+    
+    /* Store redirection information before deleting tokens */
+    if ((*token)->token_type == REDIR_IN)
+    {
+        /* Add the filename (next token's value) to redir_in_names */
+        ft_stradd_back(&all->redir_in_names, ft_strnew((*token)->next->value, REDIR_IN));
+    }
+    else if ((*token)->token_type == REDIR_OUT || (*token)->token_type == REDIR_APPEND || (*token)->token_type == PIPE)
+    {
+        /* Add the filename (next token's value) to redir_out_names */
+        ft_stradd_back(&all->redir_out_names, ft_strnew((*token)->next->value, (*token)->token_type));
+    }
+    
+    /* Save the node after the ones to be deleted (next->next) */
+    t_token *next_next = (*token)->next->next;
+    
+    /* Delete the next token (the filename) */
+    delete_token(token, (*token)->next);
+    
+    /* Delete the current token (the redirection operator) */
+    delete_token(token, *token);
+    
+    /* Update token to point to what was previously next->next */
+    *token = next_next;
+}
+
+void ft_redirection(t_all *all, t_token *token)
+{
+    if (!token)
+        return;
+    
+    t_token *current = token;
+    while (current)
+    {
+        if ((is_redir(current) || current->token_type == PIPE) && current->next)
+        {
+            manage_redirections(all, &current);
+            // Don't advance current here - manage_redirections already updated it
+        }
+        else
+            current = current->next;
+    }
+    
+    print_list(all->redir_in_names);
+    print_list(all->redir_out_names);
 }
