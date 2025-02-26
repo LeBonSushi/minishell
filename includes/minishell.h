@@ -191,7 +191,7 @@ void	free_all(t_all *all);
 
 //--------------------BUILTINS---------------------------
 
-void	ft_unset(t_all *all, char **keys);
+void	ft_unset(t_token *tokens, t_env **env);
 void	ft_echo(t_token *tokens);
 void	ft_cd(t_token *tokens, t_env *env);
 void	ft_pwd(void);

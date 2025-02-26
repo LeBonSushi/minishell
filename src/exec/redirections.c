@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 02:40:39 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/26 03:51:56 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/02/26 08:45:45 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -312,29 +312,18 @@ void manage_redirections(t_all *all, t_token **token)
 {
     if (!token || !*token || !(*token)->next)
         return;
-    
-    /* Store redirection information before deleting tokens */
     if ((*token)->token_type == REDIR_IN)
     {
-        /* Add the filename (next token's value) to redir_in_names */
         ft_stradd_back(&all->redir_in_names, ft_strnew((*token)->next->value, REDIR_IN));
     }
     else if ((*token)->token_type == REDIR_OUT || (*token)->token_type == REDIR_APPEND || (*token)->token_type == PIPE)
     {
-        /* Add the filename (next token's value) to redir_out_names */
         ft_stradd_back(&all->redir_out_names, ft_strnew((*token)->next->value, (*token)->token_type));
     }
-    
-    /* Save the node after the ones to be deleted (next->next) */
     t_token *next_next = (*token)->next->next;
     
-    /* Delete the next token (the filename) */
-    delete_token(token, (*token)->next);
-    
-    /* Delete the current token (the redirection operator) */
-    delete_token(token, *token);
-    
-    /* Update token to point to what was previously next->next */
+    //delete_token(token, (*token)->next);
+    //delete_token(token, *token);
     *token = next_next;
 }
 
@@ -349,12 +338,10 @@ void ft_redirection(t_all *all, t_token *token)
         if ((is_redir(current) || current->token_type == PIPE) && current->next)
         {
             manage_redirections(all, &current);
-            // Don't advance current here - manage_redirections already updated it
         }
         else
             current = current->next;
     }
-    
-    print_list(all->redir_in_names);
-    print_list(all->redir_out_names);
+    //print_list(all->redir_in_names);
+    //print_list(all->redir_out_names);
 }

@@ -15,3 +15,25 @@ macorso
 si jai 2 token ou plus qui contiennent un * et que un d'eux est quoted je les reunis en un seul token et expand aucun des *
 
 si jamais token vide et que space after = false, supprimer le token
+
+
+Si on echoue a ouvrir un fichier dans une commande, on ne l execute pas au sein de la pipe + message d erreur comme quoi on a pas pu ouvrir.
+
+LE MINISTRESS qu on printf dans les message d erreurs on doit plutot recuperer le argv[0] et printf argv[0] au cas ou qqn change le nom du programme dans le makefile.
+
+
+TEST a faire:
+
+-env -i avant de lancer le minishell ca doit marcher
+
+- unset < et unset >    doit renvoyer une erreur
+
+- Tentative de suppression d'une variable en lecture seule (readonly):
+export VAR="value"
+readonly VAR="value"
+unset VAR
+declare -r VAR="readonly"  # Variable en lecture seule
+DOIT renvoyer une erreur
+
+- Tentative de suppression de variables internes système ou intégrées :
+ DOIT renvoyer un msg d erreur ? par exemple si on unset PATH, peu de commande marchent ensuite car on a plus acces au path pour les retrouver.

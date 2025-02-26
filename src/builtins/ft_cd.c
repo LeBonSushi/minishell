@@ -17,7 +17,6 @@ char *resolve_path(const char *path)
 	}
 	cwd_len = ft_strlen(cwd);
 	path_len = ft_strlen(path);
-
 	abs_path = malloc(cwd_len + path_len + 2);
 	if (!abs_path)
 		return(perror("malloc"), free(cwd), NULL);
@@ -25,7 +24,6 @@ char *resolve_path(const char *path)
 	abs_path[cwd_len] = '/';
 	ft_strcpy(abs_path + cwd_len + 1, path);
 	free(cwd);
-
 	return (abs_path);
 }
 char	*ft_getenv_value(t_env *env, char *key)
@@ -50,16 +48,16 @@ void	ft_cd(t_token *tokens, t_env *env)
 	if (!current)
 	{
 		path = ft_getenv_value(env, "HOME");
-		/*if (!path) // on supprime ? le home est init ?
-			return (ft_putstr_fd("cd: HOME not set\n", 2));*/
+		if (!path)
+			return (ft_putstr_fd("cd: HOME not set\n", 2));
 	}
-	else if (current && current->next) //si on a plus que 1 arg apres cd
+	else if (current && current->next)
 		return(ft_putstr_fd("cd: too many arguments\n", 2));
 	else if (ft_strcmp(current->value, "-") == 0)
 	{
 		path = ft_getenv_value(env, "OLDPWD");
-		/*if (!path) //je pense on peut supprimer on init le oldpwd au lancement du shell
-			return (ft_putstr_fd("cd: OLDPWD not set\n", 2));*/
+		if (!path)
+			return (ft_putstr_fd("cd: OLDPWD not set\n", 2));
 		ft_putendl_fd(path, 1);
 		resolved_path = resolve_path(path);
 		if (!resolved_path)

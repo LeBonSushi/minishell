@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   export.c                                           :+:      :+:    :+:   */
+/*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:43:10 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/22 02:41:33 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/02/26 09:02:39 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,14 +58,15 @@ void	ft_export(t_token *tokens, t_env **env)
 	char *value;
 	t_env *existing;
 	t_token *current;
+	t_env *env_sorted = *env;
 
 	if (!tokens || !env || !(*env))
 		return;
 	current = tokens->next;
 	if (!current)
 	{
-		*env = env_create_sorted(*env);
-		return (print_env (*env));                      //no args apres export
+		env_sorted = env_create_sorted(env_sorted);
+		return (print_env (env_sorted));                      //no args apres export
 	}
 	while (current)
 	{
@@ -105,7 +106,7 @@ void	ft_export(t_token *tokens, t_env **env)
 		}
 		current = current->next;
 	}
-	*env = env_create_sorted(*env);
+	env_sorted = env_create_sorted(env_sorted);
 }
 
 bool check_valid_key_export(const char *key)

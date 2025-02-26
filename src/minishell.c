@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/26 03:42:55 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/02/26 08:46:05 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,9 +108,9 @@ void minishell_loop(t_all *all, char **envp)
 		all->tokens = fill_tokens(line, all);
 		all->tokens = create_expand_tokens(all, all->tokens);
 		all->tokens = merge_tokens(all->tokens);
-		print_tokens(all->tokens);
+		//print_tokens(all->tokens);
 		ft_redirection(all, all->tokens);           //???
-		print_tokens(all->tokens);
+		//print_tokens(all->tokens);
 		execute_builtins(all->tokens, &all->env, all);
 		free(line);
 		free_all_token(all->tokens);

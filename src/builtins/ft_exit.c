@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:38:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/22 04:45:52 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/02/26 09:19:44 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,4 @@ void	ft_exit(t_token *tokens, t_all *all)
 		//exit (all->status);
 	}
 }
-/*retirer les printf des code de sortie et les printf des exit ? */
+/*retirer les printf des code de sortie et les printf des exit  */
