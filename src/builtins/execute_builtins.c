@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 01:58:22 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/02/26 10:09:11 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/03/01 21:32:24 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,4 +33,10 @@ void execute_builtins(t_token *tokens, t_env **env, t_all *all)
 	/*else if (!ft_strcmp(tokens->value, "unset"))
 		ft_unset(env);*/
 		
+}
+
+bool	is_builtin(t_token *tokens)
+{
+	return (!ft_strcmp(tokens->value, "echo") || !ft_strcmp(tokens->value, "cd") || !ft_strcmp(tokens->value, "pwd")
+		|| !ft_strcmp(tokens->value, "export") || !ft_strcmp(tokens->value, "env") || !ft_strcmp(tokens->value, "exit") || !ft_strcmp(tokens->value, "unset"));
 }

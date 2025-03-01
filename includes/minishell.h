@@ -86,6 +86,7 @@ typedef struct s_cmd
 {
 	t_token	*tokens;
 	pid_t	pid;
+	bool	skip_cmd;
 	char	*path;
 	int		infile_fd;
 	int		outfile_fd;
@@ -155,31 +156,31 @@ t_token			*merge_tokens(t_token *tokens);
 void			print_tokens(t_token *tokens);
 
 //---------------------EXPANDER--------------------------
-bool	is_expandable_wildcard(t_token *token);
-bool	is_hidden_valid(char *str, char *pattern);
-void	sort_matches(char **matches, int count);
-t_token	*create_tokens_from_matches(char **matches,
-			t_token *to_expand);
-char	**store_matches(DIR *dir, t_token *to_expand, int *match_count);
+// bool	is_expandable_wildcard(t_token *token);
+// bool	is_hidden_valid(char *str, char *pattern);
+// void	sort_matches(char **matches, int count);
+// t_token	*create_tokens_from_matches(char **matches,
+			// t_token *to_expand);
+// char	**store_matches(DIR *dir, t_token *to_expand, int *match_count);
 void	skip_variable_chars(char *word, int *i, int start);
 void	handle_dollar_sign(t_all *all, char *word, int *i,
 		char **new_word);
-t_token	*create_merged_wildcard_token(t_token *tmp);
+// t_token	*create_merged_wildcard_token(t_token *tmp);
 t_token	*handle_token_expansion(t_all *all, t_token *tmp);
 t_token	*expand_tokens(t_all *all, t_token *tokens);
 char	*expand_word(t_all *all, char *word);
 t_token	*create_tokens_without_space(t_token *tokens);
 t_token	*create_expand_tokens(t_all *all, t_token *tokens);
 bool	is_same_quote(t_token *token, t_token *token_to_compare);
-t_token	*create_regular_token(t_token *tmp);
+// t_token	*create_regular_token(t_token *tmp);
 bool	is_same_type(t_token *token, t_token *token_to_compare, t_token_type type);
-t_token	*manage_wildcard(t_token *to_expand);
+// t_token	*manage_wildcard(t_token *to_expand);
 
 //---------------------WILDCARD--------------------------
 
-t_token	*expand_wildcard(t_token *tokens);
-char	*merge_wildcard_values(t_token *wildcard_tokens);
-bool	ft_match_pattern(char *str, char *pattern);
+// t_token	*expand_wildcard(t_token *tokens);
+// char	*merge_wildcard_values(t_token *wildcard_tokens);
+// bool	ft_match_pattern(char *str, char *pattern);
 
 //---------------------INIT------------------------------
 
@@ -200,11 +201,13 @@ void	free_all(t_all *all);
 
 //--------------------BUILTINS---------------------------
 
+
+bool	is_builtin(t_token *tokens);
+void	execute_builtins(t_token *tokens, t_env **env, t_all *all);
 void	ft_unset(t_token *tokens, t_env **env);
 void	ft_echo(t_token *tokens);
 void	ft_cd(t_token *tokens, t_env *env);
 void	ft_pwd(void);
-void	execute_builtins(t_token *tokens, t_env **env, t_all *all);
 void	ft_env(t_env *env);
 void	ft_exit(t_token *tokens, t_all *all);
 
@@ -223,6 +226,7 @@ void	minishell_loop(t_all *all, char **envp);
 t_cmd	*create_cmdlist(t_token *token);
 t_cmd	*cmd_new(t_token	*tokens, char *path);
 void	cmd_addback(t_cmd **cmd, t_cmd *new);
+void	manage_redirections(t_cmd *cmds);
 
 //---------------------CLEAR---------------------------
 
@@ -234,6 +238,9 @@ bool	is_redir(t_token *token);
 void	print_list(t_string_list *list);
 void	delete_token2(t_token **tokens, t_token *token_to_del);
 void	debug_print_cmdlist(t_cmd *cmd_list);
+char **env_to_tab(t_env *env);
+void	free_tab(char **tab);
+
 //---------------------REDIRECTION---------------------------
 
 void	ft_redirection(t_all *all, t_token *token);

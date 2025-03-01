@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 02:40:39 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/26 08:45:45 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/03/01 22:06:09 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -286,7 +286,22 @@ int	env_get_size(t_env *env)
 	return (i);
 }
 
-char **env_to_char(t_env *env)
+int	cmd_get_size(t_cmd *cmd)
+{
+	t_cmd	*curr;
+	int		i;
+
+	curr = cmd;
+	i = 0;
+	while (curr)
+	{
+		i++;
+		curr = curr->next;
+	}
+	return (i);
+}
+
+char **env_to_tab(t_env *env)
 {
 	char	**env_tab;
 	t_env	*curr;
@@ -299,7 +314,6 @@ char **env_to_char(t_env *env)
 	i = 0;
 	while (curr)
 	{
-		env_tab[i] = malloc(sizeof(char) * (ft_strlen(env->key) + ft_strlen(env->value) + 2));
 		env_tab[i] = ft_strjoin(curr->key, "=", 0, 0);
 		env_tab[i] = ft_strjoin(env_tab[i], curr->value, 1, 0);
 		i++;
@@ -308,40 +322,131 @@ char **env_to_char(t_env *env)
 	env_tab[i] = NULL;
 	return (env_tab);
 }
-void manage_redirections(t_all *all, t_token **token)
+
+char **cmd_to_tab(t_cmd *cmd)
 {
-    if (!token || !*token || !(*token)->next)
-        return;
-    if ((*token)->token_type == REDIR_IN)
-    {
-        ft_stradd_back(&all->redir_in_names, ft_strnew((*token)->next->value, REDIR_IN));
-    }
-    else if ((*token)->token_type == REDIR_OUT || (*token)->token_type == REDIR_APPEND || (*token)->token_type == PIPE)
-    {
-        ft_stradd_back(&all->redir_out_names, ft_strnew((*token)->next->value, (*token)->token_type));
-    }
-    t_token *next_next = (*token)->next->next;
-    
-    //delete_token(token, (*token)->next);
-    //delete_token(token, *token);
-    *token = next_next;
+	char	**cmd_tab;
+	t_cmd	*curr;
+	int		i;
+
+	curr = cmd;
+	cmd_tab = malloc(sizeof (char *) * (cmd_get_size(cmd) + 1));
+	i = 0;
+	if (!cmd_tab)
+		return (NULL);
+	while (curr)
+	{
+		cmd_tab[i] = ft_strdup(curr->tokens->value);
+		i++;
+		curr = curr->next;
+	}
+	cmd_tab[i] = NULL;
+	return (cmd_tab);
 }
 
-void ft_redirection(t_all *all, t_token *token)
+static void	remove_redir_tokens(t_token **head, t_token *redir, t_token *file)
 {
-    if (!token)
-        return;
-    
-    t_token *current = token;
-    while (current)
-    {
-        if ((is_redir(current) || current->token_type == PIPE) && current->next)
-        {
-            manage_redirections(all, &current);
-        }
-        else
-            current = current->next;
-    }
-    //print_list(all->redir_in_names);
-    //print_list(all->redir_out_names);
+	t_token	*curr;
+	t_token	*prev;
+
+	curr = *head;
+	prev = NULL;
+	while (curr)
+	{
+		if (curr == redir)
+		{
+			if (prev)
+				prev->next = file->next;
+			else
+				*head = file->next;
+			free(redir->value);
+			free(redir);
+			free(file->value);
+			free(file);
+			return ;
+		}
+		prev = curr;
+		curr = curr->next;
+	}
 }
+
+static void	manage_single_redir(t_cmd *cmd, t_token *curr)
+{
+	if (curr->token_type == REDIR_IN)
+	{
+		if (cmd->infile_fd > 0)
+			close(cmd->infile_fd);
+		cmd->infile_fd = open(curr->next->value, O_RDONLY);
+		remove_redir_tokens(&cmd->tokens, curr, curr->next);
+	}
+	else if (curr->token_type == REDIR_OUT)
+	{
+		if (cmd->outfile_fd > 1)
+			close(cmd->outfile_fd);
+		cmd->outfile_fd = open(curr->next->value,
+				O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		remove_redir_tokens(&cmd->tokens, curr, curr->next);
+	}
+	else if (curr->token_type == REDIR_APPEND)
+	{
+		if (cmd->outfile_fd > 1)
+			close(cmd->outfile_fd);
+		cmd->outfile_fd = open(curr->next->value,
+				O_WRONLY | O_CREAT | O_APPEND, 0644);
+		remove_redir_tokens(&cmd->tokens, curr, curr->next);
+	}
+}
+
+static void	manage_cmd_redir(t_cmd *cmd)
+{
+	t_token	*curr;
+	t_token	*next;
+
+	curr = cmd->tokens;
+	while (curr && curr->next)
+	{
+		next = curr->next;
+		if (curr->token_type == REDIR_IN || curr->token_type == REDIR_OUT
+			|| curr->token_type == REDIR_APPEND)
+		{
+			manage_single_redir(cmd, curr);
+			curr = cmd->tokens;
+			continue ;
+		}
+		curr = curr->next;
+	}
+	if (cmd->infile_fd == -1 || cmd->outfile_fd == -1)
+		cmd->skip_cmd = true;
+}
+
+void	manage_redirections(t_cmd *cmds)
+{
+	t_cmd	*curr;
+
+	curr = cmds;
+	while (curr)
+	{
+		manage_cmd_redir(curr);
+		curr = curr->next;
+	}
+}
+
+
+// void ft_redirection(t_all *all, t_token *token)
+// {
+//     if (!token)
+//         return;
+    
+//     t_token *current = token;
+//     while (current)
+//     {
+//         if ((is_redir(current) || current->token_type == PIPE) && current->next)
+//         {
+//             manage_redirections(all, &current);
+//         }
+//         else
+//             current = current->next;
+//     }
+//     //print_list(all->redir_in_names);
+//     //print_list(all->redir_out_names);
+// }
