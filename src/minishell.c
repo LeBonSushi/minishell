@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/01 22:20:49 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/03/03 16:34:12 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,140 +91,6 @@ t_token	*delete_empty_tokens(t_token *tokens)
 	return (tokens);
 }
 
-static char	**tokens_to_array(t_token *tokens)
-{
-	t_token	*curr;
-	char	**args;
-	int		count;
-	int		i;
-
-	count = 0;
-	curr = tokens;
-	while (curr)
-	{
-		if (curr->token_type == WORD)
-			count++;
-		curr = curr->next;
-	}
-	args = malloc(sizeof(char *) * (count + 1));
-	if (!args)
-		return (NULL);
-	i = 0;
-	curr = tokens;
-	while (curr)
-	{
-		if (curr->token_type == WORD)
-			args[i++] = ft_strdup(curr->value);
-		curr = curr->next;
-	}
-	args[i] = NULL;
-	return (args);
-}
-
-static char	*find_command_path(char *cmd, char **envp)
-{
-	char	**paths;
-	char	*path;
-	char	*full_path;
-	int		i;
-
-	while (*envp && ft_strncmp(*envp, "PATH=", 5))
-		envp++;
-	if (!*envp)
-		return (ft_strdup(cmd));
-	paths = ft_split(*envp + 5, ':');
-	i = 0;
-	while (paths[i])
-	{
-		path = ft_strjoin(paths[i], "/", 0, 0);
-		full_path = ft_strjoin(path, cmd, 1, 0);
-		if (access(full_path, X_OK) == 0)
-		{
-			free_tab(paths);
-			return (full_path);
-		}
-		free(full_path);
-		i++;
-	}
-	free_tab(paths);
-	return (ft_strdup(cmd));
-}
-
-static void	execute_single_command(t_cmd *cmd, char **envp)
-{
-	char	**args;
-	char	*path;
-
-	if (cmd->skip_cmd)
-		return ;
-	args = tokens_to_array(cmd->tokens);
-	if (!args || !args[0])
-	{
-		free_tab(args);
-		exit(1);
-	}
-	path = find_command_path(args[0], envp);
-	if (cmd->infile_fd != 0)
-		dup2(cmd->infile_fd, STDIN_FILENO);
-	if (cmd->outfile_fd != 1)
-		dup2(cmd->outfile_fd, STDOUT_FILENO);
-	execve(path, args, envp);
-	ft_putstr_fd("command not found: ", 2);
-	ft_putendl_fd(args[0], 2);
-	free_tab(args);
-	free(path);
-	exit(127);
-}
-
-void	execute_pipeline(t_cmd *cmds, char **envp)
-{
-	t_cmd	*curr;
-	int		pipe_fd[2];
-	pid_t	pid;
-	int		prev_pipe;
-
-	curr = cmds;
-	prev_pipe = 0;
-	while (curr)
-	{
-		if (curr->next && pipe(pipe_fd) == -1)
-			return ;
-		pid = fork();
-		if (pid == -1)
-			return ;
-		if (pid == 0)
-		{
-			if (prev_pipe)
-			{
-				dup2(prev_pipe, STDIN_FILENO);
-				close(prev_pipe);
-			}
-			if (curr->next)
-			{
-				close(pipe_fd[0]);
-				if (curr->outfile_fd == 1)
-					dup2(pipe_fd[1], STDOUT_FILENO);
-				close(pipe_fd[1]);
-			}
-			execute_single_command(curr, envp);
-		}
-		if (prev_pipe)
-			close(prev_pipe);
-		if (curr->next)
-		{
-			close(pipe_fd[1]);
-			prev_pipe = pipe_fd[0];
-		}
-		curr->pid = pid;
-		curr = curr->next;
-	}
-	curr = cmds;
-	while (curr)
-	{
-		waitpid(curr->pid, NULL, 0);
-		curr = curr->next;
-	}
-}
 
 void minishell_loop(t_all *all, char **envp)
 {
@@ -248,11 +114,9 @@ void minishell_loop(t_all *all, char **envp)
 		//print_tokens(all->tokens);
 		// ft_redirection(all, all->tokens);           //???
 		//print_tokens(all->tokens);
-		manage_redirections(all->cmds);
+		manage_redirections(all, all->cmds);
 		// if (is_builtin(all->tokens))
 			// execute_builtins(all->tokens, &all->env, all);
-		// else
-			execute_pipeline(all->cmds, env);
 		free(line);
 		free_all_token(all->tokens);
 	}

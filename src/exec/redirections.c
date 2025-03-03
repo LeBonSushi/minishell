@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 02:40:39 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/01 22:06:09 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/03/03 16:45:25 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,31 +55,6 @@ void	ft_free_tab(char **tab)
 	}
 	free (tab);
 	tab = NULL;
-}
-
-void	error(char *message, char **args, char *cmd, int exit_code)
-{
-	if (exit_code != 0)
-	{
-		if (message)
-		{
-			ft_putstr_fd("Error: ", 2);
-			if (ft_strcmp(message, "Command not found: ") == 0 && cmd)
-			{
-				ft_putstr_fd("Command not found: ", 2);
-				ft_putstr_fd(cmd, 2);
-				ft_putstr_fd("\n", 2);
-			}
-			else if (ft_strcmp(message, "Redirecting input\n") == 0 || ft_strcmp(message, "Redirecting output\n") == 0)
-				free(cmd);
-			else
-				ft_putstr_fd(message, 2);
-		}
-		if (args)
-			ft_free_tab(args);
-	}
-	if (exit_code != 0)
-		exit(exit_code);
 }
 
 /*char	*join_path_cmd(char *path, char *cmd)
@@ -344,89 +319,145 @@ char **cmd_to_tab(t_cmd *cmd)
 	return (cmd_tab);
 }
 
-static void	remove_redir_tokens(t_token **head, t_token *redir, t_token *file)
-{
-	t_token	*curr;
-	t_token	*prev;
+// static void	remove_redir_tokens(t_token **head, t_token *redir, t_token *file)
+// {
+// 	t_token	*curr;
+// 	t_token	*prev;
 
-	curr = *head;
-	prev = NULL;
-	while (curr)
+// 	curr = *head;
+// 	prev = NULL;
+// 	while (curr)
+// 	{
+// 		if (curr == redir)
+// 		{
+// 			if (prev)
+// 				prev->next = file->next;
+// 			else
+// 				*head = file->next;
+// 			free(redir->value);
+// 			free(redir);
+// 			free(file->value);
+// 			free(file);
+// 			return ;
+// 		}
+// 		prev = curr;
+// 		curr = curr->next;
+// 	}
+// }
+
+// static void	manage_single_redir(t_cmd *cmd, t_token *curr)
+// {
+// 	if (curr->token_type == REDIR_IN)
+// 	{
+// 		if (cmd->infile_fd > 0)
+// 			close(cmd->infile_fd);
+// 		cmd->infile_fd = open(curr->next->value, O_RDONLY);
+// 		remove_redir_tokens(&cmd->tokens, curr, curr->next);
+// 	}
+// 	else if (curr->token_type == REDIR_OUT)
+// 	{
+// 		if (cmd->outfile_fd > 1)
+// 			close(cmd->outfile_fd);
+// 		cmd->outfile_fd = open(curr->next->value,
+// 				O_WRONLY | O_CREAT | O_TRUNC, 0644);
+// 		remove_redir_tokens(&cmd->tokens, curr, curr->next);
+// 	}
+// 	else if (curr->token_type == REDIR_APPEND)
+// 	{
+// 		if (cmd->outfile_fd > 1)
+// 			close(cmd->outfile_fd);
+// 		cmd->outfile_fd = open(curr->next->value,
+// 				O_WRONLY | O_CREAT | O_APPEND, 0644);
+// 		remove_redir_tokens(&cmd->tokens, curr, curr->next);
+// 	}
+// }
+
+// static void	manage_cmd_redir(t_cmd *cmd)
+// {
+// 	t_token	*curr;
+// 	t_token	*next;
+
+// 	curr = cmd->tokens;
+// 	while (curr && curr->next)
+// 	{
+// 		next = curr->next;
+// 		if (curr->token_type == REDIR_IN || curr->token_type == REDIR_OUT
+// 			|| curr->token_type == REDIR_APPEND)
+// 		{
+// 			manage_single_redir(cmd, curr);
+// 			curr = cmd->tokens;
+// 			continue ;
+// 		}
+// 		curr = curr->next;
+// 	}
+// 	if (cmd->infile_fd == -1 || cmd->outfile_fd == -1)
+// 		cmd->skip_cmd = true;
+// }
+
+void	do_heredoc(t_all *all, t_cmd *cmd, t_token *curr_token)
+{
+	char	*line;
+	int		heredoc_fd;
+	char	*limiter;
+
+	if (cmd->infile_fd > 0)
+		close(cmd->infile_fd);
+	heredoc_fd = open(HEREDOC_TMP, O_RDWR | O_TRUNC | O_CREAT, 0664);
+	limiter = ft_strdup(curr_token->next->value);
+	while (1)
 	{
-		if (curr == redir)
+		line = readline("ministress heredoc> ");
+		line = ft_strjoin(line, "\n", 1, 0);
+		limiter = ft_strjoin(limiter, "\n", 1, 0);
+		if (!ft_strcmp(line, limiter))
 		{
-			if (prev)
-				prev->next = file->next;
-			else
-				*head = file->next;
-			free(redir->value);
-			free(redir);
-			free(file->value);
-			free(file);
-			return ;
+			free(line);
+			free(limiter);
+			break ;
 		}
-		prev = curr;
-		curr = curr->next;
+		ft_putstr_fd(line, heredoc_fd);
+		free(line);
+	}
+	cmd->infile_fd = open(HEREDOC_TMP, O_RDONLY);
+	if (cmd->infile_fd == -1)
+	{
+		perror("Ministress: ");
+		all->status = errno;
+		cmd->skip_cmd = true;
 	}
 }
 
-static void	manage_single_redir(t_cmd *cmd, t_token *curr)
+void	manage_cmd_redir(t_all *all, t_cmd *curr_cmd)
 {
-	if (curr->token_type == REDIR_IN)
-	{
-		if (cmd->infile_fd > 0)
-			close(cmd->infile_fd);
-		cmd->infile_fd = open(curr->next->value, O_RDONLY);
-		remove_redir_tokens(&cmd->tokens, curr, curr->next);
-	}
-	else if (curr->token_type == REDIR_OUT)
-	{
-		if (cmd->outfile_fd > 1)
-			close(cmd->outfile_fd);
-		cmd->outfile_fd = open(curr->next->value,
-				O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		remove_redir_tokens(&cmd->tokens, curr, curr->next);
-	}
-	else if (curr->token_type == REDIR_APPEND)
-	{
-		if (cmd->outfile_fd > 1)
-			close(cmd->outfile_fd);
-		cmd->outfile_fd = open(curr->next->value,
-				O_WRONLY | O_CREAT | O_APPEND, 0644);
-		remove_redir_tokens(&cmd->tokens, curr, curr->next);
-	}
-}
-
-static void	manage_cmd_redir(t_cmd *cmd)
-{
-	t_token	*curr;
+	t_token	*curr_token;
 	t_token	*next;
 
-	curr = cmd->tokens;
-	while (curr && curr->next)
+	curr_token = curr_cmd->tokens;
+	while (curr_token && curr_token->next)
 	{
-		next = curr->next;
-		if (curr->token_type == REDIR_IN || curr->token_type == REDIR_OUT
-			|| curr->token_type == REDIR_APPEND)
+		next = curr_token->next;
+		if (is_redir(curr_token))
 		{
-			manage_single_redir(cmd, curr);
-			curr = cmd->tokens;
-			continue ;
+			if (curr_token->token_type == REDIR_HEREDOC)
+			{
+				do_heredoc(all , curr_cmd, curr_token);
+			}
+			else if (curr_token->token_type == REDIR_IN)
+			{
+				
+			}
 		}
-		curr = curr->next;
 	}
-	if (cmd->infile_fd == -1 || cmd->outfile_fd == -1)
-		cmd->skip_cmd = true;
 }
 
-void	manage_redirections(t_cmd *cmds)
+void	manage_redirections(t_all *all, t_cmd *cmds)
 {
 	t_cmd	*curr;
 
 	curr = cmds;
 	while (curr)
 	{
-		manage_cmd_redir(curr);
+		manage_cmd_redir(all, curr);
 		curr = curr->next;
 	}
 }

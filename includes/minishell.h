@@ -13,6 +13,7 @@
 #ifndef MINISHELL_H
 
 # define MINISHELL_H
+# define HEREDOC_TMP ".heredoctmp"
 
 # include "../libft/libft.h"
 
@@ -87,6 +88,7 @@ typedef struct s_cmd
 	t_token	*tokens;
 	pid_t	pid;
 	bool	skip_cmd;
+	bool	here_doc;
 	char	*path;
 	int		infile_fd;
 	int		outfile_fd;
@@ -226,7 +228,7 @@ void	minishell_loop(t_all *all, char **envp);
 t_cmd	*create_cmdlist(t_token *token);
 t_cmd	*cmd_new(t_token	*tokens, char *path);
 void	cmd_addback(t_cmd **cmd, t_cmd *new);
-void	manage_redirections(t_cmd *cmds);
+void	manage_redirections(t_all *all, t_cmd *cmds);
 
 //---------------------CLEAR---------------------------
 
