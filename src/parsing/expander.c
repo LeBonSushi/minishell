@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/24 22:16:57 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/03/05 02:15:42 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,6 +259,18 @@ bool	is_redir(t_token *token)
 		|| token->token_type == REDIR_HEREDOC);
 }
 
+void	free_token(t_token *token)
+{
+	if (token)
+		return (free(token->value), free(token));
+}
+
+static void init_tokens(bool *merged, t_token **curr, t_token *tokens)
+{
+	*merged = false;
+	*curr = tokens;
+}
+
 t_token *merge_tokens(t_token *tokens)
 {
 	t_token *curr;
@@ -267,18 +279,17 @@ t_token *merge_tokens(t_token *tokens)
 
 	if (!tokens || !tokens->next)
 		return (tokens);
-	merged = 0;
-	curr = tokens;
+	init_tokens(&merged, &curr, tokens);
 	while (curr && curr->next)
 	{
-		if (!is_redir(curr) && !is_redir(curr->next) && !curr->space_after && ft_strcmp(curr->value, ""))
+		if (!is_redir(curr) && !is_redir(curr->next)
+			&& !curr->space_after && ft_strcmp(curr->value, ""))
 		{
 			curr->value = join_token_values(curr, curr->next);
 			next = curr->next;
 			curr->next = curr->next->next;
 			curr->space_after = next->space_after;
-			free(next->value);
-			free(next);
+			free_token(next);
 			merged = true;
 			break;
 		}
@@ -286,7 +297,6 @@ t_token *merge_tokens(t_token *tokens)
 	}
 	if (merged)
 		return (merge_tokens(tokens));
-		
 	return (tokens);
 }
 

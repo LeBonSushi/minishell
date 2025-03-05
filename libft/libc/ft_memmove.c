@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: lpolizzi <lpolizzi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/09 15:10:09 by macorso          #+#    #+#             */
-/*   Updated: 2024/10/09 15:11:28 by macorso         ###   ########.fr       */
+/*   Created: 2024/10/09 15:10:09 by lpolizzi          #+#    #+#             */
+/*   Updated: 2025/03/03 12:28:04 by lpolizzi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,28 +14,22 @@
 
 void	*ft_memmove(void *dst, const void *src, size_t len)
 {
-	size_t	i;
+	unsigned char	*dest;
+	unsigned char	*source;
 
-	if (!dst && !src)
+	if (!dst || !src)
 		return (NULL);
-	if (dst < src)
-	{
-		i = 0;
-		while (i < len)
-		{
-			((unsigned char *)dst)[i] = ((unsigned char *)src)[i];
-			i++;
-		}
-		return (dst);
-	}
+	dest = (unsigned char *)dst;
+	source = (unsigned char *)src;
+	if (dest < source)
+		while (len--)
+			*dest++ = *source++;
 	else
 	{
-		i = len;
-		while (i > 0)
-		{
-			i--;
-			((unsigned char *)dst)[i] = ((unsigned char *)src)[i];
-		}
-		return (dst);
+		dest += len;
+		source += len;
+		while (len--)
+			*(--dest) = *(--source);
 	}
+	return (dst);
 }

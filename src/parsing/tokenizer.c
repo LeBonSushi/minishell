@@ -34,7 +34,6 @@ t_token	*ft_parse_quoted(char **str, bool *sq, bool *dq)
 	if (**str != quote)
 		return (NULL);
 	space_after = (ft_isspace(*(*str + 1)));
-	//printf("SPACE AFTER: %d\n", space_after);
 	token = token_new(WORD, ft_substr(start, 0, len),
 			*sq, *dq);
 	token->space_after = space_after;
@@ -291,13 +290,11 @@ void manage_empty_tokens(t_token **tokens)
 	while (tmp)
 	{
 		next = tmp->next;
-
 		if (tmp->token_type == WORD && !ft_strcmp(tmp->value, ""))
 		{
 			if (!tmp->space_after)
 				delete_token(tokens, tmp);
 		}
-
 		tmp = next;
 	}
 	tmp = *tokens;

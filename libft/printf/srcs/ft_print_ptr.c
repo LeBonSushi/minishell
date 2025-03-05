@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_print_ptr.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/16 23:55:04 by macorso          #+#    #+#             */
-/*   Updated: 2024/11/09 15:05:52 by macorso         ###   ########.fr       */
+/*   Created: 2024/10/16 23:55:04 by lpolizzi          #+#    #+#             */
+/*   Updated: 2025/03/04 23:03:56 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,23 +25,23 @@ static int	ft_ptrlen(uintptr_t ptr)
 	return (len);
 }
 
-static void	ft_putptr(uintptr_t ptr)
+static void	ft_putptr(uintptr_t ptr, int fd)
 {
 	if (ptr >= 16)
 	{
-		ft_putptr(ptr / 16);
-		ft_putptr(ptr % 16);
+		ft_putptr(ptr / 16, fd);
+		ft_putptr(ptr % 16, fd);
 	}
 	else
 	{
 		if (ptr <= 9)
-			ft_putchar_fd((ptr + '0'), 1);
+			ft_putchar_fd((ptr + '0'), fd);
 		else
-			ft_putchar_fd((ptr - 10 + 'a'), 1);
+			ft_putchar_fd((ptr - 10 + 'a'), fd);
 	}
 }
 
-int	ft_print_ptr(void *ptr)
+int	ft_print_ptr(void *ptr, int fd)
 {
 	int			len;
 	uintptr_t	address;
@@ -49,12 +49,12 @@ int	ft_print_ptr(void *ptr)
 	address = (uintptr_t)ptr;
 	len = 0;
 	if (address == 0)
-		len += write(1, "(nil)", 5);
+		len += write(fd, "(nil)", 5);
 	else
 	{
-		len += write(1, "0x", 2);
+		len += write(fd, "0x", 2);
 		len += ft_ptrlen(address);
-		ft_putptr(address);
+		ft_putptr(address, fd);
 	}
 	return (len);
 }

@@ -1,28 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoinchar.c                                   :+:      :+:    :+:   */
+/*   ft_lstclear.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lpolizzi <lpolizzi@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/09 01:39:42 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/09 01:40:14 by macorso          ###   ########.fr       */
+/*   Created: 2024/10/13 19:52:07 by lpolizzi          #+#    #+#             */
+/*   Updated: 2024/10/13 19:56:53 by lpolizzi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strjoinchar(const char *s1, const char c)
+void	ft_lstclear(t_list **lst, void (*del)(void *))
 {
-	int	len;
-	char	*str;
+	t_list	*curr;
+	t_list	*next;
 
-	len = ft_strlen(s1);
-	str = (char *)malloc(sizeof(char) * (len + 2));
-	if (!str)
-		return (NULL);
-	ft_strlcpy(str, s1, len + 1);
-	str[len] = c;
-	str[len + 1] = '\0';
-	return (str);
+	if (!lst || !del)
+		return ;
+	curr = *lst;
+	while (curr)
+	{
+		next = curr->next;
+		del(curr->content);
+		free(curr);
+		curr = next;
+	}
+	*lst = NULL;
 }

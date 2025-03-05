@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 02:40:39 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/03 16:45:25 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/05 02:10:14 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,29 +15,29 @@
 
 // compteur de pipe ?
 
-void	close_all(int fd_in, int fd_out, int pipe_fd[2])
-{
-	if (fd_in != -1)
-	{	
-		ft_printf("close fd_in\n");
-		close(fd_in);	
-	}
-	if (fd_out != -1)
-	{
-		ft_printf("close fd_out\n");
-		close(fd_out);
-	}
-	if (pipe_fd[0] != -1)
-	{
-		ft_printf("close pipe_fd[0]\n");
-		close(pipe_fd[0]);
-	}
-	if (pipe_fd[1] != -1)
-	{
-		ft_printf("close pipe_fd[1]\n");
-		close(pipe_fd[1]);
-	}
-}
+// void	close_all(int fd_in, int fd_out, int pipe_fd[2])
+// {
+// 	if (fd_in != -1)
+// 	{	
+// 		printf("close fd_in\n");
+// 		close(fd_in);	
+// 	}
+// 	if (fd_out != -1)
+// 	{
+// 		printf("close fd_out\n");
+// 		close(fd_out);
+// 	}
+// 	if (pipe_fd[0] != -1)
+// 	{
+// 		printf("close pipe_fd[0]\n");
+// 		close(pipe_fd[0]);
+// 	}
+// 	if (pipe_fd[1] != -1)
+// 	{
+// 		printf("close pipe_fd[1]\n");
+// 		close(pipe_fd[1]);
+// 	}
+// }
 
 
 void	ft_free_tab(char **tab)
@@ -394,7 +394,17 @@ char **cmd_to_tab(t_cmd *cmd)
 // 		cmd->skip_cmd = true;
 // }
 
-void	do_heredoc(t_all *all, t_cmd *cmd, t_token *curr_token)
+
+bool	ft_compare(char *limiter, char *line)
+{
+	if (ft_strncmp(line, limiter, ft_strlen(limiter)))
+		return (0);
+	if (line[ft_strlen(limiter)] != '\n')
+		return (0);
+	return (1);
+}
+
+void	do_heredoc(t_cmd *cmd, t_token *curr_token, bool is_last)
 {
 	char	*line;
 	int		heredoc_fd;
@@ -406,28 +416,40 @@ void	do_heredoc(t_all *all, t_cmd *cmd, t_token *curr_token)
 	limiter = ft_strdup(curr_token->next->value);
 	while (1)
 	{
-		line = readline("ministress heredoc> ");
-		line = ft_strjoin(line, "\n", 1, 0);
-		limiter = ft_strjoin(limiter, "\n", 1, 0);
-		if (!ft_strcmp(line, limiter))
+		ft_fprintf(0, "ministress heredoc> ");
+		line = get_next_line(0);
+		if (!line || ft_compare(limiter, line))
 		{
+			printf("ca rentre (titre)\n");
 			free(line);
 			free(limiter);
 			break ;
 		}
-		ft_putstr_fd(line, heredoc_fd);
+		ft_fprintf(heredoc_fd, "%s", line);
 		free(line);
 	}
-	cmd->infile_fd = open(HEREDOC_TMP, O_RDONLY);
-	if (cmd->infile_fd == -1)
-	{
-		perror("Ministress: ");
-		all->status = errno;
-		cmd->skip_cmd = true;
-	}
+	close(heredoc_fd);
+	if (is_last)
+		cmd->infile_fd = open(HEREDOC_TMP, O_RDONLY);
+	else
+		unlink(HEREDOC_TMP);
 }
 
-void	manage_cmd_redir(t_all *all, t_cmd *curr_cmd)
+bool	is_last(t_token *token)
+{
+	t_token	*curr;
+
+	curr = token->next;
+	while (curr)
+	{
+		if (curr->token_type == token->token_type)
+			return (false);
+		curr = curr->next;
+	}
+	return (true);
+}
+
+void	manage_cmd_redir(t_cmd *curr_cmd)
 {
 	t_token	*curr_token;
 	t_token	*next;
@@ -440,24 +462,28 @@ void	manage_cmd_redir(t_all *all, t_cmd *curr_cmd)
 		{
 			if (curr_token->token_type == REDIR_HEREDOC)
 			{
-				do_heredoc(all , curr_cmd, curr_token);
+				do_heredoc(curr_cmd, curr_token, is_last(curr_token));
+				curr_cmd->here_doc = true;
 			}
 			else if (curr_token->token_type == REDIR_IN)
-			{
-				
-			}
+				/*manage_redir_in(curr_cmd, curr_token) */;
+			else if (curr_token->token_type == REDIR_APPEND)
+				;
+			else
+				;
 		}
+		curr_token = next;
 	}
 }
 
-void	manage_redirections(t_all *all, t_cmd *cmds)
+void	manage_redirections(t_cmd *cmds)
 {
 	t_cmd	*curr;
 
 	curr = cmds;
 	while (curr)
 	{
-		manage_cmd_redir(all, curr);
+		manage_cmd_redir(curr);
 		curr = curr->next;
 	}
 }

@@ -5,15 +5,15 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/30 01:45:51 by macorso           #+#    #+#             */
-/*   Updated: 2025/01/30 01:46:44 by macorso          ###   ########.fr       */
+/*   Created: 2025/03/04 22:27:06 by macorso           #+#    #+#             */
+/*   Updated: 2025/03/04 22:39:32 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../libft.h"
 
-int	ft_isspace(int c)
+int	ft_isspace(char c)
 {
-	return (c == ' ' || c == '\t' || c == '\n'
-			|| c == '\v' || c == '\f' || c == '\r');
+	return (c == ' ' || c == '\f' || c == '\r'
+			|| c == '\t' || c == '\n' || c == '\v');
 }

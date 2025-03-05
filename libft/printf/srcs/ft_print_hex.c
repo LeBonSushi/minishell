@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_print_hex.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/17 11:40:26 by macorso          #+#    #+#             */
-/*   Updated: 2024/11/09 15:06:04 by macorso         ###   ########.fr       */
+/*   Created: 2024/10/17 11:40:26 by lpolizzi          #+#    #+#             */
+/*   Updated: 2025/03/04 23:04:36 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,32 +25,32 @@ static int	ft_hexlen(unsigned int n)
 	return (len);
 }
 
-static void	ft_puthex(unsigned int n, const char format)
+static void	ft_puthex(unsigned int n, const char format, int fd)
 {
 	if (n >= 16)
 	{
-		ft_puthex(n / 16, format);
-		ft_puthex(n % 16, format);
+		ft_puthex(n / 16, format, fd);
+		ft_puthex(n % 16, format, fd);
 	}
 	else
 	{
 		if (n <= 9)
-			ft_putchar_fd((n + '0'), 1);
+			ft_putchar_fd((n + '0'), fd);
 		else
 		{
 			if (format == 'x')
-				ft_putchar_fd((n - 10 + 'a'), 1);
+				ft_putchar_fd((n - 10 + 'a'), fd);
 			else if (format == 'X')
-				ft_putchar_fd((n - 10 + 'A'), 1);
+				ft_putchar_fd((n - 10 + 'A'), fd);
 		}
 	}
 }
 
-int	ft_print_hex(unsigned int n, const char format)
+int	ft_print_hex(unsigned int n, const char format, int fd)
 {
 	if (n == 0)
-		return (write(1, "0", 1));
+		return (write(fd, "0", 1));
 	else
-		ft_puthex(n, format);
+		ft_puthex(n, format, fd);
 	return (ft_hexlen(n));
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_print_unsigned.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/16 23:19:38 by macorso          #+#    #+#             */
-/*   Updated: 2024/11/09 15:05:31 by macorso         ###   ########.fr       */
+/*   Created: 2024/10/16 23:19:38 by lpolizzi          #+#    #+#             */
+/*   Updated: 2025/03/04 23:03:15 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,16 +46,16 @@ static char	*ft_uitoa(unsigned int n)
 	return (ret);
 }
 
-int	ft_print_unsigned(unsigned int n)
+int	ft_print_unsigned(unsigned int n, int fd)
 {
 	int		len;
 	char	*num;
 
 	if (n == 0)
-		return (write(1, "0", 1));
+		return (write(fd, "0", 1));
 	else
 		num = ft_uitoa(n);
-	len = ft_print_str(num);
+	len = ft_print_str(num, fd);
 	free(num);
 	return (len);
 }

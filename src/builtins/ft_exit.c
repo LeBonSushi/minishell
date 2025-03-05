@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:38:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/26 09:19:44 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/03/04 23:07:34 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	ft_exit(t_token *tokens, t_all *all)
 	}
 	else
 	{
-		ft_printf("exit\n");
+		printf("exit\n");
 		all->status = 0;
 		printf("code de sortie: %d\n", all->status);
 		//exit (all->status);
