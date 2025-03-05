@@ -104,14 +104,14 @@ typedef struct s_string_list
 
 typedef struct s_all
 {
-	t_env	*env;
-	t_env	*env_no_sorted;
-	t_token	*tokens;
+	t_env			*env;
+	t_env			*env_no_sorted;
+	t_token			*tokens;
 	pid_t	pid;
 	t_string_list	*redir_in_names;
 	t_string_list	*redir_out_names;
 	t_cmd			*cmds;
-	int		status;
+	int				status;
 }	t_all;
 
 void	print_header(void);
@@ -140,7 +140,7 @@ bool			is_operator(char *str);
 bool			is_quote(char c);
 bool			is_quotes_closed(char *str);
 bool			is_valid_tokens(t_all *all, t_token *token);
-void			delete_token(t_token **tokens, t_token *token_to_del);
+void			delete_token(t_token **head_ref, t_token *node_to_delete);
 void			edit_token(t_token **token, t_token_type type, char *value);
 t_token			*token_new(t_token_type token_type, char *value,
 			bool single_q, bool double_q);

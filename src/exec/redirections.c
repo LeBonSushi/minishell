@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 02:40:39 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/05 02:10:14 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/05 16:49:15 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -449,6 +449,16 @@ bool	is_last(t_token *token)
 	return (true);
 }
 
+void	redir_in(t_cmd *curr_cmd, t_token *curr_token)
+{
+	t_token	*file;
+	
+	if (curr_cmd->infile_fd > 0)
+		close(curr_cmd->infile_fd);
+	file = curr_token->next;
+	if (access(file->value, F_OK))
+}
+
 void	manage_cmd_redir(t_cmd *curr_cmd)
 {
 	t_token	*curr_token;
@@ -457,16 +467,18 @@ void	manage_cmd_redir(t_cmd *curr_cmd)
 	curr_token = curr_cmd->tokens;
 	while (curr_token && curr_token->next)
 	{
-		next = curr_token->next;
+		next = curr_token->next->next;
 		if (is_redir(curr_token))
 		{
 			if (curr_token->token_type == REDIR_HEREDOC)
 			{
 				do_heredoc(curr_cmd, curr_token, is_last(curr_token));
-				curr_cmd->here_doc = true;
+				// curr_cmd->here_doc = true;
+				delete_token(curr_cmd->tokens, curr_token);
+				delete_token(curr_cmd->tokens, curr_token->next);
 			}
-			else if (curr_token->token_type == REDIR_IN)
-				/*manage_redir_in(curr_cmd, curr_token) */;
+			else if (curr_token->token_type == REDIR_IN && curr_cmd->skip_cmd == false)
+				redir_in(curr_cmd, curr_token);
 			else if (curr_token->token_type == REDIR_APPEND)
 				;
 			else

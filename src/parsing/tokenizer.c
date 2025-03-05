@@ -253,30 +253,27 @@ void	delete_token2(t_token **tokens, t_token *token_to_del)
 	}
 }
 
-void	delete_token(t_token **tokens, t_token *token_to_del)
+void	delete_token(t_token **head_ref, t_token *node_to_delete)
 {
-	t_token	*tmp;
-	t_token	*prev;
+	t_token	*current;
 
-	if (!tokens || !*tokens || !token_to_del)
-		return;
-	tmp = *tokens;
-	prev = NULL;
-	while (tmp)
+	if (!head_ref || !*head_ref || !node_to_delete)
+		return ;
+	if (*head_ref == node_to_delete)
 	{
-		if (tmp == token_to_del)
-		{
-			if (prev)
-				prev->next = tmp->next;
-			else
-				*tokens = tmp->next;
-			free(tmp->value);
-			free(tmp);
-			return ;
-		}
-		prev = tmp;
-		tmp = tmp->next;
+		*head_ref = node_to_delete->next;
+		free(node_to_delete->value);
+		free(node_to_delete);
+		return ;
 	}
+	current = *head_ref;
+	while (current && current->next != node_to_delete)
+		current = current->next;
+	if (!current)
+		return ;
+	current->next = node_to_delete->next;
+	free(node_to_delete->value);
+	free(node_to_delete);
 }
 
 void manage_empty_tokens(t_token **tokens)
