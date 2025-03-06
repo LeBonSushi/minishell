@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 02:40:39 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/06 02:53:41 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/06 04:11:13 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -414,10 +414,16 @@ int	do_heredoc(t_cmd *cmd, t_token *curr_token, bool is_last)
 	char	*line;
 	int		heredoc_fd;
 	char	*limiter;
+	char	*heredoc_file;
+	int		i;
 
 	if (cmd->infile_fd > 0)
 		close(cmd->infile_fd);
-	heredoc_fd = open(HEREDOC_TMP, O_RDWR | O_TRUNC | O_CREAT, 0664);
+	i = 0;
+	heredoc_file = ".heredoc";
+	while (access(heredoc_file, F_OK) == 0)
+		heredoc_file = ft_strjoin(".heredoc", ft_itoa(i++), 0, 1);
+	heredoc_fd = open(heredoc_file, O_RDWR | O_TRUNC | O_CREAT, 0664);
 	limiter = ft_strdup(curr_token->next->value);
 	while (1)
 	{
@@ -436,9 +442,9 @@ int	do_heredoc(t_cmd *cmd, t_token *curr_token, bool is_last)
 	}
 	close(heredoc_fd);
 	if (is_last)
-		cmd->infile_fd = open(HEREDOC_TMP, O_RDONLY);
+		cmd->infile_fd = open(heredoc_file, O_RDONLY);
 	else
-		unlink(HEREDOC_TMP);
+		unlink(heredoc_file);
 	return (0);
 }
 
@@ -465,10 +471,10 @@ int	redir_in(t_cmd *curr_cmd, t_token *curr_token)
 		close(curr_cmd->infile_fd);
 	file = curr_token->next;
 	error = ft_strjoin("ministress: ", file->value, 0, 0);
-	if (access(file->value, F_OK) == -1)
+	if (access(file->value, F_OK | R_OK))
 	{
 		curr_cmd->skip_cmd = true;
-		return (perror(error), 1);
+		return (perror(error), free(error), 1);
 	}
 	curr_cmd->infile_fd = open(file->value, O_RDONLY);
 	return (0);
@@ -483,11 +489,8 @@ int	redir_append(t_cmd *curr_cmd, t_token *curr_token)
 		close(curr_cmd->outfile_fd);
 	file = curr_token->next;
 	error = ft_strjoin("ministress: ", file->value, 0, 0);
-	if (access(file->value, F_OK) == -1 && errno == EACCES)
-	{
-		perror(error);
-		return (1);
-	}
+	if (access(file->value, R_OK))
+		return (perror(error), free(error), 1);
 	curr_cmd->outfile_fd = open(file->value, O_RDWR | O_APPEND | O_CREAT, 0644);
 	return (0);
 }
@@ -501,45 +504,42 @@ int	redir_out(t_cmd *curr_cmd, t_token *curr_token)
 		close(curr_cmd->outfile_fd);
 	file = curr_token->next;
 	error = ft_strjoin("ministress: ", file->value, 0, 0);
-	if (access(file->value, F_OK) == -1 && errno == EACCES)
-	{
-		perror(error);
-		return (1);
-	}
+	if (access(file->value, R_OK))
+		return (perror(error), free(error), 1);
 	curr_cmd->outfile_fd = open(file->value, O_RDWR | O_TRUNC | O_CREAT, 0644);
 	return (0);
 }
 
-void delete_redirection_tokens(t_token **tokens_ptr)
-{
-    t_token *curr;
-    t_token *next;
+// void delete_redirection_tokens(t_token **tokens_ptr)
+// {
+//     t_token *curr;
+//     t_token *next;
     
-    if (!tokens_ptr || !*tokens_ptr)
-        return;
+//     if (!tokens_ptr || !*tokens_ptr)
+//         return;
         
-    curr = *tokens_ptr;
-    while (curr)
-    {
-        if (is_redir(curr) && curr->next)
-        {
-            // Save the token that comes after the redirection pair
-            next = curr->next->next;
+//     curr = *tokens_ptr;
+//     while (curr)
+//     {
+//         if (is_redir(curr) && curr->next)
+//         {
+//             // Save the token that comes after the redirection pair
+//             next = curr->next->next;
             
-            // Delete the redirection token and its argument
-            delete_token(tokens_ptr, curr->next);
-            delete_token(tokens_ptr, curr);
+//             // Delete the redirection token and its argument
+//             delete_token(tokens_ptr, curr->next);
+//             delete_token(tokens_ptr, curr);
             
-            // Move to the token after the pair
-            curr = next;
-        }
-        else
-        {
-            // Not a redirection - just move to next token
-            curr = curr->next;
-        }
-    }
-}
+//             // Move to the token after the pair
+//             curr = next;
+//         }
+//         else
+//         {
+//             // Not a redirection - just move to next token
+//             curr = curr->next;
+//         }
+//     }
+// }
 
 int	manage_cmd_redir(t_cmd *curr_cmd)
 {
@@ -555,16 +555,15 @@ int	manage_cmd_redir(t_cmd *curr_cmd)
 		if (is_redir(curr_token))
 		{
 			if (curr_token->token_type == REDIR_HEREDOC)
-			{
 				status = do_heredoc(curr_cmd, curr_token, is_last(curr_token));
-				// curr_cmd->here_doc = true;
-			}
 			else if (curr_token->token_type == REDIR_IN && curr_cmd->skip_cmd == false)
 				status = redir_in(curr_cmd, curr_token);
 			else if (curr_token->token_type == REDIR_APPEND && curr_cmd->skip_cmd == false)
 				status = redir_append(curr_cmd, curr_token);
 			else if (curr_token->token_type == REDIR_OUT && curr_cmd->skip_cmd == false)
 				status = redir_out(curr_cmd, curr_token);
+			delete_token(&curr_cmd->tokens, curr_token->next);
+			delete_token(&curr_cmd->tokens, curr_token);
 			curr_token = next;
 		}
 		else

@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 14:26:45 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/03 15:36:51 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/06 03:02:30 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ t_cmd	*cmd_new(t_token	*tokens, char *path)
 	if (!new)
 		return (NULL);
 	new->tokens = tokens;
-	new->infile_fd = 0;
-	new->outfile_fd = 1;
+	new->infile_fd = -2;
+	new->outfile_fd = -2;
 	new->path = ft_strdup(path);
 	new->here_doc = false;
 	new->skip_cmd = false;

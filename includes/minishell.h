@@ -13,7 +13,7 @@
 #ifndef MINISHELL_H
 
 # define MINISHELL_H
-# define HEREDOC_TMP ".heredoctmp"
+# define HEREDOC_TMP ".heredoc"
 
 # include "../libft/libft.h"
 
