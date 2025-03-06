@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/06 02:01:09 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/06 06:24:43 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,11 +131,12 @@ void minishell_loop(t_all *all, char **envp)
 		// ft_redirection(all, all->tokens);           //???
 		//print_tokens(all->tokens);
 		all->status = manage_redirections(all->cmds);
+		exec_cmds(all, all->cmds);
 		// if (is_builtin(all->tokens))
 			// execute_builtins(all->tokens, &all->env, all);
 		free(line);
 		free_all_token(all->tokens);
-		free_all_cmds(all->cmds);
+		// free_all_cmds(all->cmds);
 	}
 }
 

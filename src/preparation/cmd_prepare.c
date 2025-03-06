@@ -6,13 +6,13 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 14:26:45 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/06 03:02:30 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/06 06:22:29 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-t_cmd	*cmd_new(t_token	*tokens, char *path)
+t_cmd	*cmd_new(t_token	*tokens)
 {
 	t_cmd	*new;
 
@@ -22,7 +22,8 @@ t_cmd	*cmd_new(t_token	*tokens, char *path)
 	new->tokens = tokens;
 	new->infile_fd = -2;
 	new->outfile_fd = -2;
-	new->path = ft_strdup(path);
+	new->path = NULL;
+	new->args = NULL;
 	new->here_doc = false;
 	new->skip_cmd = false;
 	new->pid = -2;

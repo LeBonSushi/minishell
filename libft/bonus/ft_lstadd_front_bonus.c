@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstadd_front.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpolizzi <lpolizzi@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/13 18:47:33 by lpolizzi          #+#    #+#             */
-/*   Updated: 2024/10/13 18:54:08 by lpolizzi         ###   ########.fr       */
+/*   Created: 2024/10/13 18:47:33 by macorso          #+#    #+#             */
+/*   Updated: 2024/10/13 18:54:08 by macorso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

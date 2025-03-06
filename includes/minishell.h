@@ -90,6 +90,7 @@ typedef struct s_cmd
 	bool	skip_cmd;
 	bool	here_doc;
 	char	*path;
+	char	**args;
 	int		infile_fd;
 	int		outfile_fd;
 	struct s_cmd	*next;
@@ -226,7 +227,7 @@ void	minishell_loop(t_all *all, char **envp);
 //------------------------CMDS-------------------------
 
 t_cmd	*create_cmdlist(t_token *token);
-t_cmd	*cmd_new(t_token	*tokens, char *path);
+t_cmd	*cmd_new(t_token *tokens);
 void	cmd_addback(t_cmd **cmd, t_cmd *new);
 int		manage_redirections(t_cmd *cmds);
 
@@ -247,5 +248,7 @@ void	free_tab(char **tab);
 
 void	ft_redirection(t_all *all, t_token *token);
 // void	ft_redirection(t_token *token, t_env *env, char **envp);
+
+void	exec_cmds(t_all *all, t_cmd *cmds);
 
 #endif

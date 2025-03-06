@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 14:35:21 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/26 15:07:10 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/06 06:22:22 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ t_cmd	*create_cmdlist(t_token *token)
 		if (curr->token_type == PIPE)
 		{
 			tokens_copy = copy_token_list(cmd_start, curr);
-			new_cmd = cmd_new(tokens_copy, NULL);
+			new_cmd = cmd_new(tokens_copy);
 			cmd_addback(&head, new_cmd);
 			cmd_start = curr->next;
 		}
@@ -79,7 +79,7 @@ t_cmd	*create_cmdlist(t_token *token)
 	if (cmd_start)
 	{
 		tokens_copy = copy_token_list(cmd_start, NULL);
-		new_cmd = cmd_new(tokens_copy, NULL);
+		new_cmd = cmd_new(tokens_copy);
 		cmd_addback(&head, new_cmd);
 	}
 	return (head);

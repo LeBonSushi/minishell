@@ -32,6 +32,7 @@ SRC		:=	src/minishell.c \
 			src/preparation/prepare_exec.c \
 \
 			src/exec/redirections.c \
+			src/exec/exec.c \
 \
 
 OBJ		:= $(SRC:.c=.o)

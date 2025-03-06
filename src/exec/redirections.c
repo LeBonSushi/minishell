@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 02:40:39 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/06 04:11:13 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/06 06:34:33 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -489,9 +489,9 @@ int	redir_append(t_cmd *curr_cmd, t_token *curr_token)
 		close(curr_cmd->outfile_fd);
 	file = curr_token->next;
 	error = ft_strjoin("ministress: ", file->value, 0, 0);
+	curr_cmd->outfile_fd = open(file->value, O_RDWR | O_APPEND | O_CREAT, 0644);
 	if (access(file->value, R_OK))
 		return (perror(error), free(error), 1);
-	curr_cmd->outfile_fd = open(file->value, O_RDWR | O_APPEND | O_CREAT, 0644);
 	return (0);
 }
 
@@ -504,9 +504,9 @@ int	redir_out(t_cmd *curr_cmd, t_token *curr_token)
 		close(curr_cmd->outfile_fd);
 	file = curr_token->next;
 	error = ft_strjoin("ministress: ", file->value, 0, 0);
+	curr_cmd->outfile_fd = open(file->value, O_RDWR | O_TRUNC | O_CREAT, 0644);
 	if (access(file->value, R_OK))
 		return (perror(error), free(error), 1);
-	curr_cmd->outfile_fd = open(file->value, O_RDWR | O_TRUNC | O_CREAT, 0644);
 	return (0);
 }
 
@@ -547,6 +547,8 @@ int	manage_cmd_redir(t_cmd *curr_cmd)
 	t_token	*next;
 	int		status;
 
+	if (!curr_cmd)
+		return 0;
 	curr_token = curr_cmd->tokens;
 	status = 0;
 	while (curr_token && curr_token->next)
