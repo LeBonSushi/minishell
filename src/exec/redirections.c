@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 02:40:39 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/05 16:49:15 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/06 02:53:41 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -395,16 +395,21 @@ char **cmd_to_tab(t_cmd *cmd)
 // }
 
 
-bool	ft_compare(char *limiter, char *line)
+bool ft_compare(char *limiter, char *line)
 {
-	if (ft_strncmp(line, limiter, ft_strlen(limiter)))
-		return (0);
-	if (line[ft_strlen(limiter)] != '\n')
-		return (0);
-	return (1);
+    size_t limiter_len = ft_strlen(limiter);
+    size_t line_len = ft_strlen(line);
+    
+    if (line_len < limiter_len + 1)  // +1 for newline
+        return (0);
+    if (ft_strncmp(line, limiter, limiter_len))
+        return (0);
+    if (line[limiter_len] != '\n')
+        return (0);
+    return (1);
 }
 
-void	do_heredoc(t_cmd *cmd, t_token *curr_token, bool is_last)
+int	do_heredoc(t_cmd *cmd, t_token *curr_token, bool is_last)
 {
 	char	*line;
 	int		heredoc_fd;
@@ -421,7 +426,8 @@ void	do_heredoc(t_cmd *cmd, t_token *curr_token, bool is_last)
 		if (!line || ft_compare(limiter, line))
 		{
 			printf("ca rentre (titre)\n");
-			free(line);
+			if (line)
+				free(line);
 			free(limiter);
 			break ;
 		}
@@ -433,6 +439,7 @@ void	do_heredoc(t_cmd *cmd, t_token *curr_token, bool is_last)
 		cmd->infile_fd = open(HEREDOC_TMP, O_RDONLY);
 	else
 		unlink(HEREDOC_TMP);
+	return (0);
 }
 
 bool	is_last(t_token *token)
@@ -449,22 +456,99 @@ bool	is_last(t_token *token)
 	return (true);
 }
 
-void	redir_in(t_cmd *curr_cmd, t_token *curr_token)
+int	redir_in(t_cmd *curr_cmd, t_token *curr_token)
 {
 	t_token	*file;
+	char	*error;
 	
 	if (curr_cmd->infile_fd > 0)
 		close(curr_cmd->infile_fd);
 	file = curr_token->next;
-	if (access(file->value, F_OK))
+	error = ft_strjoin("ministress: ", file->value, 0, 0);
+	if (access(file->value, F_OK) == -1)
+	{
+		curr_cmd->skip_cmd = true;
+		return (perror(error), 1);
+	}
+	curr_cmd->infile_fd = open(file->value, O_RDONLY);
+	return (0);
 }
 
-void	manage_cmd_redir(t_cmd *curr_cmd)
+int	redir_append(t_cmd *curr_cmd, t_token *curr_token)
+{
+	t_token	*file;
+	char	*error;
+
+	if (curr_cmd->outfile_fd > 0)
+		close(curr_cmd->outfile_fd);
+	file = curr_token->next;
+	error = ft_strjoin("ministress: ", file->value, 0, 0);
+	if (access(file->value, F_OK) == -1 && errno == EACCES)
+	{
+		perror(error);
+		return (1);
+	}
+	curr_cmd->outfile_fd = open(file->value, O_RDWR | O_APPEND | O_CREAT, 0644);
+	return (0);
+}
+
+int	redir_out(t_cmd *curr_cmd, t_token *curr_token)
+{
+	t_token	*file;
+	char	*error;
+
+	if (curr_cmd->outfile_fd > 0)
+		close(curr_cmd->outfile_fd);
+	file = curr_token->next;
+	error = ft_strjoin("ministress: ", file->value, 0, 0);
+	if (access(file->value, F_OK) == -1 && errno == EACCES)
+	{
+		perror(error);
+		return (1);
+	}
+	curr_cmd->outfile_fd = open(file->value, O_RDWR | O_TRUNC | O_CREAT, 0644);
+	return (0);
+}
+
+void delete_redirection_tokens(t_token **tokens_ptr)
+{
+    t_token *curr;
+    t_token *next;
+    
+    if (!tokens_ptr || !*tokens_ptr)
+        return;
+        
+    curr = *tokens_ptr;
+    while (curr)
+    {
+        if (is_redir(curr) && curr->next)
+        {
+            // Save the token that comes after the redirection pair
+            next = curr->next->next;
+            
+            // Delete the redirection token and its argument
+            delete_token(tokens_ptr, curr->next);
+            delete_token(tokens_ptr, curr);
+            
+            // Move to the token after the pair
+            curr = next;
+        }
+        else
+        {
+            // Not a redirection - just move to next token
+            curr = curr->next;
+        }
+    }
+}
+
+int	manage_cmd_redir(t_cmd *curr_cmd)
 {
 	t_token	*curr_token;
 	t_token	*next;
+	int		status;
 
 	curr_token = curr_cmd->tokens;
+	status = 0;
 	while (curr_token && curr_token->next)
 	{
 		next = curr_token->next->next;
@@ -472,32 +556,36 @@ void	manage_cmd_redir(t_cmd *curr_cmd)
 		{
 			if (curr_token->token_type == REDIR_HEREDOC)
 			{
-				do_heredoc(curr_cmd, curr_token, is_last(curr_token));
+				status = do_heredoc(curr_cmd, curr_token, is_last(curr_token));
 				// curr_cmd->here_doc = true;
-				delete_token(curr_cmd->tokens, curr_token);
-				delete_token(curr_cmd->tokens, curr_token->next);
 			}
 			else if (curr_token->token_type == REDIR_IN && curr_cmd->skip_cmd == false)
-				redir_in(curr_cmd, curr_token);
-			else if (curr_token->token_type == REDIR_APPEND)
-				;
-			else
-				;
+				status = redir_in(curr_cmd, curr_token);
+			else if (curr_token->token_type == REDIR_APPEND && curr_cmd->skip_cmd == false)
+				status = redir_append(curr_cmd, curr_token);
+			else if (curr_token->token_type == REDIR_OUT && curr_cmd->skip_cmd == false)
+				status = redir_out(curr_cmd, curr_token);
+			curr_token = next;
 		}
-		curr_token = next;
+		else
+			curr_token = curr_token->next;
 	}
+	return (status);
 }
 
-void	manage_redirections(t_cmd *cmds)
+int	manage_redirections(t_cmd *cmds)
 {
 	t_cmd	*curr;
+	int		status;
 
 	curr = cmds;
+	status = 0;
 	while (curr)
 	{
-		manage_cmd_redir(curr);
+		status = manage_cmd_redir(curr);
 		curr = curr->next;
 	}
+	return (status);
 }
 
 

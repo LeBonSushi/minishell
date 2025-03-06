@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/04 21:25:55 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/06 02:01:09 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,22 @@ t_token	*delete_empty_tokens(t_token *tokens)
 	return (tokens);
 }
 
+void	free_all_cmds(t_cmd *cmds)
+{
+	t_cmd	*curr;
+	t_cmd	*next;
+
+	curr = cmds;
+	while (curr)
+	{
+		next = curr->next;
+		free(curr->path);
+		free_all_token(curr->tokens);
+		free(curr);
+		curr = next;
+	}
+	
+}
 
 void minishell_loop(t_all *all, char **envp)
 {
@@ -114,11 +130,12 @@ void minishell_loop(t_all *all, char **envp)
 		//print_tokens(all->tokens);
 		// ft_redirection(all, all->tokens);           //???
 		//print_tokens(all->tokens);
-		manage_redirections(all->cmds);
+		all->status = manage_redirections(all->cmds);
 		// if (is_builtin(all->tokens))
 			// execute_builtins(all->tokens, &all->env, all);
 		free(line);
 		free_all_token(all->tokens);
+		free_all_cmds(all->cmds);
 	}
 }
 
