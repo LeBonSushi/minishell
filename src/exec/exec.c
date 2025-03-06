@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 05:18:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/06 06:39:54 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/06 07:19:43 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ char	*find_exec_path(char *cmd, char **paths)
 		exec_path = NULL;
 		i++;
 	}
-	return (NULL);
+	return (ft_strdup(cmd));
 }
 
 bool	is_dir(t_all *all, char *cmd)
@@ -150,9 +150,6 @@ void	fork_error(t_all *all, int *fd)
 
 void	child_process(t_all *all, t_cmd *cmd, int *fd, char **env)
 {
-	char	**args;
-
-	args = tokens_to_tab(cmd->tokens);
 	if (cmd->infile_fd == -2)
 		cmd->infile_fd = open("/dev/null", O_RDONLY);
 	close(fd[0]);
@@ -163,8 +160,8 @@ void	child_process(t_all *all, t_cmd *cmd, int *fd, char **env)
 		dup2(fd[1], STDOUT_FILENO);
 	close(fd[1]);
 	close(cmd->infile_fd);
-	execve(cmd->path, args, env);
-	ft_fprintf(2, "%s: Command not found\n", args[0]);
+	execve(cmd->path, cmd->args, env);
+	ft_fprintf(2, "%s: Command not found\n", cmd->args[0]);
 	if (errno == EACCES)
 		all->status = 126;
 	else if (errno == ENOENT)
@@ -201,16 +198,17 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 {
 	t_cmd	*curr;
 	char	**env;
-	char	**args;
 	int		fd[2];
 
 	env = env_to_tab(all->env);
 	curr = cmds;
 	while (curr)
 	{
-		args = tokens_to_tab(curr->tokens);
-		if (args)
-			curr->path = get_cmd_path(all, args[0], env);
+		curr->args = tokens_to_tab(curr->tokens);
+		curr->path = get_cmd_path(all, curr->args[0], env);
+		if (!curr->path)
+			if (*curr->args)
+				curr->path = ft_strdup(curr->args[0]);
 		if (curr->path && !curr->skip_cmd)
 		{
 			if (pipe(fd) == -1)
@@ -227,6 +225,7 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 			curr->next->infile_fd = open("/dev/null", O_RDONLY);
 		curr = curr->next;
 	}
+	// debug_print_cmdlist(cmds);
 	waitall(all, cmds);
 	return (free_tab(env));
 }

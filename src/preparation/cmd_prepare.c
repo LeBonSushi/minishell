@@ -6,16 +6,15 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 14:26:45 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/06 06:22:29 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/06 07:12:37 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-t_cmd	*cmd_new(t_token	*tokens)
+t_cmd	*cmd_new(t_token *tokens)
 {
 	t_cmd	*new;
-
 	new = malloc(sizeof(t_cmd));
 	if (!new)
 		return (NULL);
