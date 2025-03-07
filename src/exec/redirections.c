@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 02:40:39 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/07 16:09:12 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/07 21:17:51 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -397,15 +397,19 @@ char **cmd_to_tab(t_cmd *cmd)
 
 bool ft_compare(char *limiter, char *line)
 {
+    if (!line || !limiter)
+        return (0);
+    
     size_t limiter_len = ft_strlen(limiter);
     size_t line_len = ft_strlen(line);
     
-    if (line_len < limiter_len + 1)  // +1 for newline
+    // For readline, we don't need to check for newline
+    if (line_len != limiter_len)
         return (0);
+    
     if (ft_strncmp(line, limiter, limiter_len))
         return (0);
-    if (line[limiter_len] != '\n')
-        return (0);
+        
     return (1);
 }
 
@@ -427,8 +431,7 @@ int	do_heredoc(t_cmd *cmd, t_token *curr_token, bool is_last)
 	limiter = ft_strdup(curr_token->next->value);
 	while (1)
 	{
-		ft_fprintf(0, "ministress heredoc> ");
-		line = get_next_line(0);
+		line = readline("ministress heredoc> ");
 		if (!line || ft_compare(limiter, line))
 		{
 			if (line)
@@ -436,14 +439,14 @@ int	do_heredoc(t_cmd *cmd, t_token *curr_token, bool is_last)
 			free(limiter);
 			break ;
 		}
-		ft_fprintf(heredoc_fd, "%s", line);
+		ft_fprintf(heredoc_fd, "%s\n", line);
 		free(line);
 	}
+	cmd->here_doc = true;
 	close(heredoc_fd);
 	if (is_last)
 		cmd->infile_fd = open(heredoc_file, O_RDONLY);
-	else
-		unlink(heredoc_file);
+	unlink(heredoc_file);
 	return (0);
 }
 
@@ -451,10 +454,10 @@ bool	is_last(t_token *token)
 {
 	t_token	*curr;
 
-	curr = token->next;
-	while (curr)
+	curr = token;
+	while (curr->next)
 	{
-		if (curr->token_type == token->token_type)
+		if (curr->next->token_type == token->token_type)
 			return (false);
 		curr = curr->next;
 	}
@@ -516,7 +519,7 @@ int	manage_cmd_redir(t_all *all, t_cmd *curr_cmd)
 	int		status;
 
 	if (!curr_cmd)
-		return 0;
+		return (0);
 	curr_token = curr_cmd->tokens;
 	status = all->status;
 	while (curr_token && curr_token->next)
@@ -548,8 +551,8 @@ int	manage_redirections(t_all *all, t_cmd *cmds)
 	int		status;
 
 	curr = cmds;
-	status = all->status;
-	while (curr && !curr->skip_cmd)
+	status = 0;
+	while (curr)
 	{
 		status = manage_cmd_redir(all, curr);
 		curr = curr->next;

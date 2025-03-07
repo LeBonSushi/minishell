@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/07 16:07:36 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/07 21:18:34 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,12 +111,12 @@ void	free_all_cmds(t_cmd *cmds)
 void minishell_loop(t_all *all, char **envp)
 {
 	char	*line;
-	char	**env;
 	(void)envp;
 	(void)all;
 
 	while(1)
 	{
+		// ft_fprintf(2, "test\n");
 		line = readline("ministress$ ");
 		if (!line || !*line)
 			continue ;
@@ -125,18 +125,11 @@ void minishell_loop(t_all *all, char **envp)
 		all->tokens = create_expand_tokens(all, all->tokens);
 		all->tokens = merge_tokens(all->tokens);
 		all->cmds = create_cmdlist(all->tokens);
-		env = env_to_tab(all->env);
-		// print_tokens(all->tokens);
-		// ft_redirection(all, all->tokens);           //???
-		// print_tokens(all->tokens);
 		manage_redirections(all, all->cmds);
 		exec_cmds(all, all->cmds);
-		// ft_fprintf(2, "%s\n", ft_itoa(all->status));
-		// if (is_builtin(all->tokens))
-			// execute_builtins(all->tokens, &all->env, all);
 		free(line);
 		free_all_token(all->tokens);
-		// free_all_cmds(all->cmds);
+		free_all_cmds(all->cmds);
 	}
 }
 

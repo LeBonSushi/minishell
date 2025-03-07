@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 05:18:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/07 16:10:41 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/07 20:46:55 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,6 +176,12 @@ void	fork_error(t_all *all, int *fd)
 	all->status = 1;
 }
 
+int	ft_exit2(int exit_code)
+{
+	return (127);
+	exit(exit_code);
+}
+
 void	child_process(t_all *all, t_cmd *cmd, int *fd, char **env)
 {
 
@@ -194,7 +200,7 @@ void	child_process(t_all *all, t_cmd *cmd, int *fd, char **env)
 	// exec_error(all, cmd->args[0]);
 	if (execve(cmd->path, cmd->args, env) == -1)
 		exec_error(all, cmd->args[0]);
-	exit(all->status);
+	all->status = ft_exit2(127);
 }
 
 void	parent_process(t_cmd *curr, int *fd)
@@ -205,6 +211,8 @@ void	parent_process(t_cmd *curr, int *fd)
 	if (curr->next && curr->next->infile_fd < 0)
 		curr->next->infile_fd = dup(fd[0]);
 	close(fd[0]);
+	// if (curr->here_doc == true)
+	// 	unlink()
 }
 
 void	waitall(t_all *all, t_cmd *cmds)
@@ -218,7 +226,7 @@ void	waitall(t_all *all, t_cmd *cmds)
 		waitpid(cmd->pid, &tmp, 0);
 		cmd = cmd->next;
 	}
-	ft_fprintf(2, "%s\n", ft_itoa(all->status));
+	// ft_fprintf(2, "%s\n", ft_itoa(all->status));
 	if (WIFEXITED(tmp))
 		if (WEXITSTATUS(tmp) > all->status)
 			all->status = WEXITSTATUS(tmp);
@@ -249,17 +257,21 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 	curr = cmds;
 	while (curr)
 	{
+		all->status = 0;
 		env = env_to_tab(all->env);
 		paths = get_paths(all, env);
 		curr->args = tokens_to_tab(curr->tokens);
-		curr->path = find_exec_path(curr->args[0], paths);
-		// if (!curr->path || !curr->args[0] || curr->skip_cmd)
-		// {
-		// 	curr = curr->next;
-		// 	if (curr && curr->infile_fd < 0)
-		// 		curr->infile_fd = open("/dev/null", O_RDONLY);
-		// 	continue;
-		// }
+		if (!curr->args)
+			curr->path = NULL;
+		else
+			curr->path = find_exec_path(curr->args[0], paths);
+		if (!curr->path || !curr->args[0] || curr->skip_cmd)
+		{
+			curr = curr->next;
+			if (curr && curr->infile_fd < 0)
+				curr->infile_fd = open("/dev/null", O_RDONLY);
+			continue;
+		}
 		// else if (curr == cmds && !curr->next && is_builtin(curr->tokens))
 		// 	execute_builtins(curr->tokens, &all->env, all);
 		// else
