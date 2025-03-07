@@ -229,7 +229,7 @@ void	minishell_loop(t_all *all, char **envp);
 t_cmd	*create_cmdlist(t_token *token);
 t_cmd	*cmd_new(t_token *tokens);
 void	cmd_addback(t_cmd **cmd, t_cmd *new);
-int		manage_redirections(t_cmd *cmds);
+int		manage_redirections(t_all *all, t_cmd *cmds);
 
 //---------------------CLEAR---------------------------
 

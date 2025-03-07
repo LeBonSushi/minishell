@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 05:18:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/06 07:19:43 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/07 16:10:41 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,34 @@ bool	is_dir(t_all *all, char *cmd)
 	return (false);
 }
 
+bool	is_file(char *cmd)
+{
+	int	fd;
+
+	fd = open(cmd, O_RDONLY);
+	if (fd >= 0)
+	{
+		close(fd);
+		return (true);
+	}
+	return (false);
+}
+
+void	exec_error(t_all *all, char *cmd)
+{
+	if (errno == EACCES && all->status == 0 && !is_file(cmd))
+	{
+		ft_fprintf(2, "%s: Permission denied\n", cmd);
+		all->status = 126;
+		return ;
+	}
+	else if ((!ft_strncmp(cmd, "./", 2) || !ft_strncmp(cmd, "/", 1)) && all->status == 0)
+		perror(cmd);
+	else
+		ft_fprintf(2, "%s: command not found\n", cmd);
+	all->status = 127;
+}
+
 char	*get_cmd_path(t_all *all, char *cmd, char **env)
 {
 	char	**paths;
@@ -150,31 +178,32 @@ void	fork_error(t_all *all, int *fd)
 
 void	child_process(t_all *all, t_cmd *cmd, int *fd, char **env)
 {
-	if (cmd->infile_fd == -2)
-		cmd->infile_fd = open("/dev/null", O_RDONLY);
+
 	close(fd[0]);
-	dup2(cmd->infile_fd, STDIN_FILENO);
-	if (!cmd->next)
+	if  (cmd->infile_fd > 0)
+		dup2(cmd->infile_fd, STDIN_FILENO);
+	if  (cmd->outfile_fd > 0)
 		dup2(cmd->outfile_fd, STDOUT_FILENO);
-	else
+	else if (cmd->next)
 		dup2(fd[1], STDOUT_FILENO);
 	close(fd[1]);
 	close(cmd->infile_fd);
-	execve(cmd->path, cmd->args, env);
-	ft_fprintf(2, "%s: Command not found\n", cmd->args[0]);
-	if (errno == EACCES)
-		all->status = 126;
-	else if (errno == ENOENT)
-		all->status = 127;
-	else
-		all->status = 1;
+	// if (is_builtin())
+	// 	execute_builtins()
+	// else if (execve(cmd->path, cmd->args, env) == -1)
+	// exec_error(all, cmd->args[0]);
+	if (execve(cmd->path, cmd->args, env) == -1)
+		exec_error(all, cmd->args[0]);
+	exit(all->status);
 }
 
 void	parent_process(t_cmd *curr, int *fd)
 {
 	close(fd[1]);
-	close(curr->infile_fd);
-	curr->infile_fd = dup(fd[0]);
+	if (curr->infile_fd > 0)
+		close(curr->infile_fd);
+	if (curr->next && curr->next->infile_fd < 0)
+		curr->next->infile_fd = dup(fd[0]);
 	close(fd[0]);
 }
 
@@ -189,43 +218,54 @@ void	waitall(t_all *all, t_cmd *cmds)
 		waitpid(cmd->pid, &tmp, 0);
 		cmd = cmd->next;
 	}
+	ft_fprintf(2, "%s\n", ft_itoa(all->status));
 	if (WIFEXITED(tmp))
 		if (WEXITSTATUS(tmp) > all->status)
 			all->status = WEXITSTATUS(tmp);
 }
 
+void	do_pipes(t_all *all, t_cmd *curr, char **env, int fd[2])
+{
+	if (pipe(fd) == -1)
+			pipe_error(all, fd);
+	curr->pid = fork();
+	if (curr->pid == -1)
+		fork_error(all, fd);
+	if (curr->pid == 0)
+		child_process(all, curr, fd, env);
+	else
+		parent_process(curr, fd);
+}
+
 void	exec_cmds(t_all *all, t_cmd *cmds)
 {
 	t_cmd	*curr;
-	char	**env;
 	int		fd[2];
+	char	**paths;
+	char	**env;
 
-	env = env_to_tab(all->env);
+	if (!cmds)
+		return ;
 	curr = cmds;
 	while (curr)
 	{
+		env = env_to_tab(all->env);
+		paths = get_paths(all, env);
 		curr->args = tokens_to_tab(curr->tokens);
-		curr->path = get_cmd_path(all, curr->args[0], env);
-		if (!curr->path)
-			if (*curr->args)
-				curr->path = ft_strdup(curr->args[0]);
-		if (curr->path && !curr->skip_cmd)
-		{
-			if (pipe(fd) == -1)
-				pipe_error(all, fd);
-			curr->pid = fork();
-			if (curr->pid == -1)
-				fork_error(all, fd);
-			if (curr->pid == 0)
-				child_process(all, curr, fd, env);
-			else
-				parent_process(curr, fd);
-		}
-		if (curr->skip_cmd && curr->next)
-			curr->next->infile_fd = open("/dev/null", O_RDONLY);
+		curr->path = find_exec_path(curr->args[0], paths);
+		// if (!curr->path || !curr->args[0] || curr->skip_cmd)
+		// {
+		// 	curr = curr->next;
+		// 	if (curr && curr->infile_fd < 0)
+		// 		curr->infile_fd = open("/dev/null", O_RDONLY);
+		// 	continue;
+		// }
+		// else if (curr == cmds && !curr->next && is_builtin(curr->tokens))
+		// 	execute_builtins(curr->tokens, &all->env, all);
+		// else
+		do_pipes(all, curr, env, fd);
 		curr = curr->next;
 	}
 	// debug_print_cmdlist(cmds);
 	waitall(all, cmds);
-	return (free_tab(env));
 }

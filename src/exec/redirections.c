@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 02:40:39 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/06 07:17:12 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/07 16:09:12 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -431,7 +431,6 @@ int	do_heredoc(t_cmd *cmd, t_token *curr_token, bool is_last)
 		line = get_next_line(0);
 		if (!line || ft_compare(limiter, line))
 		{
-			printf("ca rentre (titre)\n");
 			if (line)
 				free(line);
 			free(limiter);
@@ -510,38 +509,7 @@ int	redir_out(t_cmd *curr_cmd, t_token *curr_token)
 	return (0);
 }
 
-// void delete_redirection_tokens(t_token **tokens_ptr)
-// {
-//     t_token *curr;
-//     t_token *next;
-    
-//     if (!tokens_ptr || !*tokens_ptr)
-//         return;
-        
-//     curr = *tokens_ptr;
-//     while (curr)
-//     {
-//         if (is_redir(curr) && curr->next)
-//         {
-//             // Save the token that comes after the redirection pair
-//             next = curr->next->next;
-            
-//             // Delete the redirection token and its argument
-//             delete_token(tokens_ptr, curr->next);
-//             delete_token(tokens_ptr, curr);
-            
-//             // Move to the token after the pair
-//             curr = next;
-//         }
-//         else
-//         {
-//             // Not a redirection - just move to next token
-//             curr = curr->next;
-//         }
-//     }
-// }
-
-int	manage_cmd_redir(t_cmd *curr_cmd)
+int	manage_cmd_redir(t_all *all, t_cmd *curr_cmd)
 {
 	t_token	*curr_token;
 	t_token	*next;
@@ -550,7 +518,7 @@ int	manage_cmd_redir(t_cmd *curr_cmd)
 	if (!curr_cmd)
 		return 0;
 	curr_token = curr_cmd->tokens;
-	status = 0;
+	status = all->status;
 	while (curr_token && curr_token->next)
 	{
 		next = curr_token->next->next;
@@ -558,11 +526,11 @@ int	manage_cmd_redir(t_cmd *curr_cmd)
 		{
 			if (curr_token->token_type == REDIR_HEREDOC)
 				status = do_heredoc(curr_cmd, curr_token, is_last(curr_token));
-			else if (curr_token->token_type == REDIR_IN && curr_cmd->skip_cmd == false)
+			else if (curr_token->token_type == REDIR_IN)
 				status = redir_in(curr_cmd, curr_token);
-			else if (curr_token->token_type == REDIR_APPEND && curr_cmd->skip_cmd == false)
+			else if (curr_token->token_type == REDIR_APPEND)
 				status = redir_append(curr_cmd, curr_token);
-			else if (curr_token->token_type == REDIR_OUT && curr_cmd->skip_cmd == false)
+			else if (curr_token->token_type == REDIR_OUT)
 				status = redir_out(curr_cmd, curr_token);
 			delete_token(&curr_cmd->tokens, curr_token->next);
 			delete_token(&curr_cmd->tokens, curr_token);
@@ -574,16 +542,16 @@ int	manage_cmd_redir(t_cmd *curr_cmd)
 	return (status);
 }
 
-int	manage_redirections(t_cmd *cmds)
+int	manage_redirections(t_all *all, t_cmd *cmds)
 {
 	t_cmd	*curr;
 	int		status;
 
 	curr = cmds;
-	status = 0;
-	while (curr)
+	status = all->status;
+	while (curr && !curr->skip_cmd)
 	{
-		status = manage_cmd_redir(curr);
+		status = manage_cmd_redir(all, curr);
 		curr = curr->next;
 	}
 	return (status);

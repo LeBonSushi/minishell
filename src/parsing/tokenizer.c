@@ -167,9 +167,7 @@ bool	manage_error_redir(t_all *all, t_token *token)
 	{
 		if (!token->next)
 		{
-			printf("Avant écriture: all->status = %d\n", all->status);
-			all->status = 2; // ou 1
-			printf("Après écriture: all->status = %d\n", all->status);
+			all->status = 2;
 			ft_putstr_fd("ministress: syntax error near unexpected token `newline\'\n", 2);
 			return (true);
 		}

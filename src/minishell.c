@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/06 07:09:10 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/07 16:07:36 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,11 +126,12 @@ void minishell_loop(t_all *all, char **envp)
 		all->tokens = merge_tokens(all->tokens);
 		all->cmds = create_cmdlist(all->tokens);
 		env = env_to_tab(all->env);
-		//print_tokens(all->tokens);
+		// print_tokens(all->tokens);
 		// ft_redirection(all, all->tokens);           //???
-		//print_tokens(all->tokens);
-		all->status = manage_redirections(all->cmds);
+		// print_tokens(all->tokens);
+		manage_redirections(all, all->cmds);
 		exec_cmds(all, all->cmds);
+		// ft_fprintf(2, "%s\n", ft_itoa(all->status));
 		// if (is_builtin(all->tokens))
 			// execute_builtins(all->tokens, &all->env, all);
 		free(line);
