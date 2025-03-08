@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/07 21:18:34 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/08 03:05:30 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ void minishell_loop(t_all *all, char **envp)
 		all->tokens = create_expand_tokens(all, all->tokens);
 		all->tokens = merge_tokens(all->tokens);
 		all->cmds = create_cmdlist(all->tokens);
+		// print_tokens(all->tokens);
 		manage_redirections(all, all->cmds);
 		exec_cmds(all, all->cmds);
 		free(line);

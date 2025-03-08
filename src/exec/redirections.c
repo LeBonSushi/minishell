@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 02:40:39 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/07 21:17:51 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/08 02:45:29 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -550,6 +550,8 @@ int	manage_redirections(t_all *all, t_cmd *cmds)
 	t_cmd	*curr;
 	int		status;
 
+	if (!cmds)
+		return (0);
 	curr = cmds;
 	status = 0;
 	while (curr)

@@ -311,7 +311,7 @@ t_token	*fill_tokens(char *str, t_all *all)
 	tokens = NULL;
 	while (*str)
 		token_addback(&tokens, new_parsed_token(&str));
-	manage_empty_tokens(&tokens);
+	// manage_empty_tokens(&tokens);
 	if (!is_valid_tokens(all, tokens))
 		return (free_all_token(tokens), NULL);
 	return (tokens);

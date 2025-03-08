@@ -253,5 +253,6 @@ void	ft_redirection(t_all *all, t_token *token);
 char	*get_cmd_path(t_all *all, char *cmd, char **env);
 char	**tokens_to_tab(t_token *tokens);
 void	exec_cmds(t_all *all, t_cmd *cmds);
+int		ft_exit2(t_all *all, int exit_code);
 
 #endif
