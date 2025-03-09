@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 05:18:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/08 19:35:43 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/09 03:32:44 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,22 +138,41 @@ void	exec_error(t_all *all, char *cmd)
 	// else
 	// 	ft_fprintf(2, "%s: command not found\n", cmd);
 	// all->status = 127;
-    if (errno == EACCES && all->status == 0 && !is_file(cmd) && ft_strcmp(cmd, ""))
+    // if (errno == EACCES && all->status == 0 && !is_file(cmd) && ft_strcmp(cmd, ""))
+    // {
+    //     ft_fprintf(2, "%s: Permission denied\n", cmd);
+    //     all->status = 126;
+	// 	// exit(126);
+	// 	return ;
+    // }
+    // else if ((!ft_strncmp(cmd, "./", 2) || !ft_strncmp(cmd, "/", 1)) && all->status == 0)
+	// {
+    //     perror(cmd);
+	// 	if (errno != ENOENT)
+	// 	{
+	// 		all->status = 126;
+	// 		// exit(126);
+	// 		return ;
+	// 	}
+	// }
+	// else
+	// 	ft_fprintf(2, "%s: command not found\n", cmd);
+	// all->status = 127;
+	// // exit(127);
+    if (errno == EISDIR)
+    {
+        ft_fprintf(2, "%s: Is a directory\n", cmd);
+        all->status = 126;
+        return;
+    }
+    else if (errno == EACCES && all->status == 0)
     {
         ft_fprintf(2, "%s: Permission denied\n", cmd);
         all->status = 126;
-		return ;
-		// exit(126);
+        return;
     }
     else if ((!ft_strncmp(cmd, "./", 2) || !ft_strncmp(cmd, "/", 1)) && all->status == 0)
-	{
         perror(cmd);
-		if (errno != ENOENT)
-		{
-			all->status = 126;
-			return ;
-		}
-	}
     else
         ft_fprintf(2, "%s: command not found\n", cmd);
     all->status = 127;
@@ -213,13 +232,14 @@ void	child_process(t_all *all, t_cmd *cmd, int *fd, char **env)
 		dup2(fd[1], STDOUT_FILENO);
 	close(fd[1]);
 	close(cmd->infile_fd);
+	close(cmd->outfile_fd);
 	// if (is_builtin())
 	// 	execute_builtins()
 	// else if (execve(cmd->path, cmd->args, env) == -1)
 	// exec_error(all, cmd->args[0]);
 	if (execve(cmd->path, cmd->args, env) == -1)
 		exec_error(all, cmd->args[0]);
-	// exit(all->status);
+	exit(all->status);
 }
 
 void	parent_process(t_cmd *curr, int *fd)
@@ -240,16 +260,17 @@ void	waitall(t_all *all, t_cmd *cmds)
 	int		tmp;
 
 	cmd = cmds;
-	ft_fprintf(2, "itoa: %s\n", ft_itoa(all->status));
+	// ft_fprintf(2, "itoa: %s\n", ft_itoa(all->status));
 	while (cmd)
     {
         waitpid(cmd->pid, &tmp, 0);// Always update status to the last command's result
+		// if (WIFEXITED(tmp))
+    	// 	all->status = WEXITSTATUS(tmp);
         cmd = cmd->next;
     }
 	if (WIFEXITED(tmp))
-		if (WEXITSTATUS(tmp) > WEXITSTATUS(all->status))
-			all->status = WEXITSTATUS(all->status);
-	ft_fprintf(2, "after itoa: %s\n", ft_itoa(all->status));
+		if (WEXITSTATUS(tmp) > all->status)
+			all->status = WEXITSTATUS(tmp);
 }
 
 void	do_pipes(t_all *all, t_cmd *curr, char **env, int fd[2])
@@ -275,9 +296,9 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 	if (!cmds)
 		return ;
 	curr = cmds;
+	all->status = 0;
 	while (curr)
 	{
-		all->status = 0;
 		env = env_to_tab(all->env);
 		paths = get_paths(all, env);
 		curr->args = tokens_to_tab(curr->tokens);

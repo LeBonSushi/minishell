@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/08 02:45:08 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/09 00:24:39 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -295,8 +295,8 @@ t_token *merge_tokens(t_token *tokens)
 	init_tokens(&merged, &curr, tokens);
 	while (curr && curr->next)
 	{
-		if (!is_redir(curr) && !is_redir(curr->next)
-			&& !curr->space_after && ft_strcmp(curr->value, ""))
+		if (!is_redir(curr) && !is_redir(curr->next) && curr->token_type != PIPE
+			&& curr->next->token_type != PIPE && !curr->space_after && ft_strcmp(curr->value, ""))
 		{
 			curr->value = join_token_values(curr, curr->next);
 			next = curr->next;
