@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 05:18:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/09 03:32:44 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/09 07:24:10 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,55 +127,42 @@ bool	is_file(char *cmd)
 
 void	exec_error(t_all *all, char *cmd)
 {
-	// if (errno == EACCES && all->status == 0 && !is_file(cmd))
-	// {
-	// 	ft_fprintf(2, "%s: Permission denied\n", cmd);
-	// 	all->status = 126;
-	// 	return ;
-	// }
-	// else if ((!ft_strncmp(cmd, "./", 2) || !ft_strncmp(cmd, "/", 1)) && all->status == 0)
-	// 	perror(cmd);
-	// else
-	// 	ft_fprintf(2, "%s: command not found\n", cmd);
-	// all->status = 127;
-    // if (errno == EACCES && all->status == 0 && !is_file(cmd) && ft_strcmp(cmd, ""))
-    // {
-    //     ft_fprintf(2, "%s: Permission denied\n", cmd);
-    //     all->status = 126;
-	// 	// exit(126);
-	// 	return ;
-    // }
-    // else if ((!ft_strncmp(cmd, "./", 2) || !ft_strncmp(cmd, "/", 1)) && all->status == 0)
-	// {
-    //     perror(cmd);
-	// 	if (errno != ENOENT)
-	// 	{
-	// 		all->status = 126;
-	// 		// exit(126);
-	// 		return ;
-	// 	}
-	// }
-	// else
-	// 	ft_fprintf(2, "%s: command not found\n", cmd);
-	// all->status = 127;
-	// // exit(127);
-    if (errno == EISDIR)
-    {
-        ft_fprintf(2, "%s: Is a directory\n", cmd);
-        all->status = 126;
-        return;
-    }
-    else if (errno == EACCES && all->status == 0)
+    if (errno == EACCES && all->status == 0 && !is_file(cmd) && ft_strcmp(cmd, ""))
     {
         ft_fprintf(2, "%s: Permission denied\n", cmd);
         all->status = 126;
-        return;
+		return ;
     }
     else if ((!ft_strncmp(cmd, "./", 2) || !ft_strncmp(cmd, "/", 1)) && all->status == 0)
+	{
         perror(cmd);
-    else
-        ft_fprintf(2, "%s: command not found\n", cmd);
-    all->status = 127;
+		if (errno != ENOENT)
+		{
+			all->status = 126;
+			return ;
+		}
+	}
+	else
+		ft_fprintf(2, "%s: command not found\n", cmd);
+	all->status = 127;
+	// // exit(127);
+    // if (errno == EISDIR)
+    // {
+    //     ft_fprintf(2, "%s: Is a directory\n", cmd);
+    //     all->status = 126;
+    //     return;
+    // }
+    // else if (errno == EACCES && all->status == 0)
+    // {
+    //     ft_fprintf(2, "%s: Permission denied\n", cmd);
+    //     all->status = 126;
+    //     return;
+    // }
+    // else if ((!ft_strncmp(cmd, "./", 2) || !ft_strncmp(cmd, "/", 1)) && all->status == 0)
+    //     perror(cmd);
+    // else
+    //     ft_fprintf(2, "%s: command not found\n", cmd);
+    // all->status = 127;
 }
 
 char	*get_cmd_path(t_all *all, char *cmd, char **env)
@@ -296,7 +283,6 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 	if (!cmds)
 		return ;
 	curr = cmds;
-	all->status = 0;
 	while (curr)
 	{
 		env = env_to_tab(all->env);
