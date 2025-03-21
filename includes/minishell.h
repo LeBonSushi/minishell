@@ -79,7 +79,6 @@ typedef struct s_token
 	bool			single_quoted;
 	bool			double_quoted;
 	bool			space_after;
-	bool			expand_wildcard;
 	char			*value;
 	struct s_token	*next;
 }	t_token;
@@ -152,7 +151,7 @@ t_token			*ft_parse_quoted(char **str, bool *sq, bool *dq);
 t_token			*ft_parse_word(char **str, bool sq, bool dq);
 t_token			*ft_parse_operator(char **str);
 t_token			*new_parsed_token(char	**str);
-t_token			*fill_tokens(char *str, t_all *all);
+t_token			*fill_tokens(char *str);
 t_token			*copy_token(t_token *tmp, t_token **next_ptr);
 t_token			*join_tokens(t_token *tmp, t_token *next, t_token **next_ptr);
 t_token			*merge_tokens(t_token *tokens);

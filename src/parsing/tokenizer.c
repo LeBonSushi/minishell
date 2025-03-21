@@ -301,19 +301,19 @@ void manage_empty_tokens(t_token **tokens)
 	tmp->space_after = false;
 }
 
-t_token	*fill_tokens(char *str, t_all *all)
+t_token	*fill_tokens(char *str)
 {
 	t_token	*tokens;
 
 	if (!str)
 		return (NULL);
-	if (!is_quotes_closed(str))
-		return (ft_putstr_fd("Quotes are not properly closed !\n", 2),NULL);
+	// if (!is_quotes_closed(str))
+	// 	return (ft_putstr_fd("Quotes are not properly closed !\n", 2),NULL);
 	tokens = NULL;
 	while (*str)
 		token_addback(&tokens, new_parsed_token(&str));
 	// manage_empty_tokens(&tokens);
-	if (!is_valid_tokens(all, tokens))
-		return (free_all_token(tokens), NULL);
+	// if (!is_valid_tokens(all, tokens))
+	// 	return (free_all_token(tokens), NULL);
 	return (tokens);
 }
