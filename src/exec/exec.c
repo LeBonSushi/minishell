@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 05:18:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/09 07:24:10 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/21 16:08:29 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,24 +145,6 @@ void	exec_error(t_all *all, char *cmd)
 	else
 		ft_fprintf(2, "%s: command not found\n", cmd);
 	all->status = 127;
-	// // exit(127);
-    // if (errno == EISDIR)
-    // {
-    //     ft_fprintf(2, "%s: Is a directory\n", cmd);
-    //     all->status = 126;
-    //     return;
-    // }
-    // else if (errno == EACCES && all->status == 0)
-    // {
-    //     ft_fprintf(2, "%s: Permission denied\n", cmd);
-    //     all->status = 126;
-    //     return;
-    // }
-    // else if ((!ft_strncmp(cmd, "./", 2) || !ft_strncmp(cmd, "/", 1)) && all->status == 0)
-    //     perror(cmd);
-    // else
-    //     ft_fprintf(2, "%s: command not found\n", cmd);
-    // all->status = 127;
 }
 
 char	*get_cmd_path(t_all *all, char *cmd, char **env)

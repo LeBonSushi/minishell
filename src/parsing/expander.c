@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/09 00:24:39 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/21 16:02:21 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,6 +217,17 @@ char	*expand_word(t_all *all, char *word)
 	return (new_word);
 }
 
+char	*get_value(t_env *env, char *key)
+{
+	while (env)
+	{
+		if (!ft_strcmp(env->key, key))
+			return (ft_strdup(env->value));
+		env = env->next;
+	}
+	return (ft_strdup(""));
+}
+
 t_token	*handle_token_expansion(t_all *all, t_token *tmp)
 {
 	t_token	*new;
@@ -228,6 +239,14 @@ t_token	*handle_token_expansion(t_all *all, t_token *tmp)
 		if (!expanded_value)
 			return (NULL);
 		new = token_new(tmp->token_type, expanded_value,
+				tmp->single_quoted, tmp->double_quoted);
+	}
+	else if (tmp->token_type == TILDE && !tmp->single_quoted)
+	{
+		expanded_value = get_value(all->env, "HOME");
+		if (!expanded_value)
+			return (NULL);
+		new = token_new(WORD, expanded_value,
 				tmp->single_quoted, tmp->double_quoted);
 	}
 	else
@@ -296,7 +315,7 @@ t_token *merge_tokens(t_token *tokens)
 	while (curr && curr->next)
 	{
 		if (!is_redir(curr) && !is_redir(curr->next) && curr->token_type != PIPE
-			&& curr->next->token_type != PIPE && !curr->space_after && ft_strcmp(curr->value, ""))
+			&& curr->next->token_type != PIPE && !curr->space_after)
 		{
 			curr->value = join_token_values(curr, curr->next);
 			next = curr->next;

@@ -49,6 +49,7 @@ void	edit_token(t_token **token, t_token_type type, char *value)
 	(*token)->value = value;
 }
 
+
 t_token	*verif_and_edit_operator(char **str)
 {
 	t_token			*token;
@@ -72,8 +73,8 @@ t_token	*verif_and_edit_operator(char **str)
 		else
 			edit_token(&token, REDIR_OUT, ft_strdup(">"));
 	}
-	else
-		return (NULL);
+	else if (**str == '~')
+		edit_token(&token, TILDE, ft_strdup("~"));
 	return (token);
 }
 
