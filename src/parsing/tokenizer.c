@@ -305,8 +305,8 @@ t_token	*fill_tokens(char *str)
 
 	if (!str)
 		return (NULL);
-	// if (!is_quotes_closed(str))
-	// 	return (ft_putstr_fd("Quotes are not properly closed !\n", 2),NULL);
+	if (!is_quotes_closed(str))
+		return (ft_putstr_fd("Quotes are not properly closed !\n", 2),NULL);
 	tokens = NULL;
 	while (*str)
 		token_addback(&tokens, new_parsed_token(&str));

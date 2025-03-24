@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 02:40:39 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/23 19:45:35 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/24 18:00:00 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -525,14 +525,11 @@ int	manage_cmd_redir(t_all *all, t_cmd *curr_cmd)
 		return (0);
 	curr_token = curr_cmd->tokens;
 	status = all->status;
-	// ft_fprintf(2, "status start redir: %d\n", status);
 	while (curr_token && curr_token->next)
 	{
-		// ft_fprintf(2, "enter while\n");
 		next = curr_token->next->next;
 		if (is_redir(curr_token))
 		{
-			// ft_fprintf(2, "enter if\n");
 			if (curr_token->token_type == REDIR_HEREDOC)
 				status = do_heredoc(curr_cmd, curr_token, is_last(curr_token));
 			else if (curr_token->token_type == REDIR_IN && !curr_cmd->skip_cmd)
@@ -547,7 +544,6 @@ int	manage_cmd_redir(t_all *all, t_cmd *curr_cmd)
 		else
 			curr_token = curr_token->next;
 	}
-	// ft_fprintf(2, "status end redir: %d\n", status);
 	return (status);
 }
 
