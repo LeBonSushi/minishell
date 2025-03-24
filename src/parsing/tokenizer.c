@@ -55,9 +55,7 @@ t_token	*verif_and_edit_operator(char **str)
 	t_token			*token;
 
 	token = NULL;
-	if (**str == ';')
-		edit_token(&token, SEMICOLON, ft_strdup(";"));
-	else if (**str == '|')
+	if (**str == '|')
 		edit_token(&token, PIPE, ft_strdup("|"));
 	else if (**str == '<')
 	{

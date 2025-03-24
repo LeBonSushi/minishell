@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 02:40:39 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/09 07:30:37 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/23 19:45:35 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -551,6 +551,56 @@ int	manage_cmd_redir(t_all *all, t_cmd *curr_cmd)
 	return (status);
 }
 
+bool	is_redir_out(t_token *token)
+{
+	return (token->token_type == REDIR_APPEND || token->token_type == REDIR_OUT);
+}
+
+bool	contain_redir_errors(t_cmd *cmds, int *status)
+{
+	t_token	*token;
+	
+	if (!cmds)
+		return (false);
+	while (cmds)
+	{
+		token = cmds->tokens;
+		while (token)
+		{
+			if (is_redir_out(token) && !token->next)
+			{
+				*status = 2;
+				if (cmds->next)
+					ft_fprintf(2, "ministress: syntax error near unexpected token `|\'\n");
+				else
+					ft_fprintf(2, "ministress: syntax error near unexpected token `newline\'\n");
+				return (true);
+			}
+			else if (is_redir_out(token) && token->next->token_type != WORD)
+			{
+				*status = 2;
+				ft_fprintf(2, "ministress: syntax error near unexpected token `%s\'\n", token->next->value);
+				return (true);
+			}
+			token = token->next;
+		}
+		cmds = cmds->next;
+	}
+	return (false);
+}
+
+
+void	skip_all_cmds(t_cmd *cmds)
+{
+	if (!cmds)
+		return ;
+	while (cmds)
+	{
+		cmds->skip_cmd = true;
+		cmds = cmds->next;
+	}
+}
+
 int	manage_redirections(t_all *all, t_cmd *cmds)
 {
 	t_cmd	*curr;
@@ -560,6 +610,9 @@ int	manage_redirections(t_all *all, t_cmd *cmds)
 		return (0);
 	curr = cmds;
 	status = 0;
+	if (contain_redir_errors(cmds, &status))
+		return (skip_all_cmds(cmds), status);
+		// return (status);
 	while (curr)
 	{
 		status = manage_cmd_redir(all, curr);
