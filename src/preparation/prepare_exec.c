@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 14:35:21 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/21 16:33:01 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/31 07:06:56 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,22 @@ t_token	*copy_token2(t_token *src)
 	new->double_quoted = src->double_quoted;
 	new->space_after = src->space_after;
 	new->value = ft_strdup(src->value);
+	new->next = NULL;
+	return (new);
+}
+
+t_token	*copy_token3(t_token *src)
+{
+	t_token	*new;
+
+	new = malloc(sizeof(t_token));
+	if (!new)
+		return (NULL);
+	new->token_type = src->token_type;
+	new->single_quoted = src->single_quoted;
+	new->double_quoted = src->double_quoted;
+	new->space_after = src->space_after;
+	new->value = src->value;
 	new->next = NULL;
 	return (new);
 }

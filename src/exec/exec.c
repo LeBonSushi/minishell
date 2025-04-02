@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 05:18:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/21 16:08:29 by macorso          ###   ########.fr       */
+/*   Updated: 2025/04/02 14:37:27 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ char	**get_paths(t_all *all, char **env)
 	if (!paths)
 	{
 		ft_fprintf(2, "$PATH not found in env.\n");
+	
 		all->status = 127;
 		return (NULL);
 	}
@@ -200,14 +201,19 @@ void	child_process(t_all *all, t_cmd *cmd, int *fd, char **env)
 	else if (cmd->next)
 		dup2(fd[1], STDOUT_FILENO);
 	close(fd[1]);
-	close(cmd->infile_fd);
-	close(cmd->outfile_fd);
+	if  (cmd->infile_fd > 0)
+		close(cmd->infile_fd);
+	if  (cmd->outfile_fd > 0)
+		close(cmd->outfile_fd);
 	// if (is_builtin())
 	// 	execute_builtins()
 	// else if (execve(cmd->path, cmd->args, env) == -1)
 	// exec_error(all, cmd->args[0]);
 	if (execve(cmd->path, cmd->args, env) == -1)
 		exec_error(all, cmd->args[0]);
+	free_all(all);
+	free_tab(all->paths);
+	free_tab(env);
 	exit(all->status);
 }
 
@@ -229,6 +235,7 @@ void	waitall(t_all *all, t_cmd *cmds)
 	int		tmp;
 
 	cmd = cmds;
+	tmp = 0;
 	// ft_fprintf(2, "itoa: %s\n", ft_itoa(all->status));
 	while (cmd)
     {
@@ -238,8 +245,8 @@ void	waitall(t_all *all, t_cmd *cmds)
         cmd = cmd->next;
     }
 	if (WIFEXITED(tmp))
-		if (WEXITSTATUS(tmp) > all->status)
 			all->status = WEXITSTATUS(tmp);
+		// if (WEXITSTATUS(tmp) > all->status)
 }
 
 void	do_pipes(t_all *all, t_cmd *curr, char **env, int fd[2])
@@ -279,14 +286,28 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 			curr = curr->next;
 			if (curr && curr->infile_fd < 0)
 				curr->infile_fd = open("/dev/null", O_RDONLY);
+			if (env)
+				free_tab(env);
+			if (paths)
+				free_tab(paths);
+			if (curr->args)
+				free_tab(curr->args);
 			continue;
 		}
 		// else if (curr == cmds && !curr->next && is_builtin(curr->tokens))
 		// 	execute_builtins(curr->tokens, &all->env, all);
 		// else
+		all->paths = paths;
 		do_pipes(all, curr, env, fd);
+		free_tab(env);
+		free_tab(paths);
+		free_tab(curr->args);
 		curr = curr->next;
 	}
+
+		// free_tab(env);
+		// free_tab(paths);
+		// free_tab(curr->args);
 	// debug_print_cmdlist(cmds);
 	waitall(all, cmds);
 }

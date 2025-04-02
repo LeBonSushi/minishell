@@ -105,7 +105,9 @@ t_token	*ft_parse_word(char **str, bool sq, bool dq)
 	if (!*str)
 		return (NULL);
 	space_after = (ft_isspace(**str));
-	token = token_new(WORD, ft_substr(start, 0, len), false, false);
+	char	*word = ft_substr(start, 0, len);
+	token = token_new(WORD, word, false, false);
+	free(word);
 	token->space_after = space_after;
 	return (token);
 }

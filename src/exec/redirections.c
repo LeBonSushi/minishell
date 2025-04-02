@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 02:40:39 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/24 18:00:00 by macorso          ###   ########.fr       */
+/*   Updated: 2025/04/01 17:11:01 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -506,12 +506,16 @@ int	redir_out_append(t_cmd *curr_cmd, t_token *curr_token)
 		close(curr_cmd->outfile_fd);
 	file = curr_token->next;
 	error = ft_strjoin("ministress: ", file->value, 0, 0);
+	if (access(file->value, R_OK | W_OK))
+	{
+		curr_cmd->skip_cmd = true;
+		return (perror(error), free(error), 1);
+	}
 	if (curr_token->token_type == REDIR_OUT)
 		curr_cmd->outfile_fd = open(file->value, O_RDWR | O_TRUNC | O_CREAT, 0644);
 	else if (curr_token->token_type == REDIR_APPEND)
 		curr_cmd->outfile_fd = open(file->value, O_RDWR | O_APPEND | O_CREAT, 0644);
-	if (access(file->value, R_OK))
-		return (perror(error), free(error), 1);
+	
 	return (0);
 }
 

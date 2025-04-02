@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/24 15:32:59 by macorso          ###   ########.fr       */
+/*   Updated: 2025/04/02 14:36:09 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,10 @@ void	init_all(t_all *all, int ac, char **av, char **envp)
 	all->env = fill_env(envp);
 	if (!all->env)
 		printf("Erreur: fill_env pour env a retourné NULL\n");
-	all->env_no_sorted = fill_env(envp);
-	if (!all->env_no_sorted)
-		printf("Erreur: fill_env pour env_no_sorted a retourné NULL\n");
+	// all->env_no_sorted = fill_env(envp);
+	// if (!all->env_no_sorted)
+	// 	printf("Erreur: fill_env pour env_no_sorted a retourné NULL\n");
 	all->status = 0;
-	all->tokens = NULL;
 	all->redir_in_names = NULL;
 	all->redir_in_names = NULL;
 }
@@ -114,7 +113,7 @@ void minishell_loop(t_all *all, char **envp)
 	(void)envp;
 	(void)all;
 
-	while(1)
+	while (1)
 	{
 		// ft_fprintf(2, "test\n");
 		line = readline("ministress$ ");
@@ -124,9 +123,9 @@ void minishell_loop(t_all *all, char **envp)
 		all->tokens = fill_tokens(line);
 		all->tokens = create_expand_tokens(all, all->tokens);
 		all->tokens = merge_tokens(all->tokens);
-		all->status = 0;
 		// print_tokens(all->tokens);
 		all->cmds = create_cmdlist(all->tokens);
+		// debug_print_cmdlist(all->cmds);
 		all->status = manage_redirections(all, all->cmds);
 		// ft_fprintf(2, "status after manage: %d\n", all->status);
 		exec_cmds(all, all->cmds);

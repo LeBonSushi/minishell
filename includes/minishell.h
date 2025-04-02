@@ -108,6 +108,7 @@ typedef struct s_all
 	t_env			*env;
 	t_env			*env_no_sorted;
 	t_token			*tokens;
+	char			**paths;
 	pid_t	pid;
 	t_string_list	*redir_in_names;
 	t_string_list	*redir_out_names;
@@ -253,5 +254,7 @@ char	*get_cmd_path(t_all *all, char *cmd, char **env);
 char	**tokens_to_tab(t_token *tokens);
 void	exec_cmds(t_all *all, t_cmd *cmds);
 int		ft_exit2(t_all *all, int exit_code);
+t_token	*copy_token2(t_token *src);
+t_token	*copy_token3(t_token *src);
 
 #endif

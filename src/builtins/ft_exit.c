@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:38:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/03/04 23:07:34 by macorso          ###   ########.fr       */
+/*   Updated: 2025/04/01 11:44:08 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	ft_exit(t_token *tokens, t_all *all)
 		res = ft_atoi(current->value) % 256;
 		all->status = res;
 		printf("code de sortie: %d\n", all->status);
-		//exit(all->status);
+		exit(all->status);
 	}
 	else
 	{
@@ -47,5 +47,6 @@ void	ft_exit(t_token *tokens, t_all *all)
 		printf("code de sortie: %d\n", all->status);
 		//exit (all->status);
 	}
+	free_all(all);
 }
 /*retirer les printf des code de sortie et les printf des exit  */
