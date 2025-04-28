@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/04/01 11:16:24 by macorso          ###   ########.fr       */
+/*   Updated: 2025/04/02 18:44:59 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,8 +104,6 @@ t_token	*create_tokens_without_space(t_token *tokens)
 		token_addback(&new_tokens, new);
 	}
 	free_all_token(tokens);
-	// tokens = NULL;
-	// printf("%s\n", tokens->value);
 	return (new_tokens);
 }
 
@@ -410,11 +408,5 @@ t_token *create_expand_tokens(t_all *all, t_token *tokens)
 	token_after = create_tokens_without_space(tokens);
 	expanded_tokens = expand_tokens(all, token_after);
 	free_all_token(token_after);
-	// print_tokens(expanded_tokens);
-	// printf("\n\n\nBEFORE MERGE\n\n");
-	// print_tokens(expanded_tokens);
-	// expanded_tokens = merge_tokens(expanded_tokens);
-	// printf("\n\n\nAFTER MERGE\n\n");
-	// print_tokens(expanded_tokens);
 	return (expanded_tokens);
 }

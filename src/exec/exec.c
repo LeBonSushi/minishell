@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 05:18:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/04/02 14:37:27 by macorso          ###   ########.fr       */
+/*   Updated: 2025/04/22 17:16:23 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,17 +236,16 @@ void	waitall(t_all *all, t_cmd *cmds)
 
 	cmd = cmds;
 	tmp = 0;
-	// ft_fprintf(2, "itoa: %s\n", ft_itoa(all->status));
 	while (cmd)
     {
-        waitpid(cmd->pid, &tmp, 0);// Always update status to the last command's result
-		// if (WIFEXITED(tmp))
-    	// 	all->status = WEXITSTATUS(tmp);
+        waitpid(cmd->pid, &tmp, 0);
         cmd = cmd->next;
     }
 	if (WIFEXITED(tmp))
 			all->status = WEXITSTATUS(tmp);
+	contain_redir_errors(cmds, &all->status, false);
 		// if (WEXITSTATUS(tmp) > all->status)
+	// ft_fprintf(2, "%d\n", all->status);
 }
 
 void	do_pipes(t_all *all, t_cmd *curr, char **env, int fd[2])
@@ -290,7 +289,7 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 				free_tab(env);
 			if (paths)
 				free_tab(paths);
-			if (curr->args)
+			if (curr && curr->args)
 				free_tab(curr->args);
 			continue;
 		}
@@ -299,9 +298,12 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 		// else
 		all->paths = paths;
 		do_pipes(all, curr, env, fd);
-		free_tab(env);
-		free_tab(paths);
-		free_tab(curr->args);
+		if (env)
+			free_tab(env);
+		if (paths)
+			free_tab(paths);
+		if (curr->args)
+			free_tab(curr->args);
 		curr = curr->next;
 	}
 

@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 02:40:39 by macorso           #+#    #+#             */
-/*   Updated: 2025/04/01 17:11:01 by macorso          ###   ########.fr       */
+/*   Updated: 2025/04/21 18:55:33 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,8 +150,8 @@ void	ft_redirection_in(t_token *token, t_env *env, char **envp)
 	args = (char **)malloc(sizeof(char *) * (args_count + 1));
 	if (!args)
 	{
-    	printf("Erreur: Échec de l'allocation de args\n");
-    	return;
+		printf("Erreur: Échec de l'allocation de args\n");
+		return;
 	}
 	while (current->prev && current->prev->token_type != PIPE)
 		current = current->prev;
@@ -174,9 +174,9 @@ void	ft_redirection_in(t_token *token, t_env *env, char **envp)
 	args[i] = NULL;
 	if (!args[0])
 	{
-    	printf("Erreur: Commande introuvable\n");
+		printf("Erreur: Commande introuvable\n");
 		free(args);
-    	return;
+		return;
 	}
 	char *cmd_path = get_command_path(args[0], envp);
 	
@@ -222,7 +222,7 @@ void	ft_redirection(t_token *token, t_env *env, char **envp)
 			if (!cur->prev || !cur->next)
 			{
 				printf("Erreur: Redirection mal formée\n");
-            	return;
+				return;
 			}
 			if (cur->prev->token_type == WORD && cur->next->token_type == WORD) // TYPE_REDIR_IN  <      //CUR == SYMBOLE
 			{
@@ -397,20 +397,16 @@ char **cmd_to_tab(t_cmd *cmd)
 
 bool ft_compare(char *limiter, char *line)
 {
-    if (!line || !limiter)
-        return (0);
-    
-    size_t limiter_len = ft_strlen(limiter);
-    size_t line_len = ft_strlen(line);
-    
-    // For readline, we don't need to check for newline
-    if (line_len != limiter_len)
-        return (0);
-    
-    if (ft_strncmp(line, limiter, limiter_len))
-        return (0);
-        
-    return (1);
+	if (!line || !limiter)
+		return (0);
+	
+	size_t limiter_len = ft_strlen(limiter);
+	size_t line_len = ft_strlen(line);
+	if (line_len != limiter_len)
+		return (0);
+	if (ft_strncmp(line, limiter, limiter_len))
+		return (0);
+	return (1);
 }
 
 int	do_heredoc(t_cmd *cmd, t_token *curr_token, bool is_last)
@@ -499,23 +495,30 @@ int	redir_append(t_cmd *curr_cmd, t_token *curr_token)
 
 int	redir_out_append(t_cmd *curr_cmd, t_token *curr_token)
 {
-	t_token	*file;
-	char	*error;
+	t_token *file;
+	int flags;
+	mode_t mode;
 
 	if (curr_cmd->outfile_fd > 0)
 		close(curr_cmd->outfile_fd);
 	file = curr_token->next;
-	error = ft_strjoin("ministress: ", file->value, 0, 0);
-	if (access(file->value, R_OK | W_OK))
-	{
-		curr_cmd->skip_cmd = true;
-		return (perror(error), free(error), 1);
+	if (!file || file->token_type != WORD) {
+		ft_putstr_fd("minishell: syntax error near unexpected token\n", 2);
+		return (1);
 	}
+	mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
+	flags = O_WRONLY | O_CREAT;
 	if (curr_token->token_type == REDIR_OUT)
-		curr_cmd->outfile_fd = open(file->value, O_RDWR | O_TRUNC | O_CREAT, 0644);
+		flags |= O_TRUNC;
 	else if (curr_token->token_type == REDIR_APPEND)
-		curr_cmd->outfile_fd = open(file->value, O_RDWR | O_APPEND | O_CREAT, 0644);
-	
+		flags |= O_APPEND;
+	curr_cmd->outfile_fd = open(file->value, flags, mode);
+	if (curr_cmd->outfile_fd == -1) {
+		ft_putstr_fd("minishell: ", 2);
+		perror(file->value);
+		curr_cmd->skip_cmd = true;
+		return (1);
+	}
 	return (0);
 }
 
@@ -556,7 +559,7 @@ bool	is_redir_out(t_token *token)
 	return (token->token_type == REDIR_APPEND || token->token_type == REDIR_OUT);
 }
 
-bool	contain_redir_errors(t_cmd *cmds, int *status)
+bool	contain_redir_errors(t_cmd *cmds, int *status, bool print)
 {
 	t_token	*token;
 	
@@ -570,16 +573,17 @@ bool	contain_redir_errors(t_cmd *cmds, int *status)
 			if (is_redir_out(token) && !token->next)
 			{
 				*status = 2;
-				if (cmds->next)
+				if (cmds->next && print)
 					ft_fprintf(2, "ministress: syntax error near unexpected token `|\'\n");
-				else
+				else if (!cmds->next && print)
 					ft_fprintf(2, "ministress: syntax error near unexpected token `newline\'\n");
 				return (true);
 			}
 			else if (is_redir_out(token) && token->next->token_type != WORD)
 			{
 				*status = 2;
-				ft_fprintf(2, "ministress: syntax error near unexpected token `%s\'\n", token->next->value);
+				if (print)
+					ft_fprintf(2, "ministress: syntax error near unexpected token `%s\'\n", token->next->value);
 				return (true);
 			}
 			token = token->next;
@@ -610,7 +614,7 @@ int	manage_redirections(t_all *all, t_cmd *cmds)
 		return (0);
 	curr = cmds;
 	status = 0;
-	if (contain_redir_errors(cmds, &status))
+	if (contain_redir_errors(cmds, &status, true))
 		return (skip_all_cmds(cmds), status);
 		// return (status);
 	while (curr)
@@ -626,7 +630,7 @@ int	manage_redirections(t_all *all, t_cmd *cmds)
 // {
 //     if (!token)
 //         return;
-    
+	
 //     t_token *current = token;
 //     while (current)
 //     {

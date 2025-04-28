@@ -29,6 +29,7 @@
 # include <unistd.h>
 # include <signal.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
@@ -256,5 +257,6 @@ void	exec_cmds(t_all *all, t_cmd *cmds);
 int		ft_exit2(t_all *all, int exit_code);
 t_token	*copy_token2(t_token *src);
 t_token	*copy_token3(t_token *src);
+bool	contain_redir_errors(t_cmd *cmds, int *status, bool print);
 
 #endif

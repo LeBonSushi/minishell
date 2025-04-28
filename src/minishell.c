@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/04/02 14:36:09 by macorso          ###   ########.fr       */
+/*   Updated: 2025/04/02 14:49:38 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,8 +130,10 @@ void minishell_loop(t_all *all, char **envp)
 		// ft_fprintf(2, "status after manage: %d\n", all->status);
 		exec_cmds(all, all->cmds);
 		free(line);
-		free_all_token(all->tokens);
-		free_all_cmds(all->cmds);
+		if (all->tokens)
+			free_all_token(all->tokens);
+		if (all->cmds)
+			free_all_cmds(all->cmds);
 	}
 }
 
