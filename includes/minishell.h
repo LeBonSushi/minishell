@@ -189,13 +189,8 @@ bool	is_same_type(t_token *token, t_token *token_to_compare, t_token_type type);
 
 //---------------------INIT------------------------------
 
-void	init_all(t_all *all, int ac, char **av, char **envp);
-t_env	*fill_env(char **envp);
-t_string_list	*ft_lstnew(char *content);
-t_string_list	*ft_lstlast(t_string_list *lst);
-void	ft_lstadd_back(t_string_list **lst, t_string_list *new);
-int		ft_lstsize(t_string_list *lst);
-void	ft_strclear(t_string_list **lst);
+void			init_all(t_all *all, int ac, char **av, char **envp);
+t_env			*fill_env(char **envp);
 
 //---------------------DESTROY---------------------------
 
@@ -206,9 +201,8 @@ void	free_all(t_all *all);
 
 //--------------------BUILTINS---------------------------
 
-
-bool	is_builtin(t_token *tokens);
-void	execute_builtins(t_token *tokens, t_env **env, t_all *all);
+bool	is_builtin(char *cmd);
+void execute_builtins(char **args, t_env **env, t_all *all);
 void	ft_unset(t_token *tokens, t_env **env);
 void	ft_echo(t_token *tokens);
 void	ft_cd(t_token *tokens, t_env *env);

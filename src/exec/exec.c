@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 05:18:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/04/22 17:16:23 by macorso          ###   ########.fr       */
+/*   Updated: 2025/04/28 16:55:13 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,12 +205,12 @@ void	child_process(t_all *all, t_cmd *cmd, int *fd, char **env)
 		close(cmd->infile_fd);
 	if  (cmd->outfile_fd > 0)
 		close(cmd->outfile_fd);
-	// if (is_builtin())
-	// 	execute_builtins()
-	// else if (execve(cmd->path, cmd->args, env) == -1)
-	// exec_error(all, cmd->args[0]);
-	if (execve(cmd->path, cmd->args, env) == -1)
+	if (is_builtin(cmd->args[0]))
+		execute_builtins()
+	else if (execve(cmd->path, cmd->args, env) == -1)
 		exec_error(all, cmd->args[0]);
+	// if (execve(cmd->path, cmd->args, env) == -1)
+	// 	exec_error(all, cmd->args[0]);
 	free_all(all);
 	free_tab(all->paths);
 	free_tab(env);
@@ -244,8 +244,6 @@ void	waitall(t_all *all, t_cmd *cmds)
 	if (WIFEXITED(tmp))
 			all->status = WEXITSTATUS(tmp);
 	contain_redir_errors(cmds, &all->status, false);
-		// if (WEXITSTATUS(tmp) > all->status)
-	// ft_fprintf(2, "%d\n", all->status);
 }
 
 void	do_pipes(t_all *all, t_cmd *curr, char **env, int fd[2])
@@ -293,9 +291,6 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 				free_tab(curr->args);
 			continue;
 		}
-		// else if (curr == cmds && !curr->next && is_builtin(curr->tokens))
-		// 	execute_builtins(curr->tokens, &all->env, all);
-		// else
 		all->paths = paths;
 		do_pipes(all, curr, env, fd);
 		if (env)
@@ -306,10 +301,5 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 			free_tab(curr->args);
 		curr = curr->next;
 	}
-
-		// free_tab(env);
-		// free_tab(paths);
-		// free_tab(curr->args);
-	// debug_print_cmdlist(cmds);
 	waitall(all, cmds);
 }

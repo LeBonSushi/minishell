@@ -3,40 +3,40 @@
 /*                                                        :::      ::::::::   */
 /*   execute_builtins.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 01:58:22 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/03/01 21:32:24 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/04/28 16:55:53 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void execute_builtins(t_token *tokens, t_env **env, t_all *all)
+void execute_builtins(char **args, t_env **env, t_all *all)
 {
-	if (!tokens)
+	if (!args)
 		return;
-	if (!ft_strcmp(tokens->value, "echo"))
-		ft_echo(tokens);
-	else if (!ft_strcmp(tokens->value, "cd"))
-		ft_cd(tokens, *env);
-	else if (!ft_strcmp(tokens->value, "pwd"))
+	if (!ft_strcmp(args[0], "echo"))
+		ft_echo(args);
+	else if (!ft_strcmp(args[0], "cd"))
+		ft_cd(args, *env);
+	else if (!ft_strcmp(args[0], "pwd"))
 		ft_pwd();
-	else if (!ft_strcmp(tokens->value, "c"))
+	else if (!ft_strcmp(args[0], "c"))
 		clear_terminal();
-	else if (!ft_strcmp(tokens->value, "export"))
-		ft_export(tokens, env);
-	else if (!ft_strcmp(tokens->value, "env"))
+	else if (!ft_strcmp(args[0], "export"))
+		ft_export(args, env);
+	else if (!ft_strcmp(args[0], "env"))
 		ft_env(all->env);
-	else if (!ft_strcmp(tokens->value, "exit"))
-		ft_exit(tokens, all);
-	/*else if (!ft_strcmp(tokens->value, "unset"))
+	else if (!ft_strcmp(args[0], "exit"))
+		ft_exit(args, all);
+	/*else if (!ft_strcmp(args->value, "unset"))
 		ft_unset(env);*/
 		
 }
 
-bool	is_builtin(t_token *tokens)
+bool	is_builtin(char *cmd)
 {
-	return (!ft_strcmp(tokens->value, "echo") || !ft_strcmp(tokens->value, "cd") || !ft_strcmp(tokens->value, "pwd")
-		|| !ft_strcmp(tokens->value, "export") || !ft_strcmp(tokens->value, "env") || !ft_strcmp(tokens->value, "exit") || !ft_strcmp(tokens->value, "unset"));
+	return (!ft_strcmp(cmd, "echo") || !ft_strcmp(cmd, "cd") || !ft_strcmp(cmd, "pwd")
+		|| !ft_strcmp(cmd, "export") || !ft_strcmp(cmd, "env") || !ft_strcmp(cmd, "exit") || !ft_strcmp(cmd, "unset"));
 }
