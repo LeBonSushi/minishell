@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:38:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/04/29 01:37:44 by macorso          ###   ########.fr       */
+/*   Updated: 2025/04/29 21:20:43 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	ft_exit(t_token *tokens, t_all *all)
 				ft_putstr_fd(current->value, 2);
 				ft_putstr_fd(": numeric argument required\n", 2);
 				all->status = 2;
-				//exit(all->status);
+				exit(all->status);
 			}
 			i++;
 		}
@@ -43,8 +43,9 @@ void	ft_exit(t_token *tokens, t_all *all)
 		printf("exit\n");
 		all->status = 0;
 		printf("code de sortie: %d\n", all->status);
-		//exit (all->status);
+		exit (all->status);
 	}
 	free_all(all);
+	all->cmds = NULL;
+	all->tokens = NULL;	
 }
-/*retirer les printf des code de sortie et les printf des exit  */

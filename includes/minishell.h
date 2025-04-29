@@ -33,6 +33,8 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
+extern int g_in_cmd_execution;
+
 typedef enum e_token_type
 {
 	WORD = 1,
@@ -111,8 +113,6 @@ typedef struct s_all
 	t_token			*tokens;
 	char			**paths;
 	pid_t	pid;
-	t_string_list	*redir_in_names;
-	t_string_list	*redir_out_names;
 	t_cmd			*cmds;
 	int				status;
 }	t_all;
@@ -161,12 +161,18 @@ t_token			*merge_tokens(t_token *tokens);
 void			print_tokens(t_token *tokens);
 
 //---------------------EXPANDER--------------------------
-// bool	is_expandable_wildcard(t_token *token);
-// bool	is_hidden_valid(char *str, char *pattern);
-// void	sort_matches(char **matches, int count);
-// t_token	*create_tokens_from_matches(char **matches,
-			// t_token *to_expand);
-// char	**store_matches(DIR *dir, t_token *to_expand, int *match_count);
+
+char *get_env_value(t_all *all, char *var_name);
+bool	ft_isspecial(char c);
+char	*ft_strjoinchar(char *s1, const char c);
+char *expand_status(t_all *all, int *i);
+void	handle_variable_expansion(t_all *all, char *word, int *i,
+		char **new_word);
+char	*get_value(t_env *env, char *key);
+t_token	*token_new4(t_token_type token_type, char *value,
+		bool single_q, bool double_q);
+void init_tokens(bool *merged, t_token **curr, t_token *tokens);
+char *join_token_values(t_token *first, t_token *second);
 void	skip_variable_chars(char *word, int *i);
 void	handle_dollar_sign(t_all *all, char *word, int *i,
 		char **new_word);
@@ -191,6 +197,7 @@ bool	is_same_type(t_token *token, t_token *token_to_compare, t_token_type type);
 
 void			init_all(t_all *all, int ac, char **av, char **envp);
 t_env			*fill_env(char **envp);
+void			init_readline(void);
 
 //---------------------DESTROY---------------------------
 
@@ -198,6 +205,8 @@ void	free_env(t_env *env);
 void	free_all_env(t_env *env);
 void	free_all_token(t_token *token);
 void	free_all(t_all *all);
+void	free_all_cmds(t_cmd *cmds);
+void	free_token(t_token *token);
 
 //--------------------BUILTINS---------------------------
 
@@ -227,10 +236,6 @@ t_cmd	*cmd_new(t_token *tokens);
 void	cmd_addback(t_cmd **cmd, t_cmd *new);
 int		manage_redirections(t_all *all, t_cmd *cmds);
 
-//---------------------CLEAR---------------------------
-
-void	clear_terminal(void);
-
 //---------------------UTILS---------------------------
 
 bool	is_redir(t_token *token);
@@ -239,6 +244,7 @@ void	delete_token2(t_token **tokens, t_token *token_to_del);
 void	debug_print_cmdlist(t_cmd *cmd_list);
 char **env_to_tab(t_env *env);
 void	free_tab(char **tab);
+bool	ft_compare(char *limiter, char *line);
 
 //---------------------REDIRECTION---------------------------
 
@@ -252,5 +258,35 @@ int		ft_exit2(t_all *all, int exit_code);
 t_token	*copy_token2(t_token *src);
 t_token	*copy_token3(t_token *src);
 bool	contain_redir_errors(t_cmd *cmds, int *status, bool print);
+
+//---------------------HEREDOC-----------------------------
+
+int		do_heredoc(t_cmd *cmd, t_token *curr_token, bool is_last);
+bool	is_last(t_token *token);
+int		redir_in(t_cmd *curr_cmd, t_token *curr_token);
+bool	is_redir_out(t_token *token);
+int	manage_cmd_redir(t_all *all, t_cmd *curr_cmd);
+
+//----------------------EXEC-------------------------------
+
+bool	is_dir(t_all *all, char *cmd);
+char	*find_exec_path(char *cmd, char **paths);
+char	**get_paths(t_all *all, char **env);
+int		tokens_size(t_token *tokens);
+bool	is_file(char *cmd);
+void	exec_error(t_all *all, char *cmd);
+char	*get_cmd_path(t_all *all, char *cmd, char **env);
+void	pipe_error(t_all *all, int *fd);
+void	fork_error(t_all *all, int *fd);
+void	do_pipes(t_all *all, t_cmd *curr, char **env, int fd[2]);
+void	waitall(t_all *all, t_cmd *cmds);
+
+//---------------------SIGNAL-------------------------------
+
+void	handle_sigint(int sig);
+void	handle_sigquit(int sig);
+void	setup_signals(void);
+void	set_execution_mode(void);
+void	set_interactive_mode(void);
 
 #endif

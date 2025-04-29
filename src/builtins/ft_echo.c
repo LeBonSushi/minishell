@@ -3,19 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/25 18:32:46 by macorso           #+#    #+#             */
-/*   Updated: 2025/04/28 17:09:39 by macorso          ###   ########.fr       */
+/*   Updated: 2025/04/29 23:02:02 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-void clear_terminal(void)
-{
-    write(1, "\033[H\033[J", 7);
-}
 
 bool	is_only_n_and_(char *str)
 {

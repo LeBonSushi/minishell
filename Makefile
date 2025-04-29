@@ -3,13 +3,19 @@ CFLAGS	:= -Werror -Wextra -Wall -I/opt/homebrew/opt/readline/include -g3 #-fsani
 LDFLAGS	:= -L/opt/homebrew/opt/readline/lib -lreadline
 
 # Name of the final executable
-NAME	:= minishell
+NAME	:= m
 
 # All needed files
 SRC		:=	src/minishell.c \
+			src/minishell2.c \
 \
 			src/parsing/tokenizer.c \
 			src/parsing/expander.c \
+			src/parsing/expander2.c \
+			src/parsing/expander3.c \
+			src/parsing/expander4.c \
+			src/parsing/expander5.c \
+			src/parsing/expander6.c \
 \
 			src/utils/header.c \
 			src/utils/free.c \
@@ -18,6 +24,7 @@ SRC		:=	src/minishell.c \
 \
 			src/builtins/ft_env.c \
 			src/builtins/ft_export.c \
+			src/builtins/ft_export2.c \
 			src/builtins/ft_unset.c \
 			src/builtins/ft_echo.c \
 			src/builtins/ft_cd.c \
@@ -32,7 +39,16 @@ SRC		:=	src/minishell.c \
 			src/preparation/prepare_exec.c \
 \
 			src/exec/redirections.c \
+			src/exec/redirections2.c \
+			src/exec/redirections3.c \
+			src/exec/redirections4.c \
 			src/exec/exec.c \
+			src/exec/exec2.c \
+			src/exec/exec3.c \
+			src/exec/exec4.c \
+\
+			src/signal/signal.c \
+			src/signal/setmode.c \
 \
 
 OBJ		:= $(SRC:.c=.o)
