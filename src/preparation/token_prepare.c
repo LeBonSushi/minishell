@@ -21,7 +21,8 @@ t_token	*token_new(t_token_type token_type, char *value,
 	if (!new)
 		return (NULL);
 	new->token_type = token_type;
-	new->value = ft_strdup(value);
+	if (value)
+		new->value = ft_strdup(value);
 	new->single_quoted = single_q;
 	new->double_quoted = double_q;
 	new->space_after = true;

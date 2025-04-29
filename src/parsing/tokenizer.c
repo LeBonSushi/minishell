@@ -76,6 +76,7 @@ t_token	*verif_and_edit_operator(char **str)
 	return (token);
 }
 
+
 t_token	*ft_parse_operator(char **str)
 {
 	t_token	*token;

@@ -420,9 +420,13 @@ int	do_heredoc(t_cmd *cmd, t_token *curr_token, bool is_last)
 	if (cmd->infile_fd > 0)
 		close(cmd->infile_fd);
 	i = 0;
-	heredoc_file = ".heredoc";
+	heredoc_file = ft_strdup(".heredoc");
 	while (access(heredoc_file, F_OK) == 0)
+	{
+		char *tmp = heredoc_file;
 		heredoc_file = ft_strjoin(".heredoc", ft_itoa(i++), 0, 1);
+		free(tmp);
+	}
 	heredoc_fd = open(heredoc_file, O_RDWR | O_TRUNC | O_CREAT, 0664);
 	limiter = ft_strdup(curr_token->next->value);
 	while (1)
@@ -443,6 +447,7 @@ int	do_heredoc(t_cmd *cmd, t_token *curr_token, bool is_last)
 	if (is_last)
 		cmd->infile_fd = open(heredoc_file, O_RDONLY);
 	unlink(heredoc_file);
+	free(heredoc_file);
 	return (0);
 }
 
