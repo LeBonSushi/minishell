@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/04/02 18:44:59 by macorso          ###   ########.fr       */
+/*   Updated: 2025/04/29 02:04:11 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,12 +184,10 @@ char	*ft_strjoinchar(char *s1, const char c)
 	return (str);
 }
 
-void	skip_variable_chars(char *word, int *i, int start)
+void	skip_variable_chars(char *word, int *i)
 {
-	while (word[*i] && (ft_isalnum(word[*i]) || ft_isspecial(word[*i])))
+	while (word[*i] && (ft_isalnum(word[*i]) || word[*i] == '_'))
 	{
-		if (word[*i] == '*' && *i > start)
-			break ;
 		(*i)++;
 	}
 }
@@ -202,8 +200,9 @@ char	*expand_variable(t_all *all, char *word, int *i)
 
 	(*i)++;
 	start = *i;
-	skip_variable_chars(word, i, start);
+	skip_variable_chars(word, i);
 	var_name = ft_substr(word, start, *i - start);
+	// printf("%s\n", var_name);
 	value = get_env_value(all, var_name);
 	free(var_name);
 	return (value);
@@ -212,7 +211,8 @@ char	*expand_variable(t_all *all, char *word, int *i)
 void	handle_variable_expansion(t_all *all, char *word, int *i, char **new_word)
 {
 	char	*expansion;
-
+	
+	// printf("ouais\n");
 	expansion = expand_variable(all, word, i);
 	*new_word = ft_strjoin(*new_word, expansion, 1, 1);
 }
@@ -230,21 +230,13 @@ void	handle_special_char(char *word, int *i, char **new_word)
 
 void	handle_dollar_sign(t_all *all, char *word, int *i, char **new_word)
 {
-	// char	*expansion;
-
+	// printf("Ouais\n");
 	if (word[*i + 1] == '?')
 		*new_word = ft_strjoin(*new_word, expand_status(all, i), 1, 1);
-	else if (ft_isdigit(word[*i + 1]))
-		*new_word = ft_strjoin(*new_word, expand_digit(i), 1, 1);
-    else if (ft_isspecial(word[*i + 1]) && word[*i + 1] != '_')
-    {
-        (*i) += 2;
-        *new_word = ft_strjoin(*new_word, "", 1, 0);
-    }
-    else if (ft_isalnum(word[*i + 1]) || word[*i + 1] == '_')
-        handle_variable_expansion(all, word, i, new_word);
-    else
+    else if (!ft_isalpha(word[*i + 1]) && !ft_isdigit(word[*i + 1]) && word[*i + 1] != '_')
 		*new_word = ft_strjoinchar(*new_word, word[(*i)++]);
+    else
+        handle_variable_expansion(all, word, i, new_word);
 }
 
 char	*expand_word(t_all *all, char *word)

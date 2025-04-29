@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/25 18:32:46 by macorso           #+#    #+#             */
-/*   Updated: 2025/04/28 16:56:40 by macorso          ###   ########.fr       */
+/*   Updated: 2025/04/28 17:09:39 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ bool	is_only_n_and_(char *str)
 	}
 	return (true);
 }
-void	ft_echo(char **args)
+void	ft_echo(t_token *tokens)
 {
 	int		newline;
 	t_token	*current;

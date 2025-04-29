@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 05:18:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/04/28 16:55:13 by macorso          ###   ########.fr       */
+/*   Updated: 2025/04/29 02:26:18 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ char	**get_paths(t_all *all, char **env)
 	if (!paths)
 	{
 		ft_fprintf(2, "$PATH not found in env.\n");
-	
 		all->status = 127;
 		return (NULL);
 	}
@@ -98,7 +97,7 @@ char	*find_exec_path(char *cmd, char **paths)
 
 bool	is_dir(t_all *all, char *cmd)
 {
-	int	fd;
+	int		fd;
 	char	*error;
 
 	fd = open(cmd, O_RDONLY);
@@ -128,15 +127,17 @@ bool	is_file(char *cmd)
 
 void	exec_error(t_all *all, char *cmd)
 {
-    if (errno == EACCES && all->status == 0 && !is_file(cmd) && ft_strcmp(cmd, ""))
-    {
-        ft_fprintf(2, "%s: Permission denied\n", cmd);
-        all->status = 126;
-		return ;
-    }
-    else if ((!ft_strncmp(cmd, "./", 2) || !ft_strncmp(cmd, "/", 1)) && all->status == 0)
+	if (errno == EACCES && all->status == 0 && !is_file(cmd) && ft_strcmp(cmd,
+			""))
 	{
-        perror(cmd);
+		ft_fprintf(2, "%s: Permission denied\n", cmd);
+		all->status = 126;
+		return ;
+	}
+	else if ((!ft_strncmp(cmd, "./", 2) || !ft_strncmp(cmd, "/", 1))
+		&& all->status == 0)
+	{
+		perror(cmd);
 		if (errno != ENOENT)
 		{
 			all->status = 126;
@@ -192,25 +193,22 @@ int	ft_exit2(t_all *all, int exit_code)
 
 void	child_process(t_all *all, t_cmd *cmd, int *fd, char **env)
 {
-
 	close(fd[0]);
-	if  (cmd->infile_fd > 0)
+	if (cmd->infile_fd > 0)
 		dup2(cmd->infile_fd, STDIN_FILENO);
-	if  (cmd->outfile_fd > 0)
+	if (cmd->outfile_fd > 0)
 		dup2(cmd->outfile_fd, STDOUT_FILENO);
 	else if (cmd->next)
 		dup2(fd[1], STDOUT_FILENO);
 	close(fd[1]);
-	if  (cmd->infile_fd > 0)
+	if (cmd->infile_fd > 0)
 		close(cmd->infile_fd);
-	if  (cmd->outfile_fd > 0)
+	if (cmd->outfile_fd > 0)
 		close(cmd->outfile_fd);
 	if (is_builtin(cmd->args[0]))
-		execute_builtins()
-	else if (execve(cmd->path, cmd->args, env) == -1)
+		execute_builtins(cmd, cmd->args, &all->env, all);
+	else if(execve(cmd->path, cmd->args, env) == -1)
 		exec_error(all, cmd->args[0]);
-	// if (execve(cmd->path, cmd->args, env) == -1)
-	// 	exec_error(all, cmd->args[0]);
 	free_all(all);
 	free_tab(all->paths);
 	free_tab(env);
@@ -225,8 +223,6 @@ void	parent_process(t_cmd *curr, int *fd)
 	if (curr->next && curr->next->infile_fd < 0)
 		curr->next->infile_fd = dup(fd[0]);
 	close(fd[0]);
-	// if (curr->here_doc == true)
-	// 	unlink()
 }
 
 void	waitall(t_all *all, t_cmd *cmds)
@@ -237,19 +233,19 @@ void	waitall(t_all *all, t_cmd *cmds)
 	cmd = cmds;
 	tmp = 0;
 	while (cmd)
-    {
-        waitpid(cmd->pid, &tmp, 0);
-        cmd = cmd->next;
-    }
+	{
+		waitpid(cmd->pid, &tmp, 0);
+		cmd = cmd->next;
+	}
 	if (WIFEXITED(tmp))
-			all->status = WEXITSTATUS(tmp);
+		all->status = WEXITSTATUS(tmp);
 	contain_redir_errors(cmds, &all->status, false);
 }
 
 void	do_pipes(t_all *all, t_cmd *curr, char **env, int fd[2])
 {
 	if (pipe(fd) == -1)
-			pipe_error(all, fd);
+		pipe_error(all, fd);
 	curr->pid = fork();
 	if (curr->pid == -1)
 		fork_error(all, fd);
@@ -289,10 +285,13 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 				free_tab(paths);
 			if (curr && curr->args)
 				free_tab(curr->args);
-			continue;
+			continue ;
 		}
 		all->paths = paths;
-		do_pipes(all, curr, env, fd);
+		if (is_builtin(curr->args[0]) && !cmds->next)
+			execute_builtins(curr, curr->args, &all->env, all);
+		else
+			do_pipes(all, curr, env, fd);
 		if (env)
 			free_tab(env);
 		if (paths)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:27:48 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/22 03:45:31 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/04/28 17:05:56 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	ft_pwd(void)
 {
-	char	cwd[1024];
+	char	cwd[70000];
 
 	if (getcwd(cwd, sizeof(cwd)) == 0)
 		perror("pwd");

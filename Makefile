@@ -3,7 +3,7 @@ CFLAGS	:= -Werror -Wextra -Wall -I/opt/homebrew/opt/readline/include -g3 #-fsani
 LDFLAGS	:= -L/opt/homebrew/opt/readline/lib -lreadline
 
 # Name of the final executable
-NAME	:= m
+NAME	:= minishell
 
 # All needed files
 SRC		:=	src/minishell.c \

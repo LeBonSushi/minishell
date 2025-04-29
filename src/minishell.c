@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/04/02 14:49:38 by macorso          ###   ########.fr       */
+/*   Updated: 2025/04/29 02:04:24 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,27 +107,26 @@ void	free_all_cmds(t_cmd *cmds)
 	
 }
 
-void minishell_loop(t_all *all, char **envp)
+void minishell_loop(t_all *all)
 {
 	char	*line;
-	(void)envp;
-	(void)all;
+	char	*tmp;
 
 	while (1)
 	{
-		// ft_fprintf(2, "test\n");
 		line = readline("ministress$ ");
+		tmp = line;
+		line = ft_strtrim(tmp, "\n");
+		free(tmp);
 		if (!line || !*line)
 			continue ;
 		add_history(line);
 		all->tokens = fill_tokens(line);
+		// print_tokens(all->tokens);
 		all->tokens = create_expand_tokens(all, all->tokens);
 		all->tokens = merge_tokens(all->tokens);
-		// print_tokens(all->tokens);
 		all->cmds = create_cmdlist(all->tokens);
-		// debug_print_cmdlist(all->cmds);
 		all->status = manage_redirections(all, all->cmds);
-		// ft_fprintf(2, "status after manage: %d\n", all->status);
 		exec_cmds(all, all->cmds);
 		free(line);
 		if (all->tokens)
@@ -143,7 +142,7 @@ int	main(int ac, char **av, char **envp)
 	// char	*keys[] = {NULL};
 
 	init_all(&all, ac, av, envp);
-	minishell_loop(&all, envp);
+	minishell_loop(&all);
 	free_all(&all);
 	return (0);
 }

@@ -49,7 +49,7 @@ void	ft_cd(t_token *tokens, t_env *env)
 	{
 		path = ft_getenv_value(env, "HOME");
 		if (!path)
-			return (ft_putstr_fd("cd: HOME not set\n", 2));
+			return (ft_putstr_fd("ministress: cd: HOME not set\n", 2));
 	}
 	else if (current && current->next)
 		return(ft_putstr_fd("cd: too many arguments\n", 2));
@@ -57,8 +57,8 @@ void	ft_cd(t_token *tokens, t_env *env)
 	{
 		path = ft_getenv_value(env, "OLDPWD");
 		if (!path)
-			return (ft_putstr_fd("cd: OLDPWD not set\n", 2));
-		ft_putendl_fd(path, 1);
+			return (ft_putstr_fd("ministress: cd: OLDPWD not set\n", 2));
+		// ft_putendl_fd(path, 1);
 		resolved_path = resolve_path(path);
 		if (!resolved_path)
 			return(perror("cd"));

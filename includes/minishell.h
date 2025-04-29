@@ -167,7 +167,7 @@ void			print_tokens(t_token *tokens);
 // t_token	*create_tokens_from_matches(char **matches,
 			// t_token *to_expand);
 // char	**store_matches(DIR *dir, t_token *to_expand, int *match_count);
-void	skip_variable_chars(char *word, int *i, int start);
+void	skip_variable_chars(char *word, int *i);
 void	handle_dollar_sign(t_all *all, char *word, int *i,
 		char **new_word);
 // t_token	*create_merged_wildcard_token(t_token *tmp);
@@ -202,7 +202,7 @@ void	free_all(t_all *all);
 //--------------------BUILTINS---------------------------
 
 bool	is_builtin(char *cmd);
-void execute_builtins(char **args, t_env **env, t_all *all);
+void 	execute_builtins(t_cmd *cmd, char **args, t_env **env, t_all *all);
 void	ft_unset(t_token *tokens, t_env **env);
 void	ft_echo(t_token *tokens);
 void	ft_cd(t_token *tokens, t_env *env);
@@ -218,7 +218,7 @@ bool	find_egal_in_token(char *str);
 
 //---------------------PARSING---------------------------
 
-void	minishell_loop(t_all *all, char **envp);
+void	minishell_loop(t_all *all);
 
 //------------------------CMDS-------------------------
 
