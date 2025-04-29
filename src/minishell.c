@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/04/29 02:04:24 by macorso          ###   ########.fr       */
+/*   Updated: 2025/04/29 18:15:41 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,14 +110,10 @@ void	free_all_cmds(t_cmd *cmds)
 void minishell_loop(t_all *all)
 {
 	char	*line;
-	char	*tmp;
 
 	while (1)
 	{
 		line = readline("ministress$ ");
-		tmp = line;
-		line = ft_strtrim(tmp, "\n");
-		free(tmp);
 		if (!line || !*line)
 			continue ;
 		add_history(line);

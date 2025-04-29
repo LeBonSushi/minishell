@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/04/29 02:04:11 by macorso          ###   ########.fr       */
+/*   Updated: 2025/04/29 18:19:57 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -308,7 +308,7 @@ t_token	*handle_token_expansion(t_all *all, t_token *tmp)
 	}
 	else
 	{
-		new = token_new(tmp->token_type, ft_strdup(tmp->value),
+		new = token_new4(tmp->token_type, ft_strdup(tmp->value),
 			tmp->single_quoted, tmp->double_quoted);
 	}
 	return (new);
