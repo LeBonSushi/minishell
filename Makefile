@@ -1,21 +1,22 @@
 CC		:= cc
 CFLAGS	:= -Werror -Wextra -Wall -I/opt/homebrew/opt/readline/include -g3 #-fsanitize=address,leak
 LDFLAGS	:= -L/opt/homebrew/opt/readline/lib -lreadline
+REST :=		src/minishell2.c \
+			src/parsing/expander2.c \
+			src/parsing/expander3.c \
+			src/parsing/expander4.c \
+			src/parsing/expander5.c \
+			src/parsing/expander6.c \
+			src/signal/signal.c \
+			src/signal/setmode.c \
 
 # Name of the final executable
 NAME	:= m
 
 # All needed files
 SRC		:=	src/minishell.c \
-			src/minishell2.c \
-\
 			src/parsing/tokenizer.c \
 			src/parsing/expander.c \
-			src/parsing/expander2.c \
-			src/parsing/expander3.c \
-			src/parsing/expander4.c \
-			src/parsing/expander5.c \
-			src/parsing/expander6.c \
 \
 			src/utils/header.c \
 			src/utils/free.c \
@@ -47,8 +48,6 @@ SRC		:=	src/minishell.c \
 			src/exec/exec3.c \
 			src/exec/exec4.c \
 \
-			src/signal/signal.c \
-			src/signal/setmode.c \
 \
 
 OBJ		:= $(SRC:.c=.o)

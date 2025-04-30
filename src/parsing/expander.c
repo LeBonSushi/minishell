@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/04/30 05:09:11 by macorso          ###   ########.fr       */
+/*   Updated: 2025/04/30 05:50:29 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,7 +200,10 @@ char	*expand_variable(t_all *all, char *word, int *i)
 
 	(*i)++;
 	start = *i;
-	skip_variable_chars(word, i);
+	if (ft_isdigit(word[*i]))
+		(*i)++;
+	else
+		skip_variable_chars(word, i);
 	var_name = ft_substr(word, start, *i - start);
 	// printf("%s\n", var_name);
 	value = get_env_value(all, var_name);
@@ -212,7 +215,7 @@ void	handle_variable_expansion(t_all *all, char *word, int *i, char **new_word)
 {
 	char	*expansion;
 	
-	// printf("ouais\n");
+	// printf("ouais\n")
 	expansion = expand_variable(all, word, i);
 	*new_word = ft_strjoin(*new_word, expansion, 1, 1);
 }

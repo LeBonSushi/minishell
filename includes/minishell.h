@@ -171,7 +171,7 @@ void	handle_variable_expansion(t_all *all, char *word, int *i,
 char	*get_value(t_env *env, char *key);
 t_token	*token_new4(t_token_type token_type, char *value,
 		bool single_q, bool double_q);
-void init_tokens(bool *merged, t_token **curr, t_token *tokens);
+// void init_tokens(bool *merged, t_token **curr, t_token *tokens);
 char *join_token_values(t_token *first, t_token *second);
 void	skip_variable_chars(char *word, int *i);
 void	handle_dollar_sign(t_all *all, char *word, int *i,
