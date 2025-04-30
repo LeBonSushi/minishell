@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/04/29 18:19:57 by macorso          ###   ########.fr       */
+/*   Updated: 2025/04/30 05:03:00 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -393,12 +393,16 @@ t_token *merge_tokens(t_token *tokens)
 t_token *create_expand_tokens(t_all *all, t_token *tokens)
 {
 	t_token *expanded_tokens;
-	t_token *token_after;
+	// t_token *token_after;
 
 	if (!tokens)
 		return (NULL);
-	token_after = create_tokens_without_space(tokens);
-	expanded_tokens = expand_tokens(all, token_after);
-	free_all_token(token_after);
+	print_tokens(tokens);
+	// token_after = create_tokens_without_space(tokens);
+	// print_tokens(token_after);
+	expanded_tokens = expand_tokens(all, tokens);
+	print_tokens(expanded_tokens);
+	
+	// free_all_token(token_after);
 	return (expanded_tokens);
 }
