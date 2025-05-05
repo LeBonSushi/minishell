@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec4.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:50 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/04/29 22:48:54 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/05 00:24:04 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 			execute_builtins(curr, curr->args, &all->env, all);
 		else
 			do_pipes(all, curr, env, fd);
+		update_env(&all->env, "_", curr->args[0], true);
 		if (env)
 			free_tab(env);
 		if (paths)

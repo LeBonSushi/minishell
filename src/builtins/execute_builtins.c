@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_builtins.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 01:58:22 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/04/29 21:29:31 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/05 00:15:08 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ void execute_builtins(t_cmd *cmd, char **args, t_env **env, t_all *all)
 		ft_exit(cmd->tokens, all);
 	/*else if (!ft_strcmp(args->value, "unset"))
 		ft_unset(env);*/
-		
 }
 
 bool	is_builtin(char *cmd)
