@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/04/30 05:50:29 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/05 03:44:28 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -340,6 +340,7 @@ t_token	*expand_tokens(t_all *all, t_token *tokens)
 		token_addback(&expanded_tokens, new);
 		tmp = tmp->next;
 	}
+	free_all_token(tokens);
 	return (expanded_tokens);
 }
 

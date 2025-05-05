@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander6.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:58:30 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/04/29 22:57:27 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/05 03:36:34 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,15 @@ t_token	*merge_tokens(t_token *tokens)
 	return (tokens);
 }
 
-t_token *create_expand_tokens(t_all *all, t_token *tokens)
-{
-	t_token *expanded_tokens;
-	t_token *token_after;
+// t_token *create_expand_tokens(t_all *all, t_token *tokens)
+// {
+// 	t_token *expanded_tokens;
+// 	t_token *token_after;
 
-	if (!tokens)
-		return (NULL);
-	token_after = create_tokens_without_space(tokens);
-	expanded_tokens = expand_tokens(all, token_after);
-	free_all_token(token_after);
-	return (expanded_tokens);
-}
+// 	if (!tokens)
+// 		return (NULL);
+// 	token_after = create_tokens_without_space(tokens);
+// 	expanded_tokens = expand_tokens(all, token_after);
+// 	free_all_token(token_after);
+// 	return (expanded_tokens);
+// }
