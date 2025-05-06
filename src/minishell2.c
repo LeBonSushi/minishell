@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 22:30:10 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/04/29 22:32:32 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/06 12:40:29 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,11 @@ void	minishell_loop(t_all *all)
 		all->tokens = fill_tokens(line);
 		all->tokens = create_expand_tokens(all, all->tokens);
 		all->tokens = merge_tokens(all->tokens);
+		if (!all->tokens)
+		{
+			free(line);
+			continue ;
+		}
 		all->cmds = create_cmdlist(all->tokens);
 		all->status = manage_redirections(all, all->cmds);
 		exec_cmds(all, all->cmds);

@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/06 10:04:41 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/06 12:47:17 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,10 +218,10 @@ void	handle_variable_expansion(t_all *all, char *word, int *i, char **new_word)
 	
 	// printf("ouais\n")
 	expansion = expand_variable(all, word, i);
-	if (!expansion)
-		printf("NULL");
-	else
-		printf("%s\n", expansion);
+	// if (!expansion)
+	// 	printf("NULL");
+	// else
+	// 	printf("%s\n", expansion);
 	*new_word = ft_strjoin(*new_word, expansion, 1, 1);
 }
 

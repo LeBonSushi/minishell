@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:50 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/06 07:20:04 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/06 12:28:56 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,8 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 			continue ;
 		}
 		all->paths = paths;
-		if (is_builtin(curr->args[0]) && !cmds->next)
-			execute_builtins(curr, curr->args, &all->env, all);
-		else
-			do_pipes(all, curr, env, fd);
+		
+		do_pipes(all, curr, env, fd);
 		update_env(&all->env, "_", curr->args[0], true);
 		if (env)
 			free_tab(env);

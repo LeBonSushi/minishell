@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:58:30 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/05 03:36:34 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/06 12:45:40 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,10 @@ t_token	*merge_tokens(t_token *tokens)
 	t_token	*next;
 	bool	merged;
 
-	if (!tokens || !tokens->next)
+	if ((!tokens || !tokens->next))
 		return (tokens);
+	if (!*tokens->value)
+		return NULL;
 	init_tokens(&merged, &curr, tokens);
 	while (curr && curr->next)
 	{
