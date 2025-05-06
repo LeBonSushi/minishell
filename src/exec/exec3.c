@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec3.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:03 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/04/29 22:47:58 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/06 07:19:52 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,14 @@ void	waitall(t_all *all, t_cmd *cmds)
 	int		tmp;
 
 	cmd = cmds;
-	tmp = 0;
+	tmp = -1;
 	while (cmd)
 	{
+		if (cmd->skip_cmd == true)
+		{
+			cmd = cmd->next;
+			continue ;
+		}
 		waitpid(cmd->pid, &tmp, 0);
 		cmd = cmd->next;
 	}

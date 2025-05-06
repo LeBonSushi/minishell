@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 01:58:22 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/05 00:15:08 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/06 07:23:17 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,10 @@ void execute_builtins(t_cmd *cmd, char **args, t_env **env, t_all *all)
 {
 	if (!args)
 		return;
+	// if (cmd->infile_fd > 0)
+	// 	dup2(cmd->infile_fd, STDIN_FILENO);
+	// if (cmd->outfile_fd > 0)
+	// 	dup2(cmd->outfile_fd, STDOUT_FILENO);
 	if (!ft_strcmp(args[0], "echo"))
 		ft_echo(cmd->tokens);
 	else if (!ft_strcmp(args[0], "cd"))
@@ -28,6 +32,8 @@ void execute_builtins(t_cmd *cmd, char **args, t_env **env, t_all *all)
 		ft_env(all->env);
 	else if (!ft_strcmp(args[0], "exit"))
 		ft_exit(cmd->tokens, all);
+	// close (cmd->infile_fd);
+	// close (cmd->outfile_fd);
 	/*else if (!ft_strcmp(args->value, "unset"))
 		ft_unset(env);*/
 }

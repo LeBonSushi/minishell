@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/05 03:44:28 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/06 10:04:41 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,7 @@ char *get_env_value(t_all *all, char *var_name)
 			return (ft_strdup(env->value));
 		env = env->next;
 	}
+	// return (ft_strdup(""));  // Return empty string if not found
 	return (ft_strdup(""));  // Return empty string if not found
 }
 
@@ -217,6 +218,10 @@ void	handle_variable_expansion(t_all *all, char *word, int *i, char **new_word)
 	
 	// printf("ouais\n")
 	expansion = expand_variable(all, word, i);
+	if (!expansion)
+		printf("NULL");
+	else
+		printf("%s\n", expansion);
 	*new_word = ft_strjoin(*new_word, expansion, 1, 1);
 }
 
@@ -401,11 +406,11 @@ t_token *create_expand_tokens(t_all *all, t_token *tokens)
 
 	if (!tokens)
 		return (NULL);
-	print_tokens(tokens);
+	// print_tokens(tokens);
 	// token_after = create_tokens_without_space(tokens);
 	// print_tokens(token_after);
 	expanded_tokens = expand_tokens(all, tokens);
-	print_tokens(expanded_tokens);
+	// print_tokens(expanded_tokens);
 	
 	// free_all_token(token_after);
 	return (expanded_tokens);

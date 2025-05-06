@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections3.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:53:18 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/04/29 22:08:56 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/06 07:08:08 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ int	redir_out_append(t_cmd *curr_cmd, t_token *curr_token)
 	else if (curr_token->token_type == REDIR_APPEND)
 		flags |= O_APPEND;
 	curr_cmd->outfile_fd = open(file->value, flags, mode);
+	// printf("out: %d\n", curr_cmd->outfile_fd);
 	if (curr_cmd->outfile_fd == -1)
 	{
 		ft_putstr_fd("minishell: ", 2);
@@ -76,7 +77,7 @@ int	manage_cmd_redir(t_all *all, t_cmd *curr_cmd)
 			if (curr_token->token_type == REDIR_HEREDOC)
 				status = do_heredoc(curr_cmd, curr_token, is_last(curr_token));
 			else if (curr_token->token_type == REDIR_IN && !curr_cmd->skip_cmd)
-				status = redir_in(curr_cmd, curr_token);
+				status = redir_in(all, curr_cmd, curr_token);
 			else if ((curr_token->token_type == REDIR_APPEND
 					|| curr_token->token_type == REDIR_OUT)
 				&& !curr_cmd->skip_cmd)

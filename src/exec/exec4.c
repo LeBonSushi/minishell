@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:50 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/05 00:24:04 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/06 07:20:04 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 	if (!cmds)
 		return ;
 	curr = cmds;
+	set_execution_mode();
 	while (curr)
 	{
 		env = env_to_tab(all->env);
@@ -59,4 +60,5 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 		curr = curr->next;
 	}
 	waitall(all, cmds);
+	set_interactive_mode();
 }

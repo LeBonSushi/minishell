@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:53:14 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/04/29 22:06:12 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/06 06:58:57 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,11 +69,11 @@ bool	is_last(t_token *token)
 	return (true);
 }
 
-int	redir_in(t_cmd *curr_cmd, t_token *curr_token)
+int	redir_in(t_all *all, t_cmd *curr_cmd, t_token *curr_token)
 {
 	t_token	*file;
 	char	*error;
-
+	(void)all;
 	if (curr_cmd->infile_fd > 0)
 		close(curr_cmd->infile_fd);
 	file = curr_token->next;
@@ -81,6 +81,7 @@ int	redir_in(t_cmd *curr_cmd, t_token *curr_token)
 	if (access(file->value, F_OK | R_OK))
 	{
 		curr_cmd->skip_cmd = true;
+		// skip_all_cmds(all->cmds);
 		return (perror(error), free(error), 1);
 	}
 	curr_cmd->infile_fd = open(file->value, O_RDONLY);

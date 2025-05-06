@@ -7,11 +7,10 @@ REST :=		src/minishell2.c \
 			src/parsing/expander4.c \
 			src/parsing/expander5.c \
 			src/parsing/expander6.c \
-			src/signal/signal.c \
 			src/signal/setmode.c \
 
 # Name of the final executable
-NAME	:= m
+NAME	:= minishell
 
 # All needed files
 SRC		:=	src/minishell.c \
@@ -48,6 +47,8 @@ SRC		:=	src/minishell.c \
 			src/exec/exec3.c \
 			src/exec/exec4.c \
 \
+			src/signal/signal.c \
+			src/signal/signal2.c \
 \
 
 OBJ		:= $(SRC:.c=.o)

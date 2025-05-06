@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/25 18:32:46 by macorso           #+#    #+#             */
-/*   Updated: 2025/04/29 23:02:02 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/06 06:56:59 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,5 +47,5 @@ void	ft_echo(t_token *tokens)
 		current = current->next;
 	}
 	if (newline)
-		printf("\n");
+		ft_putstr_fd("\n", 1);
 }

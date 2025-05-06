@@ -207,6 +207,7 @@ void	free_all_token(t_token *token);
 void	free_all(t_all *all);
 void	free_all_cmds(t_cmd *cmds);
 void	free_token(t_token *token);
+void	skip_all_cmds(t_cmd *cmds);
 
 //--------------------BUILTINS---------------------------
 
@@ -263,7 +264,7 @@ bool	contain_redir_errors(t_cmd *cmds, int *status, bool print);
 
 int		do_heredoc(t_cmd *cmd, t_token *curr_token, bool is_last);
 bool	is_last(t_token *token);
-int		redir_in(t_cmd *curr_cmd, t_token *curr_token);
+int		redir_in(t_all *all, t_cmd *curr_cmd, t_token *curr_token);
 bool	is_redir_out(t_token *token);
 int	manage_cmd_redir(t_all *all, t_cmd *curr_cmd);
 
