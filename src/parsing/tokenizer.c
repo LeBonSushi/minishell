@@ -34,7 +34,7 @@ t_token	*ft_parse_quoted(char **str, bool *sq, bool *dq)
 	if (**str != quote)
 		return (NULL);
 	space_after = (ft_isspace(*(*str + 1)));
-	token = token_new(WORD, ft_substr(start, 0, len),
+	token = token_new4(WORD, ft_substr(start, 0, len),
 			*sq, *dq);
 	token->space_after = space_after;
 	(*str)++;
