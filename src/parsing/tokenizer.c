@@ -165,23 +165,24 @@ bool	is_redirect(t_token_type type)
 
 bool	manage_error_redir(t_all *all, t_token *token)
 {
+	(void)all;
 	if (is_redirect(token->token_type))
 	{
 		if (!token->next)
 		{
-			all->status = 2;
+			g_exit = 2;
 			ft_putstr_fd("ministress: syntax error near unexpected token `newline\'\n", 2);
 			return (true);
 		}
 		if (token->next->token_type != WORD && token->next->token_type != WILD_CARD)
 		{
-			all->status = 2;
+			g_exit = 2;
 			printf("ministress: syntax error near unexpected token `%s\'\n", token->next->value);
 			return (true);
 		}
 		if (!ft_strcmp(token->next->value, "*") && is_redirect(token->token_type))
 		{
-			all->status = 1;
+			g_exit = 1;
 			return (ft_putstr_fd("ministress: *: ambiguous redirect\n", 2), true);
 		}
 	}
@@ -196,6 +197,7 @@ bool	is_error_expansion_char(char c)
 bool	manage_expansion_error(t_all *all, t_token *token)
 {
 	int	i;
+	(void)all;
 
 	i = 0;
 	if (token->token_type == WORD)
@@ -204,7 +206,7 @@ bool	manage_expansion_error(t_all *all, t_token *token)
 		{
 			if ((token->value[i] == '$') && is_error_expansion_char(token->value[i + 1]) && !token->value[i + 2])
 			{
-				all->status = 2;
+				g_exit = 2;
 				printf("ministress: syntax error near unexpected token `%c\'\n", token->value[i + 1]);
 				return (true);
 			}

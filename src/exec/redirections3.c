@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:53:18 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/06 07:08:08 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/07 18:00:24 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int	manage_cmd_redir(t_all *all, t_cmd *curr_cmd)
 	if (!curr_cmd)
 		return (0);
 	curr_token = curr_cmd->tokens;
-	status = all->status;
+	status = g_exit;
 	while (curr_token && curr_token->next)
 	{
 		next = curr_token->next->next;

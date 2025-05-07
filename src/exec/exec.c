@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 05:18:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/07 16:56:26 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/07 18:01:24 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ char	**tokens_to_tab(t_token *tokens)
 
 char	**get_paths(t_all *all, char **env)
 {
+	(void)all;
 	int		i;
 	char	**paths;
 
@@ -69,7 +70,7 @@ char	**get_paths(t_all *all, char **env)
 	if (!paths)
 	{
 		ft_fprintf(2, "$PATH not found in env.\n");
-		all->status = 127;
+		g_exit = 127;
 		return (NULL);
 	}
 	return (paths);

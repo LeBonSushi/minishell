@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:03 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/06 12:35:23 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/07 18:02:06 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 int	ft_exit2(t_all *all, int exit_code)
 {
-	all->status = exit_code;
+	(void)all;
+	g_exit = exit_code;
 	exit(exit_code);
 }
 
@@ -45,7 +46,7 @@ void child_process(t_all *all, t_cmd *cmd, int *fd, char **env)
     }
     free_all(all);
     free_tab(env);
-    exit(all->status);
+    exit(g_exit);
 }
 
 void	parent_process(t_cmd *curr, int *fd)
@@ -60,6 +61,7 @@ void	parent_process(t_cmd *curr, int *fd)
 
 void	waitall(t_all *all, t_cmd *cmds)
 {
+	(void)all;
 	t_cmd	*cmd;
 	int		tmp;
 
@@ -76,8 +78,8 @@ void	waitall(t_all *all, t_cmd *cmds)
 		cmd = cmd->next;
 	}
 	if (WIFEXITED(tmp))
-		all->status = WEXITSTATUS(tmp);
-	contain_redir_errors(cmds, &all->status, false);
+		g_exit = WEXITSTATUS(tmp);
+	contain_redir_errors(cmds, &g_exit, false);
 }
 
 void	do_pipes(t_all *all, t_cmd *curr, char **env, int fd[2])

@@ -6,12 +6,11 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 19:50:56 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/07 17:58:59 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/07 18:05:57 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-#include <string.h> // Ensure memset or other functions are available if needed
 
 int g_in_cmd_execution = 0;
 

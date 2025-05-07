@@ -6,11 +6,12 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/07 16:34:06 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/07 18:02:53 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+int g_exit;
 
 void	init_all(t_all *all, int ac, char **av, char **envp)
 {
@@ -20,7 +21,7 @@ void	init_all(t_all *all, int ac, char **av, char **envp)
 	all->tokens = NULL;
 	all->cmds = NULL;
 	all->paths = NULL;
-	all->status = 0;
+	g_exit = 0;
 }
 
 bool	env_empty(t_all *all)
@@ -126,7 +127,7 @@ void	minishell_loop(t_all *all)
 		// print_tokens(all->tokens);
 		all->tokens = merge_tokens(all->tokens);
 		all->cmds = create_cmdlist(all->tokens);
-		all->status = manage_redirections(all, all->cmds);
+		g_exit = manage_redirections(all, all->cmds);
 		// debug_print_cmdlist(all->cmds);
 		exec_cmds(all, all->cmds);
 		free(line);
