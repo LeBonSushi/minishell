@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:50:22 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/06 14:34:58 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/07 17:02:35 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	exec_error(t_all *all, char *cmd)
 		&& all->status == 0)
 	{
 		perror(cmd);
-		printf("oausi\n");
+		// printf("oausi\n");
 		if (errno != ENOENT)
 		{
 			all->status = 126;

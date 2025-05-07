@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 19:50:56 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/04/29 21:47:55 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/07 17:58:59 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+#include <string.h> // Ensure memset or other functions are available if needed
 
 int g_in_cmd_execution = 0;
 
@@ -43,6 +44,16 @@ void	handle_sigquit(int sig)
 		write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
 }
 
+// int exit_code(int code_to_set, bool should_set)
+// {
+// 	static int code = 0;
+// 	if (should_set)
+// 	{
+// 		code = code_to_set;
+// 	}
+// 	return code;
+// }
+
 void	setup_signals(void)
 {
 	struct sigaction	sa_int;
@@ -54,6 +65,7 @@ void	setup_signals(void)
 	
 	sigemptyset(&sa_quit.sa_mask);
 	sa_quit.sa_handler = &handle_sigquit;
+	
 	sa_quit.sa_flags = 0;
 	
 	sigaction(SIGINT, &sa_int, NULL);

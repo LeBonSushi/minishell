@@ -1,5 +1,5 @@
 CC		:= cc
-CFLAGS	:= -Werror -Wextra -Wall -I/opt/homebrew/opt/readline/include -g3 -fsanitize=address,leak
+CFLAGS	:= -Werror -Wextra -Wall -I/opt/homebrew/opt/readline/include -g3 #-fsanitize=address,leak
 LDFLAGS	:= -L/opt/homebrew/opt/readline/lib -lreadline
 REST :=		src/minishell2.c \
 			src/parsing/expander2.c \

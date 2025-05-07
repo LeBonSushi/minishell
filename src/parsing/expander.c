@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/06 12:47:17 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/07 16:41:26 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ t_token	*token_new2(t_token_type token_type, char *value,
 	new->value = value;
 	new->single_quoted = single_q;
 	new->double_quoted = double_q;
+	new->expandable = false;
 	new->space_after = true;
 	new->next = NULL;
 	return (new);
@@ -66,6 +67,7 @@ t_token	*join_tokens(t_token *tmp, t_token *next, t_token **next_ptr)
 	new = token_new(tmp->token_type, joined_value,
 			tmp->single_quoted, tmp->double_quoted);
 	new->space_after = next->space_after;
+	new->expandable = next->expandable;
 	*next_ptr = next->next;
 	return (new);
 }
@@ -77,6 +79,7 @@ t_token	*copy_token(t_token *tmp, t_token **next_ptr)
 	new = token_new(tmp->token_type, ft_strdup(tmp->value),
 			tmp->single_quoted, tmp->double_quoted);
 	new->space_after = tmp->space_after;
+	new->expandable = tmp->expandable;
 	*next_ptr = tmp->next;
 	return (new);
 }
@@ -247,7 +250,7 @@ void	handle_dollar_sign(t_all *all, char *word, int *i, char **new_word)
         handle_variable_expansion(all, word, i, new_word);
 }
 
-char	*expand_word(t_all *all, char *word)
+char	*expand_word(t_all *all, char *word, t_token *t)
 {
 	int		i;
 	char	*new_word;
@@ -257,7 +260,10 @@ char	*expand_word(t_all *all, char *word)
 	while (word[i])
 	{
 		if (word[i] == '$' && word[i + 1])
+		{
+			t->expandable = true;
 			handle_dollar_sign(all, word, &i, &new_word);
+		}
 		else
 			new_word = ft_strjoinchar(new_word, word[i++]);
 	}
@@ -288,6 +294,7 @@ t_token	*token_new4(t_token_type token_type, char *value,
 	new->single_quoted = single_q;
 	new->double_quoted = double_q;
 	new->space_after = true;
+	new->expandable = false;
 	free(value);
 	new->next = NULL;
 	return (new);
@@ -300,11 +307,12 @@ t_token	*handle_token_expansion(t_all *all, t_token *tmp)
 
 	if (tmp->token_type == WORD && !tmp->single_quoted)
 	{
-		expanded_value = expand_word(all, tmp->value);
+		expanded_value = expand_word(all, tmp->value, tmp);
 		if (!expanded_value)
 			return (NULL);
 		new = token_new4(tmp->token_type, expanded_value,
 				tmp->single_quoted, tmp->double_quoted);
+		new->expandable = tmp->expandable;
 	}
 	else if (tmp->token_type == TILDE && !tmp->single_quoted)
 	{
@@ -313,6 +321,7 @@ t_token	*handle_token_expansion(t_all *all, t_token *tmp)
 			return (NULL);
 		new = token_new(WORD, expanded_value,
 				tmp->single_quoted, tmp->double_quoted);
+		new->expandable = true;
 	}
 	else
 	{
@@ -333,15 +342,16 @@ t_token	*expand_tokens(t_all *all, t_token *tokens)
 	while (tmp)
 	{
 		new = handle_token_expansion(all, tmp);
-		if (!new)
-		{
-			free_all_token(expanded_tokens);
-			free_all_token(tokens);
-			return (NULL);
-		}
 		new->space_after = tmp->space_after;
-		if (!*new->value && ft_strcmp(tmp->value, ""))
-			new->space_after = false;
+		if (!ft_strcmp(new->value, "") && new->expandable && !new->double_quoted)
+		{
+			free_token(new);
+			tmp = tmp->next;
+			continue;
+		}
+		// printf("%s\n", new->value);
+		// if (!*new->value && ft_strcmp(tmp->value, ""))
+		// 	new->space_after = false;
 		token_addback(&expanded_tokens, new);
 		tmp = tmp->next;
 	}

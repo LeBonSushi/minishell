@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 05:18:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/06 07:07:38 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/07 16:56:26 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,14 +99,12 @@ bool	is_dir(t_all *all, char *cmd)
 {
 	int		fd;
 	char	*error;
+	(void)all;
 
 	fd = open(cmd, O_RDONLY);
 	error = ft_strjoin("ministress: ", cmd, 0, 0);
 	if (fd < 0 && errno == EISDIR)
-	{
-		perror(error);
-		all->status = 1;
-	}
+		return (true);
 	free(error);
 	close(fd);
 	return (false);
