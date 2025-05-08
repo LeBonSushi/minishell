@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec4.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:50 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/06 12:28:56 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/08 19:47:47 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 	if (!cmds)
 		return ;
 	curr = cmds;
-	set_execution_mode();
+	// set_execution_mode();
 	while (curr)
 	{
 		env = env_to_tab(all->env);
@@ -46,7 +46,7 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 			continue ;
 		}
 		all->paths = paths;
-		
+		set_execution_mode();
 		do_pipes(all, curr, env, fd);
 		update_env(&all->env, "_", curr->args[0], true);
 		if (env)

@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:53:24 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/04/29 22:09:22 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/08 20:10:27 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,11 @@ int	manage_redirections(t_all *all, t_cmd *cmds)
 	while (curr)
 	{
 		status = manage_cmd_redir(all, curr);
+		if (status == 130)
+        {
+            skip_all_cmds(cmds);
+            return (status);
+        }
 		curr = curr->next;
 	}
 	return (status);

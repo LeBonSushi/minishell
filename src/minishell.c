@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/08 01:14:36 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/08 22:20:33 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,12 +112,20 @@ void	free_all_cmds(t_cmd *cmds)
 void	minishell_loop(t_all *all)
 {
 	char	*line;
+	int		last_exit;
 
+	last_exit = 0;
 	while (1)
 	{
 		all->tokens = NULL;
 		all->cmds = NULL;
 		all->paths = NULL;
+		if (last_exit == 130)
+        {
+            // S'assurer que le prompt est sur une nouvelle ligne
+            write(STDOUT_FILENO, "\n", 1);
+            rl_on_new_line();
+        }
 		line = readline("ministress$ ");
 		if (line == NULL)
 		{
@@ -135,6 +143,7 @@ void	minishell_loop(t_all *all)
 		// printf("%d\n", g_zebi.g_exit);
 		// debug_print_cmdlist(all->cmds);
 		exec_cmds(all, all->cmds);
+		last_exit = g_zebi.g_exit;
 		free(line);
 		free_all_token(all->tokens);
 		free_all_cmds(all->cmds);
