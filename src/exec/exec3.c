@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec3.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:03 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/07 18:02:06 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/08 01:03:05 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	ft_exit2(t_all *all, int exit_code)
 {
 	(void)all;
-	g_exit = exit_code;
+	g_zebi.g_exit = exit_code;
 	exit(exit_code);
 }
 
@@ -46,7 +46,7 @@ void child_process(t_all *all, t_cmd *cmd, int *fd, char **env)
     }
     free_all(all);
     free_tab(env);
-    exit(g_exit);
+    exit(g_zebi.g_exit);
 }
 
 void	parent_process(t_cmd *curr, int *fd)
@@ -78,8 +78,8 @@ void	waitall(t_all *all, t_cmd *cmds)
 		cmd = cmd->next;
 	}
 	if (WIFEXITED(tmp))
-		g_exit = WEXITSTATUS(tmp);
-	contain_redir_errors(cmds, &g_exit, false);
+		g_zebi.g_exit = WEXITSTATUS(tmp);
+	contain_redir_errors(cmds, &g_zebi.g_exit, false);
 }
 
 void	do_pipes(t_all *all, t_cmd *curr, char **env, int fd[2])

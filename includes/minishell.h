@@ -16,7 +16,6 @@
 # define HEREDOC_TMP ".heredoc"
 
 # include "../libft/libft.h"
-extern int g_exit;
 
 # include <stdio.h>
 # include <dirent.h>
@@ -34,7 +33,15 @@ extern int g_exit;
 # include <readline/readline.h>
 # include <readline/history.h>
 
-extern int g_in_cmd_execution;
+typedef struct s_zebi
+{
+	int	g_exit;
+	int	g_in_cmd_execution;
+	int	in_here;
+	int	stop_here;
+}	t_zebi;
+
+extern t_zebi	g_zebi;
 
 typedef enum e_token_type
 {

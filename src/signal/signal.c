@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 19:50:56 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/07 18:05:57 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/08 01:25:07 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-int g_in_cmd_execution = 0;
 
 void init_readline(void)
 {
@@ -24,23 +22,27 @@ void	handle_sigint(int sig)
 {
 	(void)sig;
 
-	if (!g_in_cmd_execution)
+	if (!g_zebi.g_in_cmd_execution)
 	{
 		write(STDOUT_FILENO, "\n", 1);
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
 	}
-	else
+	else if (g_zebi.g_in_cmd_execution == 1)
 		write(STDOUT_FILENO, "\n", 1);
+	g_zebi.g_exit = 130;
 }
 
 void	handle_sigquit(int sig)
 {
 	(void)sig;
 
-	if (g_in_cmd_execution)
+	if (g_zebi.g_in_cmd_execution == 1)
+	{
 		write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
+		g_zebi.g_exit = 131;
+	}
 }
 
 // int exit_code(int code_to_set, bool should_set)

@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   minishell2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 22:30:10 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/07 18:06:05 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/08 01:03:05 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-int g_exit;
+int g_zebi.g_exit;
 
 void	minishell_loop(t_all *all)
 {
@@ -34,7 +34,7 @@ void	minishell_loop(t_all *all)
 		all->tokens = create_expand_tokens(all, all->tokens);
 		all->tokens = merge_tokens(all->tokens);
 		all->cmds = create_cmdlist(all->tokens);
-		g_exit = manage_redirections(all, all->cmds);
+		g_zebi.g_exit = manage_redirections(all, all->cmds);
 		exec_cmds(all, all->cmds);
 		free(line);
 		free_all_token(all->tokens);

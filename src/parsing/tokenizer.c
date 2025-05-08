@@ -170,19 +170,19 @@ bool	manage_error_redir(t_all *all, t_token *token)
 	{
 		if (!token->next)
 		{
-			g_exit = 2;
+			g_zebi.g_exit = 2;
 			ft_putstr_fd("ministress: syntax error near unexpected token `newline\'\n", 2);
 			return (true);
 		}
 		if (token->next->token_type != WORD && token->next->token_type != WILD_CARD)
 		{
-			g_exit = 2;
+			g_zebi.g_exit = 2;
 			printf("ministress: syntax error near unexpected token `%s\'\n", token->next->value);
 			return (true);
 		}
 		if (!ft_strcmp(token->next->value, "*") && is_redirect(token->token_type))
 		{
-			g_exit = 1;
+			g_zebi.g_exit = 1;
 			return (ft_putstr_fd("ministress: *: ambiguous redirect\n", 2), true);
 		}
 	}
@@ -206,7 +206,7 @@ bool	manage_expansion_error(t_all *all, t_token *token)
 		{
 			if ((token->value[i] == '$') && is_error_expansion_char(token->value[i + 1]) && !token->value[i + 2])
 			{
-				g_exit = 2;
+				g_zebi.g_exit = 2;
 				printf("ministress: syntax error near unexpected token `%c\'\n", token->value[i + 1]);
 				return (true);
 			}

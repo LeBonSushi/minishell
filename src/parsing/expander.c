@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/07 18:01:09 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/08 01:03:05 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ char *expand_status(t_all *all, int *i)
 {
 	(void)all;
 	(*i) += 2;  // Skip $?
-	return (ft_itoa(g_exit));
+	return (ft_itoa(g_zebi.g_exit));
 }
 
 char *expand_digit(int *i)

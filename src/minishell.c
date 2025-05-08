@@ -3,15 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/07 18:02:53 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/08 01:14:36 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-int g_exit;
+
+t_zebi	g_zebi;
+
 
 void	init_all(t_all *all, int ac, char **av, char **envp)
 {
@@ -21,7 +23,9 @@ void	init_all(t_all *all, int ac, char **av, char **envp)
 	all->tokens = NULL;
 	all->cmds = NULL;
 	all->paths = NULL;
-	g_exit = 0;
+	g_zebi.g_exit = 0;
+	g_zebi.stop_here = 0;
+	g_zebi.in_here = 0;
 }
 
 bool	env_empty(t_all *all)
@@ -127,7 +131,8 @@ void	minishell_loop(t_all *all)
 		// print_tokens(all->tokens);
 		all->tokens = merge_tokens(all->tokens);
 		all->cmds = create_cmdlist(all->tokens);
-		g_exit = manage_redirections(all, all->cmds);
+		g_zebi.g_exit = manage_redirections(all, all->cmds);
+		// printf("%d\n", g_zebi.g_exit);
 		// debug_print_cmdlist(all->cmds);
 		exec_cmds(all, all->cmds);
 		free(line);

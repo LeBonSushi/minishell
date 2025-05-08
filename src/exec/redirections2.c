@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:53:14 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/06 06:58:57 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/08 01:29:14 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,11 @@ int	do_heredoc(t_cmd *cmd, t_token *curr_token, bool is_last)
 	}
 	heredoc_fd = open(heredoc_file, O_RDWR | O_TRUNC | O_CREAT, 0664);
 	limiter = ft_strdup(curr_token->next->value);
-	while (1)
+	g_zebi.in_here = 1;
+	while (1 && g_zebi.stop_here == 0)
 	{
 		line = readline("ministress heredoc> ");
-		if (!line || ft_compare(limiter, line))
+		if (/*g_zebi.stop_here == 1 || */!line || ft_compare(limiter, line))
 		{
 			if (line)
 				free(line);
@@ -46,6 +47,9 @@ int	do_heredoc(t_cmd *cmd, t_token *curr_token, bool is_last)
 		ft_fprintf(heredoc_fd, "%s\n", line);
 		free(line);
 	}
+	// printf("%d\n", g_zebi.stop_here);
+	// if (g_zebi.stop_here == 1)
+	// 	return (130);
 	cmd->here_doc = true;
 	close(heredoc_fd);
 	if (is_last)

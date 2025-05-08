@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:44:28 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/04/29 21:44:48 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/08 01:29:27 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,10 @@
 
 void	set_execution_mode(void)
 {
-	g_in_cmd_execution = 1;
+	g_zebi.g_in_cmd_execution = 1;
 }
+
 void	set_interactive_mode(void)
 {
-	g_in_cmd_execution = 0;
+	g_zebi.g_in_cmd_execution = 0;
 }
