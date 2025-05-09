@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:38:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/08 01:03:05 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/09 19:42:30 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,30 @@ void	ft_exit(t_token *tokens, t_all *all)
 	int i;
 	int res;
 
-	i = 0;
+	ft_putstr_fd("exit\n", 1);
 	current = tokens->next;
+	if (!current)
+	{
+		free_all(all);
+		exit(g_zebi.g_exit);
+	}
+	
+	i = 0;
 	while (current)
 	{
 		i++;
 		current = current->next;
 	}
-	if (i > 1)
+	current = tokens->next;
+	i = 0;
+	if (current->value[0] == '-' || current->value[0] == '+')
+		i = 1;
 	{
 		ft_fprintf(2, "ministress: exit : too many arguments\n");
 		exit(1);
 	}
+	i = 1;
+	current = tokens->next;
 	if (current)
 	{
 		while (current->value[i])
@@ -46,6 +58,8 @@ void	ft_exit(t_token *tokens, t_all *all)
 		}
 		printf("exit\n");
 		res = ft_atoi(current->value) % 256;
+		printf("res = %d\n", res);
+		g_zebi.g_exit = res;
 		exit(g_zebi.g_exit);
 	}
 	else
@@ -57,5 +71,5 @@ void	ft_exit(t_token *tokens, t_all *all)
 	}
 	free_all(all);
 	all->cmds = NULL;
-	all->tokens = NULL;	
+	all->tokens = NULL;
 }

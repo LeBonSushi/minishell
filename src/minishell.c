@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/08 22:20:33 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/09 17:43:00 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,15 +121,14 @@ void	minishell_loop(t_all *all)
 		all->cmds = NULL;
 		all->paths = NULL;
 		if (last_exit == 130)
-        {
-            // S'assurer que le prompt est sur une nouvelle ligne
-            write(STDOUT_FILENO, "\n", 1);
-            rl_on_new_line();
-        }
+		{
+			write(STDOUT_FILENO, "\n", 1);
+			rl_on_new_line();
+		}
 		line = readline("ministress$ ");
 		if (line == NULL)
 		{
-			write(STDOUT_FILENO, "\n", 1);
+			write(STDOUT_FILENO, "exit\n", 5);
 			break ;
 		}
 		if (*line)

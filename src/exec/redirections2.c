@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:53:14 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/08 23:24:59 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/09 17:30:26 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ char *get_heredoc_file()
 // 	free(heredoc_file);
 // 	return (0);
 // }
+
 
 int do_heredoc(t_cmd *cmd, t_token *curr_token, bool is_last)
 {
@@ -149,8 +150,7 @@ int do_heredoc(t_cmd *cmd, t_token *curr_token, bool is_last)
 		// Vérifier si interrompu par SIGINT
 		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
 		{
-			// Écrire un saut de ligne pour le prochain prompt
-			write(STDOUT_FILENO, "\n", 1);
+			//write(STDOUT_FILENO, "\n", 1);
 			tcsetattr(STDIN_FILENO, TCSANOW, &term_old);
 			
 			// Informer readline qu'il est sur une nouvelle ligne

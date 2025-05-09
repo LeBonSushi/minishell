@@ -6,12 +6,11 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 22:30:10 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/08 01:03:05 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/09 17:06:43 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-int g_zebi.g_exit;
 
 void	minishell_loop(t_all *all)
 {

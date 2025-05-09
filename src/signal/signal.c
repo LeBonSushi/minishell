@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 19:50:56 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/08 21:56:12 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/09 17:11:51 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,32 +20,32 @@ void init_readline(void)
 
 void handle_sigint(int sig)
 {
-    (void)sig;
-    
-    if (g_zebi.in_here)
-    {
-        write(STDOUT_FILENO, "\n", 1);
-        rl_on_new_line();
-        rl_replace_line("", 0);
-        rl_redisplay();
-        g_zebi.stop_here = 1;
-        g_zebi.g_exit = 130;
-        return;
-    }
-    
-    // Si nous sommes en mode interactif (prompt)
-    if (!g_zebi.g_in_cmd_execution)
-    {
-        write(STDOUT_FILENO, "\n", 1);
-        rl_on_new_line();
-        rl_replace_line("", 0);
-        rl_redisplay();
-    }
-    else
+	(void)sig;
+	
+	if (g_zebi.in_here)
 	{
-        write(STDOUT_FILENO, "\n", 1);
+		write(STDOUT_FILENO, "\n", 1);
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+		g_zebi.stop_here = 1;
+		g_zebi.g_exit = 130;
+		return;
 	}
-    g_zebi.g_exit = 130;
+	
+	// Si nous sommes en mode interactif (prompt)
+	if (!g_zebi.g_in_cmd_execution)
+	{
+		write(STDOUT_FILENO, "\n", 1);
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+	}
+	else
+	{
+		write(STDOUT_FILENO, "\n", 1);
+	}
+	g_zebi.g_exit = 130;
 }
 
 
