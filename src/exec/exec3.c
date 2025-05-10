@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:03 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/10 02:24:01 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/10 02:26:52 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,8 +153,6 @@ void	do_pipes(t_all *all, t_cmd *curr, char **env, int fd[2])
 		curr->pid = fork();
 		if (curr->pid == -1)
 			fork_error(all, fd);
-		printf("%p\n", all);
-		printf("%p\n", curr);
 		if (curr->pid == 0)
 		{
 			child_process(all, curr, fd, env);
