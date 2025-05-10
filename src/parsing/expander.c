@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/08 01:03:05 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/10 06:39:34 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -311,8 +311,9 @@ t_token	*handle_token_expansion(t_all *all, t_token *tmp)
 		expanded_value = expand_word(all, tmp->value, tmp);
 		if (!expanded_value)
 			return (NULL);
-		new = token_new4(tmp->token_type, expanded_value,
+		new = token_new(tmp->token_type, expanded_value,
 				tmp->single_quoted, tmp->double_quoted);
+		free(expanded_value);
 		new->expandable = tmp->expandable;
 	}
 	else if (tmp->token_type == TILDE && !tmp->single_quoted)

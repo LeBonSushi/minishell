@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 05:18:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/08 01:03:05 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/10 05:50:15 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ char	**get_paths(t_all *all, char **env)
 
 	i = 0;
 	paths = NULL;
+	if (!env)
+		return (NULL);
 	while (env[i])
 	{
 		if (ft_strncmp(env[i], "PATH=", 5) == 0)
@@ -73,6 +75,7 @@ char	**get_paths(t_all *all, char **env)
 		g_zebi.g_exit = 127;
 		return (NULL);
 	}
+	free_tab(env);
 	return (paths);
 }
 

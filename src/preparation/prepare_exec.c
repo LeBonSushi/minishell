@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 14:35:21 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/10 05:27:59 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/10 06:09:14 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,14 +85,15 @@ t_token	**split_tokens(t_token *tokens)
 	t_token	**split;
 	t_token	*curr;
 	t_token	*to_add;
-	t_token	*next;
+	// t_token	*next;
 	int		i;
 
 	if (!tokens)
 		return (NULL);
 	curr = tokens;
 	i = 0;
-	split = malloc(sizeof(t_token *) * (count_commands(tokens) + 1));
+	split = malloc(sizeof(t_token *) * (count_commands(tokens) + 2));
+	printf("%lu\n", count_commands(tokens) + 1);
 	if (!split)
 		return (NULL);
 	while (curr)
@@ -101,12 +102,9 @@ t_token	**split_tokens(t_token *tokens)
 		while (curr && curr->token_type != PIPE)
 			curr = curr->next;
 		if (curr && curr->token_type == PIPE)
-		{
-			next = curr->next;
-			free(curr->value);
-			free(curr->next);
-			free(curr);
-			curr = next;
+		{	
+			curr = curr->next;
+			continue ;
 		}
 		split[i] = to_add;
 		i++;
@@ -127,10 +125,7 @@ t_cmd	*create_cmdlist(t_token *token)
 		return (NULL);
 	i = -1;
 	while (split[++i])
-		;
-	cmds = malloc(sizeof(t_cmd) + (i + 1));
-	i = -1;
-	while (split[++i])
 		cmd_addback(&cmds, cmd_new(split[i]));
+	free(split);
 	return (cmds);
 }

@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:03 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/10 02:26:52 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/10 06:50:28 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,13 @@ int	ft_exit2(t_all *all, int exit_code)
 
 void child_process(t_all *all, t_cmd *cmd, int *fd, char **env)
 {
-	ft_fprintf(2, "ca rentre childproc\n");
+	// ft_fprintf(2, "ca rentre childproc\n");
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	close(fd[0]);
 
-	printf("%p\n", all);
-	printf("%p\n", cmd);
+	// printf("%p\n", all);
+	// printf("%p\n", cmd);
 	if (cmd->infile_fd > 0)
 	{
 		dup2(cmd->infile_fd, STDIN_FILENO);
@@ -41,9 +41,10 @@ void child_process(t_all *all, t_cmd *cmd, int *fd, char **env)
 	else if (cmd->next)
 		dup2(fd[1], STDOUT_FILENO);
 	close(fd[1]);
+	free_all_token(cmd->tokens);
 	if (is_builtin(cmd->args[0]))
 	{
-		ft_fprintf(2, "ca rentre isbuiltin childproc\n");
+		// ft_fprintf(2, "ca rentre isbuiltin childproc\n");
 		print_tab(cmd->args);
 		execute_builtins(cmd, cmd->args, &all->env, all);
 	}
@@ -96,22 +97,23 @@ void waitall(t_all *all, t_cmd *cmds)
 	t_cmd *curr = cmds;
 	int status;
 	bool signal_interrupt = false;
-	int i = 0;
+	// int i = 0;
 	(void)all;
 	
-	while (curr)
-	{
-		while (curr->args[i])
-		{
-			ft_fprintf(2, "[%d]%s ", i,curr->args[i]);
-			i++;
-		}
-		curr = curr->next;
-	}
+	// while (curr)
+	// {
+	// 	i = 0;
+	// 	while (curr->args[i])
+	// 	{
+	// 		ft_fprintf(2, "[%d]%s ", i,curr->args[i]);
+	// 		i++;
+	// 	}
+	// 	curr = curr->next;
+	// }
 	curr = cmds;
 	while (curr)
 	{
-		printf("\n");
+		// printf("\n");
 		
 		if (curr->pid > 0)
 		{
@@ -140,10 +142,10 @@ void waitall(t_all *all, t_cmd *cmds)
 
 void	do_pipes(t_all *all, t_cmd *curr, char **env, int fd[2])
 {
-	print_tab(curr->args);
+	// print_tab(curr->args);
 	if (is_builtin(curr->args[0]) && !all->cmds->next)
 	{
-			printf("rentre is builtin dopipes\n");
+			// printf("rentre is builtin dopipes\n");
 			execute_builtins(curr, curr->args, &all->env, all);
 	}
 	else

@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/10 03:08:22 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/10 06:42:08 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ void	minishell_loop(t_all *all)
 {
 	char	*line;
 	int		last_exit;
-	t_token **test;
+	// t_token **test;
 
 	last_exit = 0;
 	while (1)
@@ -138,16 +138,18 @@ void	minishell_loop(t_all *all)
 		all->tokens = create_expand_tokens(all, all->tokens);
 		// print_tokens(all->tokens);
 		all->tokens = merge_tokens(all->tokens);
-		test = split_tokens(all->tokens);
+		// test = split_tokens(all->tokens);
 		all->cmds = create_cmdlist(all->tokens);
+		print_tokens(all->tokens);
 		g_zebi.g_exit = manage_redirections(all, all->cmds);
+		// free_all_token(all->tokens);
 		// printf("%d\n", g_zebi.g_exit);
-		debug_print_cmdlist(all->cmds);
+		// debug_print_cmdlist(all->cmds);
 		exec_cmds(all, all->cmds);
 		last_exit = g_zebi.g_exit;
 		free(line);
-		free_all_token(all->tokens);
 		free_all_cmds(all->cmds);
+		// free_all_token(all->tokens);
 	}
 }
 
