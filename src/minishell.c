@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/10 23:04:28 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/10 23:59:02 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ void	minishell_loop(t_all *all)
 		// free_all_token(all->tokens);
 		// printf("%d\n", g_zebi.g_exit);
 		// debug_print_cmdlist(all->cmds);
-		exec_cmds(all, all->cmds);
+		// exec_cmds(all, all->cmds);
 		last_exit = g_zebi.g_exit;
 		free(line);
 		free_all_cmds(all->cmds);
