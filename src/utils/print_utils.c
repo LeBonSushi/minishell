@@ -19,7 +19,7 @@ void	print_tab(char **tab)
 	i = 0;
 	while (tab[i])
 	{
-		printf("%s\n", tab[i]);
+		ft_fprintf(2, "%s\n", tab[i]);
 		i++;
 	}
 }

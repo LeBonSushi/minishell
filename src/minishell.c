@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/09 17:43:00 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/10 01:54:45 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@ void	minishell_loop(t_all *all)
 		all->cmds = create_cmdlist(all->tokens);
 		g_zebi.g_exit = manage_redirections(all, all->cmds);
 		// printf("%d\n", g_zebi.g_exit);
-		// debug_print_cmdlist(all->cmds);
+		debug_print_cmdlist(all->cmds);
 		exec_cmds(all, all->cmds);
 		last_exit = g_zebi.g_exit;
 		free(line);

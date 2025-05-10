@@ -3,14 +3,58 @@
 /*                                                        :::      ::::::::   */
 /*   exec4.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:50 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/08 19:47:47 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/10 02:23:06 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+void handle_skip_case(t_cmd **curr, char **env, char **paths)
+{
+    if ((*curr)->next && (*curr)->next->infile_fd < 0)
+        (*curr)->next->infile_fd = open("/dev/null", O_RDONLY);
+    
+    free_tab(env);
+    free_tab(paths);
+    free_tab((*curr)->args);
+    *curr = (*curr)->next;
+}
+
+void execute_builtin_directly(t_all *all, t_cmd *cmd)
+{
+    int saved_stdin = dup(STDIN_FILENO);
+    int saved_stdout = dup(STDOUT_FILENO);
+
+    // Apply redirections
+    if (cmd->infile_fd > 0)
+    {
+        dup2(cmd->infile_fd, STDIN_FILENO);
+        close(cmd->infile_fd);
+    }
+    if (cmd->outfile_fd > 0)
+    {
+        dup2(cmd->outfile_fd, STDOUT_FILENO);
+        close(cmd->outfile_fd);
+    }
+
+    execute_builtins(cmd, cmd->args, &all->env, all);
+
+    // Restore standard FDs
+    dup2(saved_stdin, STDIN_FILENO);
+    dup2(saved_stdout, STDOUT_FILENO);
+    close(saved_stdin);
+    close(saved_stdout);
+}
+
+void free_resources(char **env, char **paths, char **args)
+{
+    free_tab(env);
+    free_tab(paths);
+    if (args) free_tab(args);
+}
 
 void	exec_cmds(t_all *all, t_cmd *cmds)
 {
@@ -28,6 +72,9 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 		env = env_to_tab(all->env);
 		paths = get_paths(all, env);
 		curr->args = tokens_to_tab(curr->tokens);
+		// printf("la: \n");
+		// print_tab(curr->args);
+		// printf("plula \n");
 		if (!curr->args)
 			curr->path = NULL;
 		else
@@ -45,16 +92,23 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 				free_tab(curr->args);
 			continue ;
 		}
-		all->paths = paths;
+		printf("%p\n", curr->args);
+		if (paths)
+			free_tab(paths);
 		set_execution_mode();
 		do_pipes(all, curr, env, fd);
+		// printf("apres pipes\n");
+		// print_tab(curr->args);
+		// printf("fin apres pipes\n");
+		// printf("apres pipes\n");
+		// print_tab(curr->args);
+		// printf("fin apres pipes\n");
+		printf("%p\n", curr->args);
 		update_env(&all->env, "_", curr->args[0], true);
 		if (env)
 			free_tab(env);
-		if (paths)
-			free_tab(paths);
-		if (curr->args)
-			free_tab(curr->args);
+		// if (curr->args)
+		// 	free_tab(curr->args);
 		curr = curr->next;
 	}
 	waitall(all, cmds);
