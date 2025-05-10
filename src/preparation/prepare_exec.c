@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 14:35:21 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/10 06:09:14 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/10 23:42:40 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ t_token	**split_tokens(t_token *tokens)
 	t_token	**split;
 	t_token	*curr;
 	t_token	*to_add;
-	// t_token	*next;
+	t_token	*next;
 	int		i;
 
 	if (!tokens)
@@ -103,7 +103,9 @@ t_token	**split_tokens(t_token *tokens)
 			curr = curr->next;
 		if (curr && curr->token_type == PIPE)
 		{	
-			curr = curr->next;
+			next = curr->next;
+			free_token(curr);
+			curr = next;
 			continue ;
 		}
 		split[i] = to_add;

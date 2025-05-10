@@ -130,6 +130,7 @@ typedef struct s_all
 void	print_header(void);
 void	print_tab(char **tab);
 t_token	**split_tokens(t_token *tokens);
+void	free_all2(t_all *all);
 
 //---------------------ENV-------------------------------
 

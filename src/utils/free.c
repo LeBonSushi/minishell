@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/25 18:49:42 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/10 00:08:24 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/10 23:25:33 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,4 +93,14 @@ void	free_all(t_all *all)
 		free_all_cmd(all->cmds);
 	if (all->paths)
 		free_tab(all->paths);
+}
+
+void	free_all2(t_all *all)
+{
+	if (!all)
+		return;
+	if (all->env)
+		free_all_env(all->env);
+	if (all->cmds)
+		free_all_cmd(all->cmds);
 }

@@ -82,24 +82,24 @@ void	debug_print_cmdlist(t_cmd *cmd_list)
 
 	if (!cmd_list)
 	{
-		printf("Command list is empty\n");
+		ft_fprintf(2, "Command list is empty\n");
 		return ;
 	}
 	cmd_num = 1;
 	curr = cmd_list;
 	while (curr)
 	{
-		printf("Command %d:\n", cmd_num++);
-		printf("  Path: %s\n", curr->path ? curr->path : "(null)");
-		printf("  PID: %d\n", curr->pid);
-		printf("  File descriptors: in=%d, out=%d\n", 
+		ft_fprintf(2, "Command %d:\n", cmd_num++);
+		ft_fprintf(2, "  Path: %s\n", curr->path ? curr->path : "(null)");
+		ft_fprintf(2, "  PID: %d\n", curr->pid);
+		ft_fprintf(2, "  File descriptors: in=%d, out=%d\n", 
 			curr->infile_fd, curr->outfile_fd);
-		printf("  Tokens:\n");
+		ft_fprintf(2, "  Tokens:\n");
 		if (curr->tokens)
 			print_tokens(curr->tokens);
 		else
-			printf("    No tokens\n");
-		printf("\n");
+			ft_fprintf(2, "    No tokens\n");
+		ft_fprintf(2, "\n");
 		curr = curr->next;
 	}
 }

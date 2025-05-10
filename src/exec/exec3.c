@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:03 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/10 06:50:28 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/10 23:25:48 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,19 +41,16 @@ void child_process(t_all *all, t_cmd *cmd, int *fd, char **env)
 	else if (cmd->next)
 		dup2(fd[1], STDOUT_FILENO);
 	close(fd[1]);
-	free_all_token(cmd->tokens);
 	if (is_builtin(cmd->args[0]))
-	{
-		// ft_fprintf(2, "ca rentre isbuiltin childproc\n");
-		print_tab(cmd->args);
 		execute_builtins(cmd, cmd->args, &all->env, all);
-	}
 	else
 	{
 		// print_tab(cmd->args);
 		execve(cmd->path, cmd->args, env);
 		exec_error(all, cmd->args[0]);
 	}
+	// free_tab(env);
+	free_all2(all);
 	free_tab(env);
 	exit(g_zebi.g_exit);
 }
@@ -137,6 +134,12 @@ void waitall(t_all *all, t_cmd *cmds)
 		rl_replace_line("", 0);
 		rl_on_new_line();
 	}
+	// while (curr)
+	// {
+	// 	if (curr->args)
+	// 		free_tab(curr->args);
+	// 	curr = curr->next;
+	// }
 	contain_redir_errors(cmds, &g_zebi.g_exit, false);
 }
 

@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:50 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/10 06:15:23 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/10 23:06:44 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,8 @@ void free_resources(char **env, char **paths, char **args)
 {
     free_tab(env);
     free_tab(paths);
-    if (args) free_tab(args);
+    if (args)
+		free_tab(args);
 }
 
 void	exec_cmds(t_all *all, t_cmd *cmds)
@@ -75,14 +76,15 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 			curr->path = NULL;
 		else
 			curr->path = find_exec_path(curr->args[0], paths);
-		if(paths)
-			free_tab(paths);
+		free_tab(paths);
 		if (!curr->path || !curr->args[0] || curr->skip_cmd)
 		{
 			curr = curr->next;
 			if (curr && curr->infile_fd < 0)
 				curr->infile_fd = open("/dev/null", O_RDONLY);
 			free_tab(curr->args);
+			if (curr->path)
+				free(curr->path);
 			continue ;
 		}
 		set_execution_mode();
