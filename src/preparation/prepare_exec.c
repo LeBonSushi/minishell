@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 14:35:21 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/10 02:38:42 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/10 05:27:59 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,25 +53,84 @@ t_token	*copy_token_list(t_token *start, t_token *end)
 	return (head);
 }
 
-void cmd_addback(t_cmd **cmds, t_cmd *new)
+size_t	count_commands(t_token *token)
 {
-	t_cmd *curr;
+	size_t	commands;
+	t_token	*curr;
 
-	if (!cmds || !new)
-		return ;
-	if (!*cmds)
+	commands = 0;
+	curr = token;
+	bool was_pipe;
+
+	was_pipe = false;
+	if (!token)
+		return (0);
+	while (curr)
 	{
-		*cmds = new;
-		return ;
-	}
-	while (curr->next)
+		if (curr->token_type != PIPE)
+		{
+			if (was_pipe)
+				commands++;
+			was_pipe = false;
+		}
+		else
+			was_pipe = true;
 		curr = curr->next;
-	
+	}
+	return (commands);
+}
+
+t_token	**split_tokens(t_token *tokens)
+{
+	t_token	**split;
+	t_token	*curr;
+	t_token	*to_add;
+	t_token	*next;
+	int		i;
+
+	if (!tokens)
+		return (NULL);
+	curr = tokens;
+	i = 0;
+	split = malloc(sizeof(t_token *) * (count_commands(tokens) + 1));
+	if (!split)
+		return (NULL);
+	while (curr)
+	{
+		to_add = curr;
+		while (curr && curr->token_type != PIPE)
+			curr = curr->next;
+		if (curr && curr->token_type == PIPE)
+		{
+			next = curr->next;
+			free(curr->value);
+			free(curr->next);
+			free(curr);
+			curr = next;
+		}
+		split[i] = to_add;
+		i++;
+	}
+	split[i] = NULL;
+	return (split);
 }
 
 t_cmd	*create_cmdlist(t_token *token)
 {
-	t_cmd	*head;
+	t_cmd	*cmds;
+	t_token	**split;
+	int	i;
 	
-	
+	split = split_tokens(token);
+	cmds = NULL;
+	if (!split)
+		return (NULL);
+	i = -1;
+	while (split[++i])
+		;
+	cmds = malloc(sizeof(t_cmd) + (i + 1));
+	i = -1;
+	while (split[++i])
+		cmd_addback(&cmds, cmd_new(split[i]));
+	return (cmds);
 }
