@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 05:18:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/10 05:50:15 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/06 07:07:38 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,14 +52,11 @@ char	**tokens_to_tab(t_token *tokens)
 
 char	**get_paths(t_all *all, char **env)
 {
-	(void)all;
 	int		i;
 	char	**paths;
 
 	i = 0;
 	paths = NULL;
-	if (!env)
-		return (NULL);
 	while (env[i])
 	{
 		if (ft_strncmp(env[i], "PATH=", 5) == 0)
@@ -72,10 +69,9 @@ char	**get_paths(t_all *all, char **env)
 	if (!paths)
 	{
 		ft_fprintf(2, "$PATH not found in env.\n");
-		g_zebi.g_exit = 127;
+		all->status = 127;
 		return (NULL);
 	}
-	free_tab(env);
 	return (paths);
 }
 
@@ -103,12 +99,14 @@ bool	is_dir(t_all *all, char *cmd)
 {
 	int		fd;
 	char	*error;
-	(void)all;
 
 	fd = open(cmd, O_RDONLY);
 	error = ft_strjoin("ministress: ", cmd, 0, 0);
 	if (fd < 0 && errno == EISDIR)
-		return (true);
+	{
+		perror(error);
+		all->status = 1;
+	}
 	free(error);
 	close(fd);
 	return (false);

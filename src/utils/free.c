@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/25 18:49:42 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/11 02:03:00 by macorso          ###   ########.fr       */
+/*   Updated: 2025/04/29 21:25:00 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ void	free_tab(char **tab)
 	while (tab[i])
 		free(tab[i++]);
 	free(tab);
-	tab = NULL;
 }
 
 void	free_all_env(t_env *env)
@@ -101,6 +100,6 @@ void	free_all2(t_all *all)
 		return;
 	if (all->env)
 		free_all_env(all->env);
-	if (all->cmds)
-		free_all_cmd(all->cmds);
+	if (all->tokens)
+		free_all_token(all->tokens);
 }

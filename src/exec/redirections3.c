@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections3.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:53:18 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/08 20:10:50 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/06 07:08:08 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,18 +68,14 @@ int	manage_cmd_redir(t_all *all, t_cmd *curr_cmd)
 	if (!curr_cmd)
 		return (0);
 	curr_token = curr_cmd->tokens;
-	status = 0;
+	status = all->status;
 	while (curr_token && curr_token->next)
 	{
 		next = curr_token->next->next;
 		if (is_redir(curr_token))
 		{
 			if (curr_token->token_type == REDIR_HEREDOC)
-			{
 				status = do_heredoc(curr_cmd, curr_token, is_last(curr_token));
-				if (status == 130)
-					return (status);  // Retourner immédiatement
-			}
 			else if (curr_token->token_type == REDIR_IN && !curr_cmd->skip_cmd)
 				status = redir_in(all, curr_cmd, curr_token);
 			else if ((curr_token->token_type == REDIR_APPEND

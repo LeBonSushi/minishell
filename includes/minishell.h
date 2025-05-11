@@ -29,20 +29,11 @@
 # include <unistd.h>
 # include <signal.h>
 # include <sys/wait.h>
-# include <termios.h>
 # include <sys/stat.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
-typedef struct s_zebi
-{
-	int	g_exit;
-	int	g_in_cmd_execution;
-	int	in_here;
-	int	stop_here;
-}	t_zebi;
-
-extern t_zebi	g_zebi;
+extern int g_in_cmd_execution;
 
 typedef enum e_token_type
 {
@@ -91,7 +82,6 @@ typedef struct s_token
 	bool			single_quoted;
 	bool			double_quoted;
 	bool			space_after;
-	bool			expandable;
 	char			*value;
 	struct s_token	*next;
 }	t_token;
@@ -128,9 +118,9 @@ typedef struct s_all
 }	t_all;
 
 void	print_header(void);
-void	print_tab(char **tab);
-t_token	**split_tokens(t_token *tokens);
+
 void	free_all2(t_all *all);
+void	print_tab(char **tab);
 
 //---------------------ENV-------------------------------
 
@@ -174,7 +164,7 @@ void			print_tokens(t_token *tokens);
 
 //---------------------EXPANDER--------------------------
 
-char *get_env_value(t_env *env, char *var_name);
+char *get_env_value(t_all *all, char *var_name);
 bool	ft_isspecial(char c);
 char	*ft_strjoinchar(char *s1, const char c);
 char *expand_status(t_all *all, int *i);
@@ -182,8 +172,6 @@ void	handle_variable_expansion(t_all *all, char *word, int *i,
 		char **new_word);
 char	*get_value(t_env *env, char *key);
 t_token	*token_new4(t_token_type token_type, char *value,
-		bool single_q, bool double_q);
-	t_token	*token_new2(t_token_type token_type, char *value,
 		bool single_q, bool double_q);
 // void init_tokens(bool *merged, t_token **curr, t_token *tokens);
 char *join_token_values(t_token *first, t_token *second);
@@ -193,9 +181,9 @@ void	handle_dollar_sign(t_all *all, char *word, int *i,
 // t_token	*create_merged_wildcard_token(t_token *tmp);
 t_token	*handle_token_expansion(t_all *all, t_token *tmp);
 t_token	*expand_tokens(t_all *all, t_token *tokens);
-char	*expand_word(t_all *all, char *word, t_token *t);
+char	*expand_word(t_all *all, char *word);
 t_token	*create_tokens_without_space(t_token *tokens);
-void create_expand_tokens(t_all *all, t_token *tokens);
+t_token	*create_expand_tokens(t_all *all, t_token *tokens);
 bool	is_same_quote(t_token *token, t_token *token_to_compare);
 // t_token	*create_regular_token(t_token *tmp);
 bool	is_same_type(t_token *token, t_token *token_to_compare, t_token_type type);

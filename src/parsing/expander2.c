@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:55:54 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/08 01:03:05 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/04/29 21:56:59 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ char *get_env_value(t_all *all, char *var_name)
 char *expand_status(t_all *all, int *i)
 {
 	(*i) += 2;  // Skip $?
-	return (ft_itoa(g_zebi.g_exit));
+	return (ft_itoa(all->status));
 }
 
 char *expand_digit(int *i)

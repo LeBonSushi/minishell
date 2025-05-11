@@ -6,14 +6,13 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/11 03:26:56 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/06 12:47:17 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-bool	is_same_type(t_token *token, t_token *token_to_compare,
-		t_token_type type)
+bool is_same_type(t_token *token, t_token *token_to_compare, t_token_type type)
 {
 	if (!token || !token_to_compare)
 		return (false);
@@ -21,7 +20,7 @@ bool	is_same_type(t_token *token, t_token *token_to_compare,
 		return (true);
 	return (false);
 }
-bool	is_same_quote(t_token *token, t_token *token_to_compare)
+bool is_same_quote(t_token *token, t_token *token_to_compare)
 {
 	if (!token || !token_to_compare)
 		return (false);
@@ -31,18 +30,18 @@ bool	is_same_quote(t_token *token, t_token *token_to_compare)
 	return (false);
 }
 
-char	*join_token_values(t_token *first, t_token *second)
+char *join_token_values(t_token *first, t_token *second)
 {
-	char	*joined;
-	char	*temp;
+	char *joined;
+	char *temp;
 
 	temp = ft_strdup(first->value);
-	joined = ft_strjoin(temp, second->value, 1, 0);
+	joined = ft_strjoin(temp, second->value, 1, 1);
 	return (joined);
 }
 
-t_token	*token_new2(t_token_type token_type, char *value, bool single_q,
-		bool double_q)
+t_token	*token_new2(t_token_type token_type, char *value,
+			bool single_q, bool double_q)
 {
 	t_token	*new;
 
@@ -53,7 +52,6 @@ t_token	*token_new2(t_token_type token_type, char *value, bool single_q,
 	new->value = value;
 	new->single_quoted = single_q;
 	new->double_quoted = double_q;
-	new->expandable = false;
 	new->space_after = true;
 	new->next = NULL;
 	return (new);
@@ -65,10 +63,9 @@ t_token	*join_tokens(t_token *tmp, t_token *next, t_token **next_ptr)
 	char	*joined_value;
 
 	joined_value = join_token_values(tmp, next);
-	new = token_new(tmp->token_type, joined_value, tmp->single_quoted,
-			tmp->double_quoted);
+	new = token_new(tmp->token_type, joined_value,
+			tmp->single_quoted, tmp->double_quoted);
 	new->space_after = next->space_after;
-	new->expandable = next->expandable;
 	*next_ptr = next->next;
 	return (new);
 }
@@ -77,10 +74,9 @@ t_token	*copy_token(t_token *tmp, t_token **next_ptr)
 {
 	t_token	*new;
 
-	new = token_new(tmp->token_type, ft_strdup(tmp->value), tmp->single_quoted,
-			tmp->double_quoted);
+	new = token_new(tmp->token_type, ft_strdup(tmp->value),
+			tmp->single_quoted, tmp->double_quoted);
 	new->space_after = tmp->space_after;
-	new->expandable = tmp->expandable;
 	*next_ptr = tmp->next;
 	return (new);
 }
@@ -97,13 +93,12 @@ t_token	*create_tokens_without_space(t_token *tokens)
 	while (tmp)
 	{
 		next = tmp->next;
-		if (next && is_same_type(tmp, next, WORD) && is_same_quote(tmp, next)
-			&& !tmp->space_after)
+		if (next && is_same_type(tmp, next, WORD)
+			&& is_same_quote(tmp, next) && !tmp->space_after)
 			new = join_tokens(tmp, next, &next);
 		else
 		{
-			new = token_new(tmp->token_type, tmp->value, tmp->single_quoted,
-					tmp->double_quoted);
+			new = token_new(tmp->token_type, tmp->value, tmp->single_quoted, tmp->double_quoted);
 			tmp = next;
 		}
 		token_addback(&new_tokens, new);
@@ -112,34 +107,36 @@ t_token	*create_tokens_without_space(t_token *tokens)
 	return (new_tokens);
 }
 
-char	*get_env_value(t_env *env, char *var_name)
+char *get_env_value(t_all *all, char *var_name)
 {
+	t_env *env;
+
+	env = all->env;
 	while (env)
 	{
 		if (!ft_strcmp(env->key, var_name))
 			return (ft_strdup(env->value));
 		env = env->next;
 	}
-	return (NULL);
+	// return (ft_strdup(""));  // Return empty string if not found
+	return (ft_strdup(""));  // Return empty string if not found
 }
 
-char	*expand_status(t_all *all, int *i)
+char *expand_status(t_all *all, int *i)
 {
-	(void)all;
-	(*i) += 2; // Skip $?
-	return (ft_itoa(g_zebi.g_exit));
+	(*i) += 2;  // Skip $?
+	return (ft_itoa(all->status));
 }
 
-char	*expand_digit(int *i)
+char *expand_digit(int *i)
 {
-	(*i) += 2;              // Skip $n
-	return (ft_strdup("")); // $n expands to nothing in bash when n is a digit
+	(*i) += 2;  // Skip $n
+	return (ft_strdup(""));  // $n expands to nothing in bash when n is a digit
 }
 
 bool	ft_isspecial(char c)
 {
-	if (c == '+' || c == '[' || c == ']' || c == '_' || c == '*' || c == '#'
-		|| c == '@')
+	if (c == '+' || c == '[' || c == ']' || c == '_' || c == '*' || c == '#' || c == '@')
 		return (true);
 	return (false);
 }
@@ -149,7 +146,7 @@ bool	ft_isspecial(char c)
 // 	int	len;
 // 	char	*str;
 // 	len = ft_strlen(s1);
-
+	
 // 	str = (char *)malloc(sizeof(char) * (len + 2));
 // 	if (!str)
 // 		return (NULL);
@@ -210,16 +207,15 @@ char	*expand_variable(t_all *all, char *word, int *i)
 		skip_variable_chars(word, i);
 	var_name = ft_substr(word, start, *i - start);
 	// printf("%s\n", var_name);
-	value = get_env_value(all->env, var_name);
+	value = get_env_value(all, var_name);
 	free(var_name);
 	return (value);
 }
 
-void	handle_variable_expansion(t_all *all, char *word, int *i,
-		char **new_word)
+void	handle_variable_expansion(t_all *all, char *word, int *i, char **new_word)
 {
 	char	*expansion;
-
+	
 	// printf("ouais\n")
 	expansion = expand_variable(all, word, i);
 	// if (!expansion)
@@ -245,14 +241,13 @@ void	handle_dollar_sign(t_all *all, char *word, int *i, char **new_word)
 	// printf("Ouais\n");
 	if (word[*i + 1] == '?')
 		*new_word = ft_strjoin(*new_word, expand_status(all, i), 1, 1);
-	else if (!ft_isalpha(word[*i + 1]) && !ft_isdigit(word[*i + 1]) && word[*i
-		+ 1] != '_')
+    else if (!ft_isalpha(word[*i + 1]) && !ft_isdigit(word[*i + 1]) && word[*i + 1] != '_')
 		*new_word = ft_strjoinchar(*new_word, word[(*i)++]);
-	else
-		handle_variable_expansion(all, word, i, new_word);
+    else
+        handle_variable_expansion(all, word, i, new_word);
 }
 
-char	*expand_word(t_all *all, char *word, t_token *t)
+char	*expand_word(t_all *all, char *word)
 {
 	int		i;
 	char	*new_word;
@@ -262,10 +257,7 @@ char	*expand_word(t_all *all, char *word, t_token *t)
 	while (word[i])
 	{
 		if (word[i] == '$' && word[i + 1])
-		{
-			t->expandable = true;
 			handle_dollar_sign(all, word, &i, &new_word);
-		}
 		else
 			new_word = ft_strjoinchar(new_word, word[i++]);
 	}
@@ -283,8 +275,8 @@ char	*get_value(t_env *env, char *key)
 	return (ft_strdup(""));
 }
 
-t_token	*token_new4(t_token_type token_type, char *value, bool single_q,
-		bool double_q)
+t_token	*token_new4(t_token_type token_type, char *value,
+			bool single_q, bool double_q)
 {
 	t_token	*new;
 
@@ -296,7 +288,6 @@ t_token	*token_new4(t_token_type token_type, char *value, bool single_q,
 	new->single_quoted = single_q;
 	new->double_quoted = double_q;
 	new->space_after = true;
-	new->expandable = false;
 	free(value);
 	new->next = NULL;
 	return (new);
@@ -309,27 +300,24 @@ t_token	*handle_token_expansion(t_all *all, t_token *tmp)
 
 	if (tmp->token_type == WORD && !tmp->single_quoted)
 	{
-		expanded_value = expand_word(all, tmp->value, tmp);
+		expanded_value = expand_word(all, tmp->value);
 		if (!expanded_value)
 			return (NULL);
-		new = token_new(tmp->token_type, expanded_value, tmp->single_quoted,
-				tmp->double_quoted);
-		free(expanded_value);
-		new->expandable = tmp->expandable;
+		new = token_new4(tmp->token_type, expanded_value,
+				tmp->single_quoted, tmp->double_quoted);
 	}
 	else if (tmp->token_type == TILDE && !tmp->single_quoted)
 	{
 		expanded_value = get_value(all->env, "HOME");
 		if (!expanded_value)
 			return (NULL);
-		new = token_new(WORD, expanded_value, tmp->single_quoted,
-				tmp->double_quoted);
-		new->expandable = true;
+		new = token_new(WORD, expanded_value,
+				tmp->single_quoted, tmp->double_quoted);
 	}
 	else
 	{
 		new = token_new4(tmp->token_type, ft_strdup(tmp->value),
-				tmp->single_quoted, tmp->double_quoted);
+			tmp->single_quoted, tmp->double_quoted);
 	}
 	return (new);
 }
@@ -345,48 +333,49 @@ t_token	*expand_tokens(t_all *all, t_token *tokens)
 	while (tmp)
 	{
 		new = handle_token_expansion(all, tmp);
-		new->space_after = tmp->space_after;
-		if (!ft_strcmp(new->value, "") && new->expandable
-			&& !new->double_quoted)
+		if (!new)
 		{
-			free_token(new);
-			tmp = tmp->next;
-			continue ;
+			free_all_token(expanded_tokens);
+			// free_all_token(tokens);
+			return (NULL);
 		}
-		// printf("%s\n", new->value);
-		// if (!*new->value && ft_strcmp(tmp->value, ""))
-		// 	new->space_after = false;
+		new->space_after = tmp->space_after;
+		if (!*new->value && ft_strcmp(tmp->value, ""))
+			new->space_after = false;
 		token_addback(&expanded_tokens, new);
 		tmp = tmp->next;
 	}
-	free_all_token(tokens);
+	// free_all_token(tokens);
 	return (expanded_tokens);
 }
 
 bool	is_redir(t_token *token)
 {
-	return (token->token_type == REDIR_IN || token->token_type == REDIR_OUT
+	return (token->token_type == REDIR_IN
+		|| token->token_type == REDIR_OUT
 		|| token->token_type == REDIR_APPEND
 		|| token->token_type == REDIR_HEREDOC);
 }
 
 void	free_token(t_token *token)
 {
-	if (token)
-		return (free(token->value), free(token));
+	if (!token)
+		return ;
+	if (token->value)
+		free(token->value);
 }
 
-static void	init_tokens(bool *merged, t_token **curr, t_token *tokens)
+static void init_tokens(bool *merged, t_token **curr, t_token *tokens)
 {
 	*merged = false;
 	*curr = tokens;
 }
 
-t_token	*merge_tokens(t_token *tokens)
+t_token *merge_tokens(t_token *tokens)
 {
-	t_token	*curr;
-	t_token	*next;
-	bool	merged;
+	t_token *curr;
+	// t_token *next;
+	bool     merged;
 
 	if (!tokens || !tokens->next)
 		return (tokens);
@@ -396,13 +385,11 @@ t_token	*merge_tokens(t_token *tokens)
 		if (!is_redir(curr) && !is_redir(curr->next) && curr->token_type != PIPE
 			&& curr->next->token_type != PIPE && !curr->space_after)
 		{
-			curr->value = join_token_values(curr, curr->next);
-			next = curr->next;
-			curr->next = curr->next->next;
-			curr->space_after = next->space_after;
-			free_token(next);
+			curr->value = ft_strjoin(curr->value, curr->next->value, 1, 0);
+			curr->space_after = curr->next->space_after;
+			delete_token(&tokens, curr->next);
 			merged = true;
-			break ;
+			break;
 		}
 		curr = curr->next;
 	}
@@ -411,233 +398,20 @@ t_token	*merge_tokens(t_token *tokens)
 	return (tokens);
 }
 
-// int	calculate_var_size(char *value, int i)
-// {
-// 	int size;
 
-// 	size = 0;
-// 	i++;
-// 	if (!value[i] || !ft_isalnum(value[i]) || value[i] != '_')
-// 		return (1);
-// 	while (value[i] && (ft_isalnum() || (i == 1 && ft_isdigit(value[i]))))
-// }
-
-// void expand(t_env *env, char *value, bool s_q)
-// {
-// 	int	i;
-// 	int	expand_size;
-
-// 	i = 0;
-// 	while (value[i])
-// 	{
-// 		if (value[i] == '$' && !s_q)
-// 		{
-// 			expand_size = calculate_var_size(value, i);
-// 		}
-// 		i++;
-// 	}
-// }
-
-int	calculate_var_size(char *value, int i)
+t_token *create_expand_tokens(t_all *all, t_token *tokens)
 {
-	int	size;
-
-	size = 0;
-	if (!value || !value[i + 1])
-		return (1); // Just the $ character
-	i++;            // Skip $
-	// Handle special $? case
-	if (value[i] == '?')
-		return (2); // $? is always 2 chars
-	// Handle $ followed by digit (e.g., $1, $2)
-	if (ft_isdigit(value[i]))
-		return (2);
-	// Check first character is valid (letter or underscore)
-	if (!ft_isalpha(value[i]) && value[i] != '_')
-		return (1); // Invalid var name, treat as literal $
-	size = 1;       // Count the $
-	while (value[i] && (ft_isalnum(value[i]) || value[i] == '_'))
-	{
-		size++;
-		i++;
-	}
-	return (size);
-}
-
-char	*replace_substring(char *str, int start, int len, char *replacement)
-{
-	char	*new_str;
-	int		str_len;
-	int		rep_len;
-	int		new_len;
-	int		i;
-
-	str_len = ft_strlen(str);
-	rep_len = ft_strlen(replacement);
-	new_len = str_len - len + rep_len;
-	i = 0;
-	new_str = malloc(new_len + 1);
-	if (!new_str)
-		return (NULL);
-	while (i < start)
-	{
-		new_str[i] = str[i];
-		i++;
-	}
-	while (*replacement)
-	{
-		new_str[i++] = *replacement++;
-	}
-	while (str[start + len])
-	{
-		new_str[i++] = str[start + len];
-		len++;
-	}
-	new_str[i] = '\0';
-	return (new_str);
-}
-
-// void expand(t_env *env, t_token *curr, bool s_q)
-// {
-//     int i = 0;
-//     int expand_size;
-//     char *var_name;
-//     char *var_value;
-
-//     if (!curr || !curr->value)
-//         return ;
-
-//     while (curr->value[i])
-//     {
-//         if (curr->value[i] == '$' && !s_q)
-//         {
-//             expand_size = calculate_var_size(curr->value, i);
-
-//             if (expand_size > 1)
-//             {
-//                 var_name = ft_substr(curr->value, i + 1, expand_size - 1);
-//                 if (!var_name)
-//                     return ;
-
-//                 if (curr->value[i + 1] == '?')
-//                 {
-//                     var_value = ft_itoa(g_zebi.g_exit);
-//                 }
-//                 else if (curr->value[i + 1] == '$')
-//                 {
-//                     var_value = ft_itoa(getpid());  // Handle $$ case
-//                 }
-//                 else
-//                 {
-//                     var_value = get_env_value(env, var_name);
-//                 }
-
-//                 free(var_name);
-
-//                 if (var_value)
-//                 {
-//                     char *new_value = replace_substring(curr->value, i,
-// expand_size, var_value);
-// 					printf("replace value %s\n", new_value);
-//                     free(var_value);
-//                     if (!new_value)
-//                         return ;
-
-//                     free(curr->value);
-//                     curr->value = new_value;
-//                     i += ft_strlen(new_value + i) - 1;  // Adjust position
-//                 }
-//                 else
-//                 {
-//                     char *new_value = replace_substring(curr->value, i,
-// expand_size, "");
-//                     if (!new_value)
-//                         return ;
-
-//                     free(curr->value);
-//                     curr->value = new_value;
-//                     i--;  // Stay at current position
-//                 }
-//             }
-//         }
-//         i++;
-//     }
-// }
-
-void	expand(t_env *env, t_token *curr, bool s_q)
-{
-	int		i;
-	int		expand_size;
-	char	*var_name;
-	char	*var_value;
-	char	*new_value;
-
-	i = 0;
-	if (!curr || !curr->value)
-		return ;
-	while (curr->value[i])
-	{
-		if (curr->value[i] == '$' && !s_q)
-		{
-			expand_size = calculate_var_size(curr->value, i);
-			if (expand_size > 1)
-			{
-				var_name = ft_substr(curr->value, i + 1, expand_size - 1);
-				var_value = NULL;
-				// Handle special cases
-				if (ft_strcmp(var_name, "?") == 0)
-				{
-					var_value = ft_itoa(g_zebi.g_exit);
-				}
-				else if (ft_strcmp(var_name, "$") == 0)
-				{
-					var_value = ft_itoa(getpid());
-				}
-				else
-				{
-					var_value = get_env_value(env, var_name);
-				}
-				new_value = replace_substring(curr->value, i, expand_size,
-						var_value ? var_value : "");
-				free(var_name);
-				if (var_value)
-					free(var_value);
-				if (!new_value)
-					return ;
-				free(curr->value);
-				curr->value = new_value;
-				// Adjust position
-				if (var_value)
-				{
-					i += ft_strlen(var_value);
-				}
-				// No else needed since we already moved past the $
-				continue ; // Skip the i++ below
-			}
-		}
-		i++;
-	}
-}
-
-void	create_expand_tokens(t_all *all, t_token *tokens)
-{
-	t_token *curr;
+	t_token *expanded_tokens;
+	// t_token *token_after;
 
 	if (!tokens)
-		return ;
-	curr = tokens;
-	while (curr)
-	{
-		// printf("before expand: (%s)\n", curr->value);
-		expand(all->env, curr, curr->single_quoted);
-		// printf("after expand: (%s)\n", curr->value);
-		curr = curr->next;
-	}
-	// curr = tokens;
-	// while (curr)
-	// {
-	// 	printf("%s ",curr->value);
-	// 	curr = curr->next;
-	// }
-	// printf("\n");
+		return (NULL);
+	// print_tokens(tokens);
+	// token_after = create_tokens_without_space(tokens);
+	// print_tokens(token_after);
+	expanded_tokens = expand_tokens(all, tokens);
+	// print_tokens(expanded_tokens);
+	
+	free_all_token(tokens);
+	return (expanded_tokens);
 }

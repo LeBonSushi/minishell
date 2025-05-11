@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:43:10 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/09 17:52:59 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/04/29 22:14:56 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,7 @@ void	ft_export(t_token *tokens, t_env **env)
 	t_env	*existing;
 	t_token	*current;
 	t_env	*env_sorted;
-	bool	error_occurred;
 
-	error_occurred = false;
 	env_sorted = *env;
 	if (!tokens || !env || !(*env))
 		return ;
@@ -69,7 +67,6 @@ void	ft_export(t_token *tokens, t_env **env)
 			{
 				free(key);
 				free(value);
-				error_occurred = true;
 				current = current->next;
 				continue ;
 			}
@@ -88,7 +85,6 @@ void	ft_export(t_token *tokens, t_env **env)
 			if (!check_valid_key_export(current->value))
 			{
 				free(key);
-				error_occurred = true;
 				current = current->next;
 				continue ;
 			}
@@ -100,8 +96,4 @@ void	ft_export(t_token *tokens, t_env **env)
 		current = current->next;
 	}
 	env_sorted = env_create_sorted(env_sorted);
-	if (error_occurred)
-		g_zebi.g_exit = 1;
-	else
-		g_zebi.g_exit = 0;
 }

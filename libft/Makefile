@@ -25,8 +25,7 @@ LIBCFILE =		ft_atoi					ft_bzero					ft_isalnum			ft_isalpha		\
 				ft_strchr				ft_strdup					ft_strlcat			ft_strlcpy		\
 				ft_strlen				ft_strncmp					ft_strnstr			ft_strrchr		\
 				ft_tolower				ft_toupper					ft_calloc			ft_strcmp		\
-				ft_strnstr				ft_isspace					ft_strlcpy			ft_strcat		\
-				ft_strcpy
+				ft_strnstr				ft_isspace					ft_strcpy
 
 ADDIFILE =  	ft_strjoin				ft_substr					ft_strtrim			ft_split		\
 				ft_itoa					ft_strmapi					ft_striteri			ft_putchar_fd		\

@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 14:26:45 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/10 03:09:59 by macorso          ###   ########.fr       */
+/*   Updated: 2025/03/06 07:12:37 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,7 @@ t_cmd	*cmd_new(t_token *tokens)
 void	cmd_addback(t_cmd **cmd, t_cmd *new)
 {
 	t_cmd *curr;
-	
-	if (!cmd || !new)
-		return ;
+
 	if (!*cmd)
 	{
 		*cmd = new;

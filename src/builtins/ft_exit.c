@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:38:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/11 03:30:02 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/06 07:14:42 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,45 +14,48 @@
 
 void	ft_exit(t_token *tokens, t_all *all)
 {
-	t_token	*current;
-	int		i;
-	int		res;
+	t_token *current;
+	int i;
+	int res;
 
-	ft_fprintf(1, "exit\n");
-	current = tokens->next;
-	if (!current)
-	{
-		free_all(all);
-		exit(g_zebi.g_exit);
-	}
 	i = 0;
+	current = tokens->next;
 	while (current)
 	{
 		i++;
 		current = current->next;
 	}
-	current = tokens->next;
-	i = 0;
-	if (current->value[0] == '-' || current->value[0] == '+')
-		i = 1;
-	while (current->value[i])
+	if (i > 1)
 	{
-		if (!ft_isdigit(current->value[i]))
+		ft_fprintf(2, "ministress: exit : too many arguments\n");
+		exit(1);
+	}
+	if (current)
+	{
+		while (current->value[i])
 		{
-			ft_fprintf(2, "ministress: exit: %s: numeric argument required\n", current->value);
-			free_all(all);
-			exit(2);
+			if (!ft_isdigit(current->value[i]))
+			{
+				ft_putstr_fd("ministress: exit : ", 2);
+				ft_putstr_fd(current->value, 2);
+				ft_putstr_fd(": numeric argument required\n", 2);
+				all->status = 2;
+				exit(all->status);
+			}
+			i++;
 		}
-		i++;
+		printf("exit\n");
+		res = ft_atoi(current->value) % 256;
+		exit(all->status);
 	}
-	if (tokens->next->next)
+	else
 	{
-		ft_fprintf(2, "ministress: exit: too many arguments\n");
-		g_zebi.g_exit = 1;
-		return;
+		printf("exit\n");
+		all->status = 0;
+		// printf("code de sortie: %d\n", all->status);
+		exit (all->status);
 	}
-	res = ft_atoi(current->value) % 256;
 	free_all(all);
-	g_zebi.g_exit = res;
-	exit (g_zebi.g_exit);
+	all->cmds = NULL;
+	all->tokens = NULL;	
 }

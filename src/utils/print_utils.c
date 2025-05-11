@@ -19,7 +19,7 @@ void	print_tab(char **tab)
 	i = 0;
 	while (tab[i])
 	{
-		ft_fprintf(2, "%s\n", tab[i]);
+		printf("%s\n", tab[i]);
 		i++;
 	}
 }
@@ -82,24 +82,24 @@ void	debug_print_cmdlist(t_cmd *cmd_list)
 
 	if (!cmd_list)
 	{
-		ft_fprintf(2, "Command list is empty\n");
+		printf("Command list is empty\n");
 		return ;
 	}
 	cmd_num = 1;
 	curr = cmd_list;
 	while (curr)
 	{
-		ft_fprintf(2, "Command %d:\n", cmd_num++);
-		ft_fprintf(2, "  Path: %s\n", curr->path ? curr->path : "(null)");
-		ft_fprintf(2, "  PID: %d\n", curr->pid);
-		ft_fprintf(2, "  File descriptors: in=%d, out=%d\n", 
+		printf("Command %d:\n", cmd_num++);
+		printf("  Path: %s\n", curr->path ? curr->path : "(null)");
+		printf("  PID: %d\n", curr->pid);
+		printf("  File descriptors: in=%d, out=%d\n", 
 			curr->infile_fd, curr->outfile_fd);
-		ft_fprintf(2, "  Tokens:\n");
+		printf("  Tokens:\n");
 		if (curr->tokens)
 			print_tokens(curr->tokens);
 		else
-			ft_fprintf(2, "    No tokens\n");
-		ft_fprintf(2, "\n");
+			printf("    No tokens\n");
+		printf("\n");
 		curr = curr->next;
 	}
 }

@@ -6,14 +6,11 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/11 03:26:52 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/06 12:47:04 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-t_zebi	g_zebi;
-
 
 void	init_all(t_all *all, int ac, char **av, char **envp)
 {
@@ -23,9 +20,7 @@ void	init_all(t_all *all, int ac, char **av, char **envp)
 	all->tokens = NULL;
 	all->cmds = NULL;
 	all->paths = NULL;
-	g_zebi.g_exit = 0;
-	g_zebi.stop_here = 0;
-	g_zebi.in_here = 0;
+	all->status = 0;
 }
 
 bool	env_empty(t_all *all)
@@ -101,7 +96,6 @@ void	free_all_cmds(t_cmd *cmds)
 		next = curr->next;
 		if (curr->path)
 			free(curr->path);
-		free_tab(curr->args);
 		if (curr->tokens)
 			free_all_token(curr->tokens);
 		free(curr);
@@ -113,38 +107,42 @@ void	free_all_cmds(t_cmd *cmds)
 void	minishell_loop(t_all *all)
 {
 	char	*line;
-	int		last_exit;
-	// t_token **test;
 
-	last_exit = 0;
 	while (1)
 	{
 		all->tokens = NULL;
 		all->cmds = NULL;
 		all->paths = NULL;
-		if (last_exit == 130)
-		{
-			write(STDOUT_FILENO, "\n", 1);
-			rl_on_new_line();
-		}
 		line = readline("ministress$ ");
 		if (line == NULL)
 		{
-			write(STDOUT_FILENO, "exit\n", 5);
+			write(STDOUT_FILENO, "\n", 1);
 			break ;
 		}
 		if (*line)
 			add_history(line);
 		all->tokens = fill_tokens(line);
-		create_expand_tokens(all, all->tokens);
-		// print_tokens(all->tokens);
-		all->tokens = merge_tokens(all->tokens);
-		all->cmds = create_cmdlist(all->tokens);
-		// debug_print_cmdlist(all->cmds);
-		g_zebi.g_exit = manage_redirections(all, all->cmds);
-		exec_cmds(all, all->cmds);
-		last_exit = g_zebi.g_exit;
 		free(line);
+		if (!all->tokens)
+			continue ;
+		all->tokens = create_expand_tokens(all, all->tokens);
+		// print_tokens(all->tokens);
+		if (!all->tokens)
+			continue ;
+		all->tokens = merge_tokens(all->tokens);
+		if (!all->tokens)
+			continue ;
+		// test = split_tokens(all->tokens);
+		all->cmds = create_cmdlist(all->tokens);
+		if (!all->cmds)
+		{
+			free_all_token(all->tokens);
+			continue ;
+		}
+		all->status = manage_redirections(all, all->cmds);
+		// debug_print_cmdlist(all->cmds);
+		exec_cmds(all, all->cmds);
+		free_all_token(all->tokens);
 		free_all_cmds(all->cmds);
 	}
 }
