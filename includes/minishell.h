@@ -174,7 +174,7 @@ void			print_tokens(t_token *tokens);
 
 //---------------------EXPANDER--------------------------
 
-char *get_env_value(t_all *all, char *var_name);
+char *get_env_value(t_env *env, char *var_name);
 bool	ft_isspecial(char c);
 char	*ft_strjoinchar(char *s1, const char c);
 char *expand_status(t_all *all, int *i);
@@ -182,6 +182,8 @@ void	handle_variable_expansion(t_all *all, char *word, int *i,
 		char **new_word);
 char	*get_value(t_env *env, char *key);
 t_token	*token_new4(t_token_type token_type, char *value,
+		bool single_q, bool double_q);
+	t_token	*token_new2(t_token_type token_type, char *value,
 		bool single_q, bool double_q);
 // void init_tokens(bool *merged, t_token **curr, t_token *tokens);
 char *join_token_values(t_token *first, t_token *second);
@@ -193,7 +195,7 @@ t_token	*handle_token_expansion(t_all *all, t_token *tmp);
 t_token	*expand_tokens(t_all *all, t_token *tokens);
 char	*expand_word(t_all *all, char *word, t_token *t);
 t_token	*create_tokens_without_space(t_token *tokens);
-t_token	*create_expand_tokens(t_all *all, t_token *tokens);
+void create_expand_tokens(t_all *all, t_token *tokens);
 bool	is_same_quote(t_token *token, t_token *token_to_compare);
 // t_token	*create_regular_token(t_token *tmp);
 bool	is_same_type(t_token *token, t_token *token_to_compare, t_token_type type);

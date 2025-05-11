@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:38:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/09 19:42:30 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/11 02:56:31 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	ft_exit(t_token *tokens, t_all *all)
 	current = tokens->next;
 	if (!current)
 	{
-		free_all(all);
+		free_all2(all);
 		exit(g_zebi.g_exit);
 	}
 	
@@ -69,7 +69,7 @@ void	ft_exit(t_token *tokens, t_all *all)
 		// printf("code de sortie: %d\n", g_zebi.g_exit);
 		exit (g_zebi.g_exit);
 	}
-	free_all(all);
+	free_all2(all);
 	all->cmds = NULL;
 	all->tokens = NULL;
 }

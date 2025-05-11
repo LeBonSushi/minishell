@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 23:02:42 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/09 18:01:51 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/11 02:59:47 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,30 +97,38 @@ void	ft_cd(t_token *tokens, t_env *env)
 		free(old_pwd);
 		free (resolved_path);
 		g_zebi.g_exit = 0;
+		free(path);
 		return;
 	}
 	else
-		path = current->value;
+		path = ft_strdup(current->value);
 	resolved_path = resolve_path(path);
 	if (!resolved_path)
 	{
 		g_zebi.g_exit = 1;
+		free(path);
 		return (perror("cd"));
 	}
 	old_pwd = ft_getenv_value(env, "PWD");
-	if (!old_pwd)
-		old_pwd = NULL;
+	// if (!old_pwd)
+	// 	old_pwd = NULL;
 	if (chdir(resolved_path) == -1)
 	{
 		free(resolved_path);
 		perror("cd");
 		g_zebi.g_exit = 1;
-		free(old_pwd);
+		if (old_pwd)
+			free(old_pwd);
+		if (path)
+			free(path);
 		return;
 	}
 	update_env(&env, "OLDPWD", old_pwd, 1);
 	update_env(&env, "PWD", resolved_path, 1);
-	free(old_pwd);
+	if (old_pwd)
+		free(old_pwd);
+	if (path)
+		free(path);
 	free(resolved_path);
 	g_zebi.g_exit = 0;
 }

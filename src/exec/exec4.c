@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:50 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/10 23:06:44 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/11 03:01:48 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 	if (!cmds)
 		return ;
 	curr = cmds;
-	// set_execution_mode();
+	set_execution_mode();
 	while (curr)
 	{
 		paths = get_paths(all, env_to_tab(all->env));
@@ -91,7 +91,6 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 		env = env_to_tab(all->env);
 		do_pipes(all, curr, env, fd);
 		update_env(&all->env, "_", curr->args[0], true);
-		free_tab(curr->args);
 		free_tab(env);
 		curr = curr->next;
 	}

@@ -34,8 +34,7 @@ t_token	*ft_parse_quoted(char **str, bool *sq, bool *dq)
 	if (**str != quote)
 		return (NULL);
 	space_after = (ft_isspace(*(*str + 1)));
-	token = token_new4(WORD, ft_substr(start, 0, len),
-			*sq, *dq);
+	token = token_new4(WORD, ft_substr(start, 0, len), *sq, *dq);
 	token->space_after = space_after;
 	(*str)++;
 	return (token);
@@ -49,10 +48,9 @@ void	edit_token(t_token **token, t_token_type type, char *value)
 	(*token)->value = value;
 }
 
-
 t_token	*verif_and_edit_operator(char **str)
 {
-	t_token			*token;
+	t_token	*token;
 
 	token = NULL;
 	if (**str == '|')
@@ -76,7 +74,6 @@ t_token	*verif_and_edit_operator(char **str)
 	return (token);
 }
 
-
 t_token	*ft_parse_operator(char **str)
 {
 	t_token	*token;
@@ -94,26 +91,31 @@ t_token	*ft_parse_word(char **str, bool sq, bool dq)
 	int		len;
 	bool	space_after;
 	t_token	*token;
+	char	*word;
 
-	start = *str;
 	len = 0;
+	if (!str || !*str || !**str)
+		return (NULL);
+	start = *str;
 	while (**str && !ft_isspace(**str) && !is_operator(*str)
 		&& (!is_quote(**str) || sq || dq))
 	{
 		(*str)++;
 		len++;
 	}
-	if (!*str)
+	space_after = (**str && ft_isspace(**str));
+	word = ft_substr(start, 0, len);
+	if (!word)
 		return (NULL);
-	space_after = (ft_isspace(**str));
-	char	*word = ft_substr(start, 0, len);
-	token = token_new(WORD, word, false, false);
-	free(word);
+	token = token_new2(WORD, word, sq, dq);
+	// free(word);
+	if (!token)
+		return (NULL);
 	token->space_after = space_after;
 	return (token);
 }
 
-t_token	*new_parsed_token(char	**str)
+t_token	*new_parsed_token(char **str)
 {
 	t_token	*new_token;
 	bool	sq;
@@ -159,8 +161,8 @@ bool	is_quotes_closed(char *str)
 
 bool	is_redirect(t_token_type type)
 {
-	return (type == REDIR_IN || type == REDIR_OUT
-		|| type == REDIR_APPEND || type == REDIR_HEREDOC);
+	return (type == REDIR_IN || type == REDIR_OUT || type == REDIR_APPEND
+		|| type == REDIR_HEREDOC);
 }
 
 bool	manage_error_redir(t_all *all, t_token *token)
@@ -171,19 +173,24 @@ bool	manage_error_redir(t_all *all, t_token *token)
 		if (!token->next)
 		{
 			g_zebi.g_exit = 2;
-			ft_putstr_fd("ministress: syntax error near unexpected token `newline\'\n", 2);
+			ft_putstr_fd("ministress: syntax error near unexpected token `newline\'\n",
+				2);
 			return (true);
 		}
-		if (token->next->token_type != WORD && token->next->token_type != WILD_CARD)
+		if (token->next->token_type != WORD
+			&& token->next->token_type != WILD_CARD)
 		{
 			g_zebi.g_exit = 2;
-			printf("ministress: syntax error near unexpected token `%s\'\n", token->next->value);
+			printf("ministress: syntax error near unexpected token `%s\'\n",
+				token->next->value);
 			return (true);
 		}
-		if (!ft_strcmp(token->next->value, "*") && is_redirect(token->token_type))
+		if (!ft_strcmp(token->next->value, "*")
+			&& is_redirect(token->token_type))
 		{
 			g_zebi.g_exit = 1;
-			return (ft_putstr_fd("ministress: *: ambiguous redirect\n", 2), true);
+			return (ft_putstr_fd("ministress: *: ambiguous redirect\n", 2),
+				true);
 		}
 	}
 	return (false);
@@ -197,17 +204,20 @@ bool	is_error_expansion_char(char c)
 bool	manage_expansion_error(t_all *all, t_token *token)
 {
 	int	i;
-	(void)all;
 
+	(void)all;
 	i = 0;
 	if (token->token_type == WORD)
 	{
 		while (token->value[i])
 		{
-			if ((token->value[i] == '$') && is_error_expansion_char(token->value[i + 1]) && !token->value[i + 2])
+			if ((token->value[i] == '$')
+				&& is_error_expansion_char(token->value[i + 1])
+				&& !token->value[i + 2])
 			{
 				g_zebi.g_exit = 2;
-				printf("ministress: syntax error near unexpected token `%c\'\n", token->value[i + 1]);
+				printf("ministress: syntax error near unexpected token `%c\'\n",
+					token->value[i + 1]);
 				return (true);
 			}
 			i++;
@@ -237,7 +247,7 @@ void	delete_token2(t_token **tokens, t_token *token_to_del)
 	t_token	*prev;
 
 	if (!tokens || !*tokens || !token_to_del)
-		return;
+		return ;
 	tmp = *tokens;
 	prev = NULL;
 	while (tmp)
@@ -278,10 +288,10 @@ void	delete_token(t_token **head_ref, t_token *node_to_delete)
 	free(node_to_delete);
 }
 
-void manage_empty_tokens(t_token **tokens)
+void	manage_empty_tokens(t_token **tokens)
 {
-	t_token *tmp;
-	t_token *next;
+	t_token	*tmp;
+	t_token	*next;
 
 	if (!tokens || !*tokens)
 		return ;
@@ -311,7 +321,7 @@ t_token	*fill_tokens(char *str)
 	if (!str)
 		return (NULL);
 	if (!is_quotes_closed(str))
-		return (ft_putstr_fd("Quotes are not properly closed !\n", 2),NULL);
+		return (ft_putstr_fd("Quotes are not properly closed !\n", 2), NULL);
 	tokens = NULL;
 	while (*str)
 		token_addback(&tokens, new_parsed_token(&str));
