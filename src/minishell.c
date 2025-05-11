@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/06 12:47:04 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/11 08:42:08 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	init_all(t_all *all, int ac, char **av, char **envp)
 	all->tokens = NULL;
 	all->cmds = NULL;
 	all->paths = NULL;
-	all->status = 0;
+	g_zebi.g_exit = 0;
 }
 
 bool	env_empty(t_all *all)
@@ -139,7 +139,7 @@ void	minishell_loop(t_all *all)
 			free_all_token(all->tokens);
 			continue ;
 		}
-		all->status = manage_redirections(all, all->cmds);
+		g_zebi.g_exit = manage_redirections(all, all->cmds);
 		// debug_print_cmdlist(all->cmds);
 		exec_cmds(all, all->cmds);
 		free_all_token(all->tokens);

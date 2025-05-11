@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec3.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:03 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/06 12:35:23 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/11 08:44:47 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 int	ft_exit2(t_all *all, int exit_code)
 {
-	all->status = exit_code;
+	(void)all;
+	g_zebi.g_exit = exit_code;
 	exit(exit_code);
 }
 
@@ -45,7 +46,7 @@ void child_process(t_all *all, t_cmd *cmd, int *fd, char **env)
     }
     free_all2(all);
     free_tab(env);
-    exit(all->status);
+    exit(g_zebi.g_exit);
 }
 
 void	parent_process(t_cmd *curr, int *fd)
@@ -61,23 +62,32 @@ void	parent_process(t_cmd *curr, int *fd)
 void	waitall(t_all *all, t_cmd *cmds)
 {
 	t_cmd	*cmd;
+	(void) all;
 	int		tmp;
 
 	cmd = cmds;
+	// if (cmds && !cmds->next && is_builtin(cmds->args[0]))
+	// 	return ;
 	tmp = -1;
+	// printf("debut: %d\n", g_zebi.g_exit);
 	while (cmd)
 	{
+		// printf("skip: %d\n", cmd->skip_cmd);
 		if (cmd->skip_cmd == true)
 		{
 			cmd = cmd->next;
 			continue ;
 		}
 		waitpid(cmd->pid, &tmp, 0);
+		// printf("%d\n", tmp);
 		cmd = cmd->next;
 	}
 	if (WIFEXITED(tmp))
-		all->status = WEXITSTATUS(tmp);
-	contain_redir_errors(cmds, &all->status, false);
+	{
+		// printf("ouais\n");
+		g_zebi.g_exit = WEXITSTATUS(tmp);
+	}
+	contain_redir_errors(cmds, &g_zebi.g_exit, false);
 }
 
 void	do_pipes(t_all *all, t_cmd *curr, char **env, int fd[2])

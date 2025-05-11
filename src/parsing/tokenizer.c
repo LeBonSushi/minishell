@@ -166,23 +166,24 @@ bool	is_redirect(t_token_type type)
 
 bool	manage_error_redir(t_all *all, t_token *token)
 {
+	(void)all;
 	if (is_redirect(token->token_type))
 	{
 		if (!token->next)
 		{
-			all->status = 2;
+			g_zebi.g_exit = 2;
 			ft_putstr_fd("ministress: syntax error near unexpected token `newline\'\n", 2);
 			return (true);
 		}
 		if (token->next->token_type != WORD && token->next->token_type != WILD_CARD)
 		{
-			all->status = 2;
+			g_zebi.g_exit = 2;
 			printf("ministress: syntax error near unexpected token `%s\'\n", token->next->value);
 			return (true);
 		}
 		if (!ft_strcmp(token->next->value, "*") && is_redirect(token->token_type))
 		{
-			all->status = 1;
+			g_zebi.g_exit = 1;
 			return (ft_putstr_fd("ministress: *: ambiguous redirect\n", 2), true);
 		}
 	}
@@ -197,6 +198,7 @@ bool	is_error_expansion_char(char c)
 bool	manage_expansion_error(t_all *all, t_token *token)
 {
 	int	i;
+	(void)all;
 
 	i = 0;
 	if (token->token_type == WORD)
@@ -205,7 +207,7 @@ bool	manage_expansion_error(t_all *all, t_token *token)
 		{
 			if ((token->value[i] == '$') && is_error_expansion_char(token->value[i + 1]) && !token->value[i + 2])
 			{
-				all->status = 2;
+				g_zebi.g_exit = 2;
 				printf("ministress: syntax error near unexpected token `%c\'\n", token->value[i + 1]);
 				return (true);
 			}
@@ -303,14 +305,86 @@ void manage_empty_tokens(t_token **tokens)
 	tmp->space_after = false;
 }
 
+char	get_unclose_quote(char *str)
+{
+	int	i;
+	bool	sq;
+	bool	dq;
+
+	i = 0;
+	sq = false;
+	dq = false;
+	while (str[i])
+	{
+		if (str[i] == '\'' && !dq)
+			sq = !sq;
+		if (str[i] == '\"' && !sq)
+			dq = !dq;
+		i++;
+	}
+	if (dq)
+		return ('"');
+	return ('\'');
+}
+
+char *manage_unclosed_quote(char *str, char quote)
+{
+    char *line;
+    char *result;
+    char *tmp;
+    char *combined_str;
+
+    // Ajouter un saut de ligne à la chaîne originale
+    result = ft_strjoin(str, "\n", 1, 0);
+    if (!result)
+        return (NULL);
+    
+    while (1)
+    {
+        if (quote == '"')
+            line = readline("dquote> ");
+        else
+            line = readline("quote> ");
+        if (!line)
+            break;
+        tmp = ft_strjoin(line, "\n", 0, 0);
+        if (!tmp)
+        {
+            free(line);
+            free(result);
+            return (NULL);
+        }
+        combined_str = ft_strjoin(result, tmp, 1, 1);
+        if (!combined_str)
+        {
+            free(line);
+            return (NULL);
+        }
+        result = combined_str;
+        if (is_quotes_closed(result))
+        {
+            free(line);
+            break;
+        }
+        free(line);
+    }
+    return (result);
+}
+
 t_token	*fill_tokens(char *str)
 {
 	t_token	*tokens;
+	char	*tmp;
+	char	*result;
 
 	if (!str)
 		return (NULL);
 	if (!is_quotes_closed(str))
-		return (ft_putstr_fd("Quotes are not properly closed !\n", 2),NULL);
+	{
+		tmp = str;
+		str = manage_unclosed_quote(tmp, get_unclose_quote(tmp));
+	}
+
 	tokens = NULL;
 	while (*str)
 		token_addback(&tokens, new_parsed_token(&str));

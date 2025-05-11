@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/06 12:47:17 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/11 07:52:36 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,8 +124,9 @@ char *get_env_value(t_all *all, char *var_name)
 
 char *expand_status(t_all *all, int *i)
 {
+	(void)all;
 	(*i) += 2;  // Skip $?
-	return (ft_itoa(all->status));
+	return (ft_itoa(g_zebi.g_exit));
 }
 
 char *expand_digit(int *i)
