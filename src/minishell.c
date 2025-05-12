@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/11 08:42:08 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/12 20:54:43 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+t_zebi g_zebi;
 
 void	init_all(t_all *all, int ac, char **av, char **envp)
 {
@@ -116,11 +117,9 @@ void	minishell_loop(t_all *all)
 		line = readline("ministress$ ");
 		if (line == NULL)
 		{
-			write(STDOUT_FILENO, "\n", 1);
+			// write(STDOUT_FILENO, "\n", 1);
 			break ;
 		}
-		if (*line)
-			add_history(line);
 		all->tokens = fill_tokens(line);
 		free(line);
 		if (!all->tokens)
@@ -145,6 +144,7 @@ void	minishell_loop(t_all *all)
 		free_all_token(all->tokens);
 		free_all_cmds(all->cmds);
 	}
+	rl_clear_history();
 }
 
 int	main(int ac, char **av, char **envp)

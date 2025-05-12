@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 19:50:56 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/04/29 21:47:55 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/12 20:54:59 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-int g_in_cmd_execution = 0;
 
 void init_readline(void)
 {
@@ -24,12 +22,14 @@ void	handle_sigint(int sig)
 {
 	(void)sig;
 
-	if (!g_in_cmd_execution)
+	// printf("%s", g_zebi.g_in_cmd_execution ? "true" : "false");
+	if (!g_zebi.g_in_cmd_execution)
 	{
 		write(STDOUT_FILENO, "\n", 1);
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
+		g_zebi.g_exit = 130;
 	}
 	else
 		write(STDOUT_FILENO, "\n", 1);
@@ -38,9 +38,9 @@ void	handle_sigint(int sig)
 void	handle_sigquit(int sig)
 {
 	(void)sig;
-
-	if (g_in_cmd_execution)
+	if (g_zebi.g_in_cmd_execution)
 		write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
+	g_zebi.g_exit = 131;
 }
 
 void	setup_signals(void)

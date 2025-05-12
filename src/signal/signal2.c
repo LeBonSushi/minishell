@@ -3,21 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   signal2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:44:28 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/11 07:30:36 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/12 15:37:42 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-t_zebi g_zebi = {
-	.g_exit = 0,
-	.g_in_cmd_execution = 0,
-	.in_here = 0,
-	.stop_here = 0
-};
 
 void	set_execution_mode(void)
 {
