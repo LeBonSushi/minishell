@@ -128,6 +128,7 @@ typedef struct s_all
 void	print_header(void);
 
 void	free_all2(t_all *all);
+void	free_all_cmds2(t_cmd *cmds);
 void	print_tab(char **tab);
 
 //---------------------ENV-------------------------------

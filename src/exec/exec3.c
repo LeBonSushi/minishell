@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec3.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:03 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/11 08:44:47 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 01:52:37 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,29 @@ int	ft_exit2(t_all *all, int exit_code)
 	(void)all;
 	g_zebi.g_exit = exit_code;
 	exit(exit_code);
+}
+
+void	free_all_cmds2(t_cmd *cmds)
+{
+	t_cmd	*curr;
+	t_cmd	*next;
+
+	if (!cmds)
+		return ;
+	curr = cmds;
+	while (curr)
+	{
+		next = curr->next;
+		if (curr->path)
+			free(curr->path);
+		if (curr->tokens)
+			free_all_token(curr->tokens);
+		if (curr->args)
+			free_tab(curr->args);
+		free(curr);
+		curr = next;
+	}
+	
 }
 
 void child_process(t_all *all, t_cmd *cmd, int *fd, char **env)
@@ -44,8 +67,11 @@ void child_process(t_all *all, t_cmd *cmd, int *fd, char **env)
         execve(cmd->path, cmd->args, env);
         exec_error(all, cmd->args[0]);
     }
-    free_all2(all);
+	free_all_cmds2(all->cmds);
+	free_all_token(all->tokens);
+	free_all_env(all->env);
     free_tab(env);
+	rl_clear_history();
     exit(g_zebi.g_exit);
 }
 
@@ -82,10 +108,16 @@ void	waitall(t_all *all, t_cmd *cmds)
 		// printf("%d\n", tmp);
 		cmd = cmd->next;
 	}
+	// printf("ouais: %d\n", tmp);
 	if (WIFEXITED(tmp))
-	{
-		// printf("ouais\n");
 		g_zebi.g_exit = WEXITSTATUS(tmp);
+	else if (WIFSIGNALED(tmp))
+	{
+		g_zebi.g_exit = WTERMSIG(tmp) + 128;
+		if (WTERMSIG(tmp) == SIGINT)
+			write(2, "\n", 1);
+		else if (WTERMSIG(tmp) == SIGQUIT)
+			write(2, "Quit (core dumped)\n", 19);
 	}
 	contain_redir_errors(cmds, &g_zebi.g_exit, false);
 }

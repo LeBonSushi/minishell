@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec4.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:50 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/11 08:51:01 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 00:18:41 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 		if (!curr->path || !curr->args[0] || curr->skip_cmd)
 		{
 			free_tab(env);
-			free_tab(curr->args);
+			// free_tab(curr->args);
 			curr = curr->next;
 			if (curr && curr->infile_fd < 0)
 				curr->infile_fd = open("/dev/null", O_RDONLY);
@@ -76,7 +76,6 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 		else
 			do_pipes(all, curr, env, fd);
 		free_tab(env);
-		free_tab(curr->args);
 		curr = curr->next;
 	}
 	waitall(all, cmds);

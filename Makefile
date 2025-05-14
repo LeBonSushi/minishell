@@ -1,5 +1,5 @@
 CC		:= cc
-CFLAGS	:= -Werror -Wextra -Wall -I/opt/homebrew/opt/readline/include -g3 -fsanitize=address,leak
+CFLAGS	:= -Werror -Wextra -Wall -I/opt/homebrew/opt/readline/include -g3 #-fsanitize=address,leak
 LDFLAGS	:= -L/opt/homebrew/opt/readline/lib -lreadline
 REST :=		src/minishell2.c \
 			src/parsing/expander2.c \
@@ -149,6 +149,7 @@ fclean:
 	@make -C libft fclean --silent
 	@printf $(GREEN)"\r\033[KObjects cleaned 🗑\n"$(RESET)
 	@printf $(CYAN)"\r\033[KErasing binary file... "$(RESET)"⏳ "
+	@rm -f $(NAME)
 	@printf $(GREEN)"\r\033[KBinary file cleaned 🗑\n"$(RESET)
 	@printf $(GREEN)"\r\033[KForce cleaned 🗑\n"$(RESET)
 

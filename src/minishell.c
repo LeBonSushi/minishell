@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/12 20:54:43 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/15 01:51:49 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,10 +114,11 @@ void	minishell_loop(t_all *all)
 		all->tokens = NULL;
 		all->cmds = NULL;
 		all->paths = NULL;
+		set_interactive_mode();
 		line = readline("ministress$ ");
 		if (line == NULL)
 		{
-			// write(STDOUT_FILENO, "\n", 1);
+			write(STDOUT_FILENO, "exit\n", 5);
 			break ;
 		}
 		all->tokens = fill_tokens(line);
@@ -142,7 +143,7 @@ void	minishell_loop(t_all *all)
 		// debug_print_cmdlist(all->cmds);
 		exec_cmds(all, all->cmds);
 		free_all_token(all->tokens);
-		free_all_cmds(all->cmds);
+		free_all_cmds2(all->cmds);
 	}
 	rl_clear_history();
 }
@@ -156,5 +157,5 @@ int	main(int ac, char **av, char **envp)
 	init_all(&all, ac, av, envp);
 	minishell_loop(&all);
 	free_all(&all);
-	return (0);
+	return (g_zebi.g_exit);
 }
