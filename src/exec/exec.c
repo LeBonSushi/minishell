@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 05:18:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/11 08:44:02 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 04:50:38 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ char	**get_paths(t_all *all, char **env)
 	}
 	if (!paths)
 	{
-		ft_fprintf(2, "$PATH not found in env.\n");
 		g_zebi.g_exit = 127;
 		return (NULL);
 	}
@@ -82,6 +81,8 @@ char	*find_exec_path(char *cmd, char **paths)
 	char	*exec_path;
 	char	*tmp;
 
+	if (!paths)
+		return (ft_strdup(cmd));
 	i = 0;
 	while (paths[i])
 	{
