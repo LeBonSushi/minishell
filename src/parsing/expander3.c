@@ -6,11 +6,11 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:57:02 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/15 09:23:58 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 10:44:02 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "minishell.h"
 
 void	handle_dollar_sign(t_all *all, char *word, int *i, char **new_word)
 {

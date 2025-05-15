@@ -6,11 +6,11 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:43:10 by macorso           #+#    #+#             */
-/*   Updated: 2025/04/29 22:14:56 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 10:44:02 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "minishell.h"
 
 bool	find_egal_in_token(char *env)
 {
@@ -55,7 +55,9 @@ void	ft_export(t_token *tokens, t_env **env)
 	if (!current)
 	{
 		env_sorted = env_create_sorted(env_sorted);
-		return (print_env (env_sorted));
+		print_env(env_sorted);
+		free_all_env(env_sorted);
+		return ;
 	}
 	while (current)
 	{
@@ -71,10 +73,14 @@ void	ft_export(t_token *tokens, t_env **env)
 				continue ;
 			}
 			existing = env_find(*env, key);
+			free(key);
+			free(value);
 			if (existing)
 			{
-				free(existing->value);
+				if (existing->value)
+					free(existing->value);
 				existing->value = value;
+				free(key);
 			}
 			else
 				env_addback(env, env_new(key, value));
@@ -89,11 +95,15 @@ void	ft_export(t_token *tokens, t_env **env)
 				continue ;
 			}
 			if (!env_find(*env, key))
+			{
 				env_addback(env, env_new(key, NULL));
+				free(key);
+			}
 			else
 				free(key);
 		}
 		current = current->next;
 	}
 	env_sorted = env_create_sorted(env_sorted);
+	free_all_env(env_sorted);
 }

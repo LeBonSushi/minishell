@@ -6,11 +6,11 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 05:18:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/15 08:18:31 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 10:44:02 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "minishell.h"
 
 int	tokens_size(t_token *tokens)
 {

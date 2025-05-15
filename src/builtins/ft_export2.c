@@ -6,11 +6,11 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 22:10:59 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/04/29 22:19:45 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 10:58:51 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "minishell.h"
 
 void	print_env(t_env *env)
 {
@@ -32,10 +32,16 @@ bool	check_valid_key_export(const char *key)
 	int	i;
 
 	if (!key || !key[0])
+	{
+		g_zebi.g_exit = 1;
 		return (false);
+	}
 	if (!('a' <= key[0] && key[0] <= 'z') && !('A' <= key[0]
 			&& key[0] <= 'Z') && key[0] != '_')
+	{
+		g_zebi.g_exit = 1;
 		return (false);
+	}
 	i = 1;
 	while (key[i])
 	{
@@ -46,6 +52,7 @@ bool	check_valid_key_export(const char *key)
 			ft_putstr_fd("minishell: export: `", 2);
 			ft_putstr_fd((char *)key, 2);
 			ft_putstr_fd("': not a valid identifier\n", 2);
+			g_zebi.g_exit = 1;
 			return (false);
 		}
 		i++;
@@ -87,6 +94,8 @@ t_env	*env_create_sorted(t_env *env)
 	t_env	*new;
 	bool	swapped;
 
+	if (!env)
+		return (NULL);
 	new = env_copy(env);
 	swapped = true;
 	while (swapped)

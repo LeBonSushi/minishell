@@ -6,11 +6,11 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 14:53:14 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/15 04:34:56 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 10:44:02 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "minishell.h"
 
 t_env	*env_new(char *key, char *value)
 {
@@ -20,7 +20,20 @@ t_env	*env_new(char *key, char *value)
 	if (!new)
 		return (NULL);
 	new->key = ft_strdup(key);
-	new->value = ft_strdup(value);
+	if (value)
+	{
+		new->value = ft_strdup(value);
+		if (!new->value)
+		{
+			free(new->key);
+			free(new);
+			return (NULL);
+		}
+	}
+	else
+	{
+		new->value = NULL;
+	}
 	new->next = NULL;
 	return (new);
 }

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "minishell.h"
 
 t_token	*ft_parse_quoted(char **str, bool *sq, bool *dq)
 {

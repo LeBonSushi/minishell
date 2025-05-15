@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   token_prepare.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 05:02:03 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/26 14:26:09 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/15 10:44:02 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "minishell.h"
 
 t_token	*token_new(t_token_type token_type, char *value,
 			bool single_q, bool double_q)

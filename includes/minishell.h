@@ -131,13 +131,7 @@ void						print_tab(char **tab);
 void						print_env(t_env *env);
 void						update_env(t_env **env, char *name, char *val,
 								bool overwrite);
-void						ft_stradd_back(t_string_list **lst,
-								t_string_list *new);
-void						free_str_list(t_string_list *lst);
 char						*ft_getenv_value(t_env *env, char *key);
-t_string_list				*ft_strnew(char *content, t_token_type redir_type);
-t_string_list				*ft_strlast(t_string_list *lst);
-
 t_env						*env_new(char *key, char *value);
 t_env						*env_get_last(t_env *env);
 void						env_addback(t_env **env, t_env *new);
@@ -224,9 +218,7 @@ void						ft_cd(t_token *tokens, t_env *env);
 void						ft_pwd(void);
 void						ft_env(t_env *env);
 void						ft_exit(t_token *tokens, t_all *all);
-
-//---------------------EXPORT----------------------------
-
+void						unset_value(t_env **env_head, t_env *env_to_unset);
 void						ft_export(t_token *tokens, t_env **env);
 bool						check_valid_key_export(const char *key);
 bool						find_egal_in_token(char *str);
@@ -254,9 +246,6 @@ void						free_tab(char **tab);
 bool						ft_compare(char *limiter, char *line);
 
 //---------------------REDIRECTION---------------------------
-
-void						ft_redirection(t_all *all, t_token *token);
-// void	ft_redirection(t_token *token, t_env *env, char **envp);
 
 char						*get_cmd_path(t_all *all, char *cmd, char **env);
 char						**tokens_to_tab(t_token *tokens);

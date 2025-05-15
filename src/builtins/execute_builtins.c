@@ -6,11 +6,11 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 01:58:22 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/15 07:28:28 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 10:46:46 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "minishell.h"
 
 void	execute_builtins(t_cmd *cmd, char **args, t_env **env, t_all *all)
 {
@@ -28,8 +28,8 @@ void	execute_builtins(t_cmd *cmd, char **args, t_env **env, t_all *all)
 		ft_env(all->env);
 	else if (!ft_strcmp(args[0], "exit"))
 		ft_exit(cmd->tokens, all);
-	/*else if (!ft_strcmp(args->value, "unset"))
-		ft_unset(env);*/
+	else if (!ft_strcmp(args[0], "unset"))
+		ft_unset(cmd->tokens, env);
 }
 
 bool	is_builtin(char *cmd)

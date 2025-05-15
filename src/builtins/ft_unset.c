@@ -6,38 +6,44 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/25 18:35:57 by macorso           #+#    #+#             */
-/*   Updated: 2025/02/26 10:09:29 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 10:59:32 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "minishell.h"
 
-/*void	unset_value(t_env *env_to_unset)
+void	unset_value(t_env **env_head, t_env *env_to_unset)
 {
 	t_env	*env;
 	t_env	*tmp;
-	
-	env = all->env;
+
+	if (!env_head || !*env_head || !env_to_unset)
+		return ;
+	env = *env_head;
 	if (env == env_to_unset)
 	{
-		all->env = env->next;
+		*env_head = env->next;
 		free_env(env);
 		return ;
 	}
-	while (env->next != env_to_unset)
+	while (env->next && env->next != env_to_unset)
 		env = env->next;
-	tmp = env->next;
-	env->next = tmp->next;
-	free_env(tmp);
+	if (env->next)
+	{
+		tmp = env->next;
+		env->next = tmp->next;
+		free_env(tmp);
+	}
 }
 
 void	ft_unset(t_token *tokens, t_env **env)
 {
-	if (!tokens || !tokens->next)
-		return;
-	t_token *current = tokens->next;
-	t_env *start = *env;
-	
+	t_token	*current;
+	t_env	*start;
+
+	if (!tokens || !tokens->next || !env || !*env)
+		return ;
+	current = tokens->next;
 	while (current)
 	{
 		start = *env;
@@ -52,4 +58,4 @@ void	ft_unset(t_token *tokens, t_env **env)
 		}
 		current = current->next;
 	}
-}*/
+}
