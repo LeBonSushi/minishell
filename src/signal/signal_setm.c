@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal2.c                                          :+:      :+:    :+:   */
+/*   signal_setm.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:44:28 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/15 01:44:06 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/15 04:31:35 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void	set_execution_mode(void)
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 }
+
 void	set_interactive_mode(void)
 {
 	signal(SIGINT, handle_sigint);

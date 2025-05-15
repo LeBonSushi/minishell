@@ -268,7 +268,6 @@ char	**tokens_to_tab(t_token *tokens);
 void	exec_cmds(t_all *all, t_cmd *cmds);
 int		ft_exit2(t_all *all, int exit_code);
 t_token	*copy_token2(t_token *src);
-t_token	*copy_token3(t_token *src);
 bool	contain_redir_errors(t_cmd *cmds, int *status, bool print);
 
 //---------------------HEREDOC-----------------------------

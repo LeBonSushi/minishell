@@ -1,5 +1,5 @@
 CC		:= cc
-CFLAGS	:= -Werror -Wextra -Wall -I/opt/homebrew/opt/readline/include -g3 #-fsanitize=address,leak
+CFLAGS	:= -Werror -Wextra -Wall -Iincludes/ -I/opt/homebrew/opt/readline/include -g3 #-fsanitize=address,leak
 LDFLAGS	:= -L/opt/homebrew/opt/readline/lib -lreadline
 REST :=		src/minishell2.c \
 			src/parsing/expander2.c \
@@ -19,6 +19,8 @@ SRC		:=	src/minishell.c \
 \
 			src/utils/header.c \
 			src/utils/free.c \
+			src/utils/free_all.c \
+			src/utils/init.c \
 			src/utils/print_utils.c \
 			src/utils/token_utils.c \
 \
@@ -48,7 +50,7 @@ SRC		:=	src/minishell.c \
 			src/exec/exec4.c \
 \
 			src/signal/signal.c \
-			src/signal/signal2.c \
+			src/signal/signal_setm.c \
 \
 
 OBJ		:= $(SRC:.c=.o)
