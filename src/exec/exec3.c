@@ -6,18 +6,11 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:03 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/15 08:37:11 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 08:56:42 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-int	ft_exit2(t_all *all, int exit_code)
-{
-	(void)all;
-	g_zebi.g_exit = exit_code;
-	exit(exit_code);
-}
 
 void	child_process(t_all *all, t_cmd *cmd, int *fd, char **env)
 {
@@ -44,11 +37,7 @@ void	child_process(t_all *all, t_cmd *cmd, int *fd, char **env)
 		execve(cmd->path, cmd->args, env);
 		exec_error(all, cmd->args[0]);
 	}
-	free_all_cmds(all->cmds);
-	free_all_token(all->tokens);
-	free_all_env(all->env);
-	free_tab(env);
-	rl_clear_history();
+	free_multiple(all, env);
 	exit(g_zebi.g_exit);
 }
 
@@ -62,9 +51,9 @@ void	parent_process(t_cmd *curr, int *fd)
 	close(fd[0]);
 }
 
-int wait_all_exitcode(t_cmd *cmd, int tmp)
+int	wait_all_exitcode(t_cmd *cmd, int tmp)
 {
-	int exit;
+	int	exit;
 
 	exit = g_zebi.g_exit;
 	if (WIFEXITED(tmp))
@@ -77,11 +66,11 @@ int wait_all_exitcode(t_cmd *cmd, int tmp)
 		else if (WTERMSIG(tmp) == SIGQUIT)
 			write(2, "Quit (core dumped)\n", 19);
 		else if (WTERMSIG(tmp) == SIGSEGV)
-			ft_fprintf(2, "[1]    %d segmentation fault (core dumped)  %s\n", cmd->pid, cmd->args[0]);
+			ft_fprintf(2, "[1]    %d segmentation fault (core dumped)  %s\n",
+				cmd->pid, cmd->args[0]);
 	}
 	return (exit);
 }
-
 
 void	waitall(t_cmd *cmds)
 {
@@ -98,7 +87,6 @@ void	waitall(t_cmd *cmds)
 			continue ;
 		}
 		waitpid(cmd->pid, &tmp, 0);
-		// printf("%d\n", tmp);
 		cmd = cmd->next;
 	}
 	cmd = cmds;
@@ -110,9 +98,6 @@ void	waitall(t_cmd *cmds)
 
 void	do_pipes(t_all *all, t_cmd *curr, char **env, int fd[2])
 {
-	// if (is_builtin(curr->args[0]) && !curr->next)
-	// 		execute_builtins(curr, curr->args, &all->env, all);
-	// else
 	{
 		if (pipe(fd) == -1)
 			pipe_error(all, fd);

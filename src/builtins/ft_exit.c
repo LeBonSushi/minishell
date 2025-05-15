@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:38:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/15 07:28:05 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 08:58:15 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,4 +76,11 @@ void	ft_exit(t_token *tokens, t_all *all)
 	free_all2(all);
 	g_zebi.g_exit = res;
 	exit(g_zebi.g_exit);
+}
+
+int	ft_exit2(t_all *all, int exit_code)
+{
+	(void)all;
+	g_zebi.g_exit = exit_code;
+	exit(exit_code);
 }

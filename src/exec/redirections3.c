@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:53:18 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/11 08:42:08 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 09:15:08 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	redir_out_append(t_cmd *curr_cmd, t_token *curr_token)
 	return (0);
 }
 
-int	manage_cmd_redir(t_all *all, t_cmd *curr_cmd)
+int	manage_cmd_redir(t_cmd *curr_cmd)
 {
 	t_token	*curr_token;
 	t_token	*next;
@@ -77,7 +77,7 @@ int	manage_cmd_redir(t_all *all, t_cmd *curr_cmd)
 			if (curr_token->token_type == REDIR_HEREDOC)
 				status = do_heredoc(curr_cmd, curr_token, is_last(curr_token));
 			else if (curr_token->token_type == REDIR_IN && !curr_cmd->skip_cmd)
-				status = redir_in(all, curr_cmd, curr_token);
+				status = redir_in(curr_cmd, curr_token);
 			else if ((curr_token->token_type == REDIR_APPEND
 					|| curr_token->token_type == REDIR_OUT)
 				&& !curr_cmd->skip_cmd)

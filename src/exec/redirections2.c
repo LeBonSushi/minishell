@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:53:14 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/06 06:58:57 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/15 09:12:05 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 int	do_heredoc(t_cmd *cmd, t_token *curr_token, bool is_last)
 {
 	char	*line;
-	int		heredoc_fd;
 	char	*limiter;
 	char	*heredoc_file;
 	int		i;
@@ -31,7 +30,7 @@ int	do_heredoc(t_cmd *cmd, t_token *curr_token, bool is_last)
 		heredoc_file = ft_strjoin(".heredoc", ft_itoa(i++), 0, 1);
 		free(tmp);
 	}
-	heredoc_fd = open(heredoc_file, O_RDWR | O_TRUNC | O_CREAT, 0664);
+	cmd->infile_fd = open(heredoc_file, O_RDWR | O_TRUNC | O_CREAT, 0664);
 	limiter = ft_strdup(curr_token->next->value);
 	while (1)
 	{
@@ -43,11 +42,11 @@ int	do_heredoc(t_cmd *cmd, t_token *curr_token, bool is_last)
 			free(limiter);
 			break ;
 		}
-		ft_fprintf(heredoc_fd, "%s\n", line);
+		ft_fprintf(cmd->infile_fd, "%s\n", line);
 		free(line);
 	}
 	cmd->here_doc = true;
-	close(heredoc_fd);
+	close(cmd->infile_fd);
 	if (is_last)
 		cmd->infile_fd = open(heredoc_file, O_RDONLY);
 	unlink(heredoc_file);
@@ -69,11 +68,11 @@ bool	is_last(t_token *token)
 	return (true);
 }
 
-int	redir_in(t_all *all, t_cmd *curr_cmd, t_token *curr_token)
+int	redir_in(t_cmd *curr_cmd, t_token *curr_token)
 {
 	t_token	*file;
 	char	*error;
-	(void)all;
+
 	if (curr_cmd->infile_fd > 0)
 		close(curr_cmd->infile_fd);
 	file = curr_token->next;
@@ -81,7 +80,6 @@ int	redir_in(t_all *all, t_cmd *curr_cmd, t_token *curr_token)
 	if (access(file->value, F_OK | R_OK))
 	{
 		curr_cmd->skip_cmd = true;
-		// skip_all_cmds(all->cmds);
 		return (perror(error), free(error), 1);
 	}
 	free(error);

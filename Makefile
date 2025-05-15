@@ -2,10 +2,8 @@ CC		:= cc
 CFLAGS	:= -Werror -Wextra -Wall -Iincludes/ -I/opt/homebrew/opt/readline/include -g3 -fsanitize=address,leak
 LDFLAGS	:= -L/opt/homebrew/opt/readline/lib -lreadline
 
-# Name of the final executable
 NAME	:= minishell
 
-# All needed files
 SRC		:=	src/minishell.c \
 			src/parsing/tokenizer.c \
 			src/parsing/expander.c \
@@ -50,21 +48,17 @@ SRC		:=	src/minishell.c \
 
 OBJ		:= $(SRC:.c=.o)
 
-# All needed library
 LIB		:=	libft/libft.a \
 
-# Colors for differents prints
 GREEN	:= "\033[0m\033[1;32m"
 CYAN	:= "\033[0m\033[1;36m"
 YELLOW	:= "\033[0m\033[1;33m\033[3;33m"
 RESET	:= "\033[0m"
 
-# Compile all .c files
 .c.o:
 	@printf $(GREEN)"\r\033[KCompiling objects... "$(YELLOW)"<$<> ⏳ "$(RESET)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-# Compile all .o files
 $(NAME): $(OBJ)
 	@printf $(GREEN)"\r\033[KObjects compiled succesfully ✅\n"$(RESET)
 	@make -C libft --silent
@@ -79,15 +73,11 @@ $(NAME): $(OBJ)
 	@printf "██║ ╚═╝ ██║██║██║ ╚████║██║███████║  ███║  ██    ██  ███████╗ ███████║ ███████║\n"
 	@printf "╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝╚══════╝  ╚══╝  ╚══════╝  ╚══════╝ ╚══════╝ ╚══════╝\n"
 
+all: $(NAME)
 
-# Default command to launch
-all: $(NAME) #load
-
-# Compile and run minishell
 run: all
 	@./$(NAME)
 
-# Just a cute loading bar
 load:
 	@printf '\r █▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒ - 0%%\r'
 	@sleep .1
@@ -132,14 +122,12 @@ load:
 	@printf '\r █████████████████████ - 100%%\r'
 	@sleep .8
 
-# Clean all .o and .a files
 clean:
 	@printf $(CYAN)"\r\033[KErasing objects... "$(RESET)"⏳ "
 	@rm -rdf $(OBJ)
 	@make -C libft clean --silent
 	@printf $(GREEN)"\r\033[Kcleaned 🗑\n"$(RESET)
 
-# Same as 'clean' but clean minishell too
 fclean:
 	@printf $(CYAN)"\r\033[KErasing objects... "$(RESET)"⏳ "
 	@rm -rdf $(OBJ)
@@ -150,7 +138,6 @@ fclean:
 	@printf $(GREEN)"\r\033[KBinary file cleaned 🗑\n"$(RESET)
 	@printf $(GREEN)"\r\033[KForce cleaned 🗑\n"$(RESET)
 
-# Clean all and recompile minishell
 re: fclean all
 
 .PHONY: all clean fclean re  load run

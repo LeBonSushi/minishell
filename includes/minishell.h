@@ -211,6 +211,7 @@ void						free_all_token(t_token *token);
 void						free_all(t_all *all);
 void						free_all_cmds(t_cmd *cmds);
 void						skip_all_cmds(t_cmd *cmds);
+void						free_multiple(t_all *all, char **env);
 
 //--------------------BUILTINS---------------------------
 
@@ -239,7 +240,7 @@ void						minishell_loop(t_all *all);
 t_cmd						*create_cmdlist(t_token *token);
 t_cmd						*cmd_new(t_token *tokens);
 void						cmd_addback(t_cmd **cmd, t_cmd *new);
-int							manage_redirections(t_all *all, t_cmd *cmds);
+int							manage_redirections(t_cmd *cmds);
 
 //---------------------UTILS---------------------------
 
@@ -270,10 +271,10 @@ bool						contain_redir_errors(t_cmd *cmds, int *status,
 int							do_heredoc(t_cmd *cmd, t_token *curr_token,
 								bool is_last);
 bool						is_last(t_token *token);
-int							redir_in(t_all *all, t_cmd *curr_cmd,
+int							redir_in(t_cmd *curr_cmd,
 								t_token *curr_token);
 bool						is_redir_out(t_token *token);
-int							manage_cmd_redir(t_all *all, t_cmd *curr_cmd);
+int							manage_cmd_redir(t_cmd *curr_cmd);
 
 //----------------------EXEC-------------------------------
 

@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:53:24 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/04/29 22:09:22 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 09:16:08 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	skip_all_cmds(t_cmd *cmds)
 	}
 }
 
-int	manage_redirections(t_all *all, t_cmd *cmds)
+int	manage_redirections(t_cmd *cmds)
 {
 	t_cmd	*curr;
 	int		status;
@@ -68,10 +68,9 @@ int	manage_redirections(t_all *all, t_cmd *cmds)
 	status = 0;
 	if (contain_redir_errors(cmds, &status, true))
 		return (skip_all_cmds(cmds), status);
-		// return (status);
 	while (curr)
 	{
-		status = manage_cmd_redir(all, curr);
+		status = manage_cmd_redir(curr);
 		curr = curr->next;
 	}
 	return (status);
