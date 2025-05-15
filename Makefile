@@ -1,13 +1,6 @@
 CC		:= cc
 CFLAGS	:= -Werror -Wextra -Wall -Iincludes/ -I/opt/homebrew/opt/readline/include -g3 #-fsanitize=address,leak
 LDFLAGS	:= -L/opt/homebrew/opt/readline/lib -lreadline
-REST :=		src/minishell2.c \
-			src/parsing/expander2.c \
-			src/parsing/expander3.c \
-			src/parsing/expander4.c \
-			src/parsing/expander5.c \
-			src/parsing/expander6.c \
-			src/signal/setmode.c \
 
 # Name of the final executable
 NAME	:= minishell
@@ -16,11 +9,14 @@ NAME	:= minishell
 SRC		:=	src/minishell.c \
 			src/parsing/tokenizer.c \
 			src/parsing/expander.c \
+			src/parsing/expander2.c \
+			src/parsing/expander3.c \
+			src/parsing/expander4.c \
 \
-			src/utils/header.c \
 			src/utils/free.c \
 			src/utils/free_all.c \
 			src/utils/init.c \
+			src/utils/env_utils.c \
 			src/utils/print_utils.c \
 			src/utils/token_utils.c \
 \
@@ -36,7 +32,6 @@ SRC		:=	src/minishell.c \
 \
 			src/preparation/env_prepare.c \
 			src/preparation/token_prepare.c \
-			src/preparation/string_lst_prepare.c \
 			src/preparation/cmd_prepare.c \
 			src/preparation/prepare_exec.c \
 \

@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:00:14 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/15 04:30:02 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 04:43:05 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,25 @@ bool	is_quote(char c)
 bool	is_operator(char *str)
 {
 	if (*str == '|' || *str == '<' || *str == '>' || *str == '~')
+		return (true);
+	return (false);
+}
+
+bool is_same_quote(t_token *token, t_token *token_to_compare)
+{
+	if (!token || !token_to_compare)
+		return (false);
+	if (token->single_quoted == token_to_compare->single_quoted
+		&& token->double_quoted == token_to_compare->double_quoted)
+		return (true);
+	return (false);
+}
+
+bool is_same_type(t_token *token, t_token *token_to_compare, t_token_type type)
+{
+	if (!token || !token_to_compare)
+		return (false);
+	if (token->token_type == type && token_to_compare->token_type == type)
 		return (true);
 	return (false);
 }
