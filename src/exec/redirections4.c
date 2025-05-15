@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:53:24 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/15 09:16:08 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 09:33:57 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,16 +27,19 @@ bool	contain_redir_errors(t_cmd *cmds, int *status, bool print)
 			{
 				*status = 2;
 				if (cmds->next && print)
-					ft_fprintf(2, "ministress: syntax error near unexpected token `|\'\n");
+					ft_fprintf(2, "ministress: syntax error near unexpected \
+token `|\'\n");
 				else if (!cmds->next && print)
-					ft_fprintf(2, "ministress: syntax error near unexpected token `newline\'\n");
+					ft_fprintf(2, "ministress: syntax error near unexpected \
+token `newline\'\n");
 				return (true);
 			}
 			else if (is_redir_out(token) && token->next->token_type != WORD)
 			{
 				*status = 2;
 				if (print)
-					ft_fprintf(2, "ministress: syntax error near unexpected token `%s\'\n", token->next->value);
+					ft_fprintf(2, "ministress: syntax error near unexpected \
+token `%s\'\n", token->next->value);
 				return (true);
 			}
 			token = token->next;

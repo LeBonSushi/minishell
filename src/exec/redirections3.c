@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:53:18 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/15 09:15:08 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 09:19:48 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ int	redir_out_append(t_cmd *curr_cmd, t_token *curr_token)
 	else if (curr_token->token_type == REDIR_APPEND)
 		flags |= O_APPEND;
 	curr_cmd->outfile_fd = open(file->value, flags, mode);
-	// printf("out: %d\n", curr_cmd->outfile_fd);
 	if (curr_cmd->outfile_fd == -1)
 	{
 		ft_putstr_fd("minishell: ", 2);
@@ -94,5 +93,6 @@ int	manage_cmd_redir(t_cmd *curr_cmd)
 
 bool	is_redir_out(t_token *token)
 {
-	return (token->token_type == REDIR_APPEND || token->token_type == REDIR_OUT);
+	return (token->token_type == REDIR_APPEND
+		|| token->token_type == REDIR_OUT);
 }

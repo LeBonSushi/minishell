@@ -6,23 +6,22 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 00:17:58 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/15 04:34:49 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 09:39:17 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-
-bool check_valid_key(const char *str)
+bool	check_valid_key(const char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (str == NULL)
 		return (false);
-	if (!('a' <= str[i] && str[i] <= 'z') && !('A' <= str[i] && str[i] <= 'Z') && str[i] != '_')
+	if (!('a' <= str[i] && str[i] <= 'z') && !('A' <= str[i] && str[i] <= 'Z')
+		&& str[i] != '_')
 		return (false);
-
 	return (true);
 }
 
@@ -34,7 +33,7 @@ char	*find_key(const char *envp_value)
 	end = 0;
 	if (!envp_value)
 		return (NULL);
-	while(envp_value[end] != '=' && envp_value[end])
+	while (envp_value[end] != '=' && envp_value[end])
 		end++;
 	key = ft_substr(envp_value, 0, end);
 	if (!key)
@@ -55,7 +54,7 @@ char	*find_value(const char *envp_value)
 	int		start;
 	int		end;
 	char	*value;
-	
+
 	if (!envp_value)
 		return (NULL);
 	end = ft_strlen(envp_value);
@@ -76,12 +75,12 @@ char	*find_value(const char *envp_value)
 
 void	update_env(t_env **env, char *name, char *value, bool overwrite)
 {
-	int len;
-	t_env *tmp;
-	t_env *new_node;
-	
+	int		len;
+	t_env	*tmp;
+	t_env	*new_node;
+
 	if (!name || !value)
-		return;
+		return ;
 	len = ft_strlen(name);
 	tmp = *env;
 	while (tmp)
@@ -89,7 +88,7 @@ void	update_env(t_env **env, char *name, char *value, bool overwrite)
 		if (ft_strncmp(tmp->key, name, len) == 0 && tmp->key[len] == '\0')
 		{
 			if (!overwrite)
-				return;
+				return ;
 			free(tmp->value);
 			tmp->value = ft_strdup(value);
 			return ;
@@ -108,10 +107,8 @@ void	update_env(t_env **env, char *name, char *value, bool overwrite)
 		return ;
 	}
 	env_addback(env, new_node);
-	// ajouter un sort env; /////////////////////////////////////////////////////////
 }
 
-// a function that return a t_env* linked list
 t_env	*fill_env(char **envp)
 {
 	t_env	*env;

@@ -150,7 +150,7 @@ t_env						*env_create_sorted(t_env *env);
 bool						is_operator(char *str);
 bool						is_quote(char c);
 bool						is_quotes_closed(char *str);
-bool						is_valid_tokens(t_all *all, t_token *token);
+bool						is_valid_tokens(t_token *token);
 void						delete_token(t_token **head_ref,
 								t_token *node_to_delete);
 void						edit_token(t_token **token, t_token_type type,
@@ -167,8 +167,9 @@ t_token						*fill_tokens(char *str);
 t_token						*join_tokens(t_token *tmp, t_token *next,
 								t_token **next_ptr);
 t_token						*merge_tokens(t_token *tokens);
-
 void						print_tokens(t_token *tokens);
+bool						manage_expansion_error(t_token *token);
+bool						is_error_expansion_char(char c);
 
 //---------------------EXPANDER--------------------------
 
@@ -181,12 +182,11 @@ void						handle_variable_expansion(t_all *all, char *word,
 char						*get_value(t_env *env, char *key);
 t_token						*token_new4(t_token_type token_type, char *value,
 								bool single_q, bool double_q);
-// void init_tokens(bool *merged, t_token **curr, t_token *tokens);
+bool						manage_error_redir(t_token *token);
 char						*join_token_values(t_token *first, t_token *second);
 void						skip_variable_chars(char *word, int *i);
 void						handle_dollar_sign(t_all *all, char *word, int *i,
 								char **new_word);
-// t_token	*create_merged_wildcard_token(t_token *tmp);
 t_token						*handle_token_expansion(t_all *all, t_token *tmp);
 t_token						*expand_tokens(t_all *all, t_token *tokens);
 char						*expand_word(t_all *all, char *word);

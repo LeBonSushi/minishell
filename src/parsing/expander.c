@@ -6,16 +6,16 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/15 04:43:00 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 09:22:05 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-char *join_token_values(t_token *first, t_token *second)
+char	*join_token_values(t_token *first, t_token *second)
 {
-	char *joined;
-	char *temp;
+	char	*joined;
+	char	*temp;
 
 	temp = ft_strdup(first->value);
 	joined = ft_strjoin(temp, second->value, 1, 1);
@@ -35,7 +35,7 @@ t_token	*join_tokens(t_token *tmp, t_token *next, t_token **next_ptr)
 	return (new);
 }
 
-char *get_env_value(t_all *all, char *var_name)
+char	*get_env_value(t_all *all, char *var_name)
 {
 	t_env	*env;
 
@@ -49,7 +49,7 @@ char *get_env_value(t_all *all, char *var_name)
 	return (ft_strdup(""));
 }
 
-char *expand_status(t_all *all, int *i)
+char	*expand_status(t_all *all, int *i)
 {
 	(void)all;
 	(*i) += 2;

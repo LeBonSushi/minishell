@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:55:54 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/15 04:41:53 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 09:23:02 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,13 @@ bool	is_redir(t_token *token)
 		|| token->token_type == REDIR_HEREDOC);
 }
 
-static void init_tokens(bool *merged, t_token **curr, t_token *tokens)
+static void	init_tokens(bool *merged, t_token **curr, t_token *tokens)
 {
 	*merged = false;
 	*curr = tokens;
 }
 
-t_token *merge_tokens(t_token *tokens)
+t_token	*merge_tokens(t_token *tokens)
 {
 	t_token	*curr;
 	bool	merged;
@@ -68,7 +68,7 @@ t_token *merge_tokens(t_token *tokens)
 			curr->space_after = curr->next->space_after;
 			delete_token(&tokens, curr->next);
 			merged = true;
-			break;
+			break ;
 		}
 		curr = curr->next;
 	}
@@ -77,9 +77,9 @@ t_token *merge_tokens(t_token *tokens)
 	return (tokens);
 }
 
-t_token *create_expand_tokens(t_all *all, t_token *tokens)
+t_token	*create_expand_tokens(t_all *all, t_token *tokens)
 {
-	t_token *expanded_tokens;
+	t_token	*expanded_tokens;
 
 	if (!tokens)
 		return (NULL);

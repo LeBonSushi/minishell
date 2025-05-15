@@ -6,16 +6,16 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:57:19 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/15 04:42:35 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 09:25:35 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-
 bool	ft_isspecial(char c)
 {
-	if (c == '+' || c == '[' || c == ']' || c == '_' || c == '*' || c == '#' || c == '@')
+	if (c == '+' || c == '[' || c == ']' || c == '_' || c == '*'
+		|| c == '#' || c == '@')
 		return (true);
 	return (false);
 }
@@ -74,11 +74,11 @@ char	*expand_variable(t_all *all, char *word, int *i)
 	return (value);
 }
 
-void	handle_variable_expansion(t_all *all, char *word, int *i, char **new_word)
+void	handle_variable_expansion(t_all *all, char *word,
+	int *i, char **new_word)
 {
 	char	*expansion;
-	
+
 	expansion = expand_variable(all, word, i);
 	*new_word = ft_strjoin(*new_word, expansion, 1, 1);
 }
-

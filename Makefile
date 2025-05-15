@@ -6,6 +6,9 @@ NAME	:= minishell
 
 SRC		:=	src/minishell.c \
 			src/parsing/tokenizer.c \
+			src/parsing/tokenizer2.c \
+			src/parsing/tokenizer3.c \
+			src/parsing/tokenizer4.c \
 			src/parsing/expander.c \
 			src/parsing/expander2.c \
 			src/parsing/expander3.c \

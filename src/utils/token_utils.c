@@ -6,16 +6,17 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:00:14 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/15 04:43:05 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 09:42:32 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
- 
+
 bool	is_quote(char c)
 {
 	return (c == '\'' || c == '\"');
 }
+
 bool	is_operator(char *str)
 {
 	if (*str == '|' || *str == '<' || *str == '>' || *str == '~')
@@ -23,7 +24,7 @@ bool	is_operator(char *str)
 	return (false);
 }
 
-bool is_same_quote(t_token *token, t_token *token_to_compare)
+bool	is_same_quote(t_token *token, t_token *token_to_compare)
 {
 	if (!token || !token_to_compare)
 		return (false);
@@ -33,7 +34,8 @@ bool is_same_quote(t_token *token, t_token *token_to_compare)
 	return (false);
 }
 
-bool is_same_type(t_token *token, t_token *token_to_compare, t_token_type type)
+bool	is_same_type(t_token *token, t_token *token_to_compare,
+	t_token_type type)
 {
 	if (!token || !token_to_compare)
 		return (false);

@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-void	print_tab(char **tab)
+/*void	print_tab(char **tab)
 {
 	int	i;
 
@@ -26,7 +26,7 @@ void	print_tab(char **tab)
 
 void	print_list(t_string_list *list)
 {
-	t_string_list *curr;
+	t_string_list	*curr;
 
 	curr = list;
 	while (curr)
@@ -47,6 +47,7 @@ void	print_list(t_string_list *list)
 void	print_tokens(t_token *tokens)
 {
 	t_token	*tmp;
+
 	tmp = tokens;
 	while (tmp)
 	{
@@ -103,3 +104,4 @@ void	debug_print_cmdlist(t_cmd *cmd_list)
 		curr = curr->next;
 	}
 }
+*/

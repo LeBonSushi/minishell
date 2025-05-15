@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:57:02 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/15 04:42:05 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 09:23:58 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,11 @@ void	handle_dollar_sign(t_all *all, char *word, int *i, char **new_word)
 {
 	if (word[*i + 1] == '?')
 		*new_word = ft_strjoin(*new_word, expand_status(all, i), 1, 1);
-    else if (!ft_isalpha(word[*i + 1]) && !ft_isdigit(word[*i + 1]) && word[*i + 1] != '_')
+	else if (!ft_isalpha(word[*i + 1]) && !ft_isdigit(word[*i + 1])
+		&& word[*i + 1] != '_')
 		*new_word = ft_strjoinchar(*new_word, word[(*i)++]);
-    else
-        handle_variable_expansion(all, word, i, new_word);
+	else
+		handle_variable_expansion(all, word, i, new_word);
 }
 
 char	*expand_word(t_all *all, char *word)
@@ -92,7 +93,7 @@ t_token	*handle_token_expansion(t_all *all, t_token *tmp)
 	else
 	{
 		new = token_new4(tmp->token_type, ft_strdup(tmp->value),
-			tmp->single_quoted, tmp->double_quoted);
+				tmp->single_quoted, tmp->double_quoted);
 	}
 	return (new);
 }
