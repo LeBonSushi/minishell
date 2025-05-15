@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 04:26:23 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/15 04:26:50 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 06:03:23 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ void	free_all_cmds(t_cmd *cmds)
 			free(curr->path);
 		if (curr->tokens)
 			free_all_token(curr->tokens);
+		if (curr->args)
+			free_tab(curr->args);
 		free(curr);
 		curr = next;
 	}

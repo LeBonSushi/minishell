@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/25 18:32:46 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/06 06:56:59 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/15 07:25:19 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 
 bool	is_only_n_and_(char *str)
 {
-	int i = 1;
+	int	i;
+
+	i = 1;
 	if (str[0] != '-' || !str[1])
 		return (false);
 	while (str[i])
@@ -25,16 +27,18 @@ bool	is_only_n_and_(char *str)
 	}
 	return (true);
 }
+
 void	ft_echo(t_token *tokens)
 {
 	int		newline;
 	t_token	*current;
-	
+
 	current = tokens->next;
 	newline = 1;
 	if (!tokens)
-		return;
-	while (current && current->value[0] == '-' && is_only_n_and_(current->value))
+		return ;
+	while (current && current->value[0] == '-'
+		&& is_only_n_and_(current->value))
 	{
 		newline = 0;
 		current = current->next;

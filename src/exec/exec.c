@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 05:18:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/15 04:50:38 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 08:18:31 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,8 @@ char	**get_paths(t_all *all, char **env)
 {
 	int		i;
 	char	**paths;
-	(void)all;
 
+	(void)all;
 	i = 0;
 	paths = NULL;
 	while (env[i])
@@ -101,8 +101,8 @@ bool	is_dir(t_all *all, char *cmd)
 {
 	int		fd;
 	char	*error;
-	(void)all;
 
+	(void)all;
 	fd = open(cmd, O_RDONLY);
 	error = ft_strjoin("ministress: ", cmd, 0, 0);
 	if (fd < 0 && errno == EISDIR)

@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   execute_builtins.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 01:58:22 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/06 12:29:42 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/15 07:28:28 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void execute_builtins(t_cmd *cmd, char **args, t_env **env, t_all *all)
+void	execute_builtins(t_cmd *cmd, char **args, t_env **env, t_all *all)
 {
 	if (!args)
-		return;
+		return ;
 	if (!ft_strcmp(args[0], "echo"))
 		ft_echo(cmd->tokens);
 	else if (!ft_strcmp(args[0], "cd"))
@@ -28,14 +28,14 @@ void execute_builtins(t_cmd *cmd, char **args, t_env **env, t_all *all)
 		ft_env(all->env);
 	else if (!ft_strcmp(args[0], "exit"))
 		ft_exit(cmd->tokens, all);
-	// close (cmd->infile_fd);
-	// close (cmd->outfile_fd);
 	/*else if (!ft_strcmp(args->value, "unset"))
 		ft_unset(env);*/
 }
 
 bool	is_builtin(char *cmd)
 {
-	return (!ft_strcmp(cmd, "echo") || !ft_strcmp(cmd, "cd") || !ft_strcmp(cmd, "pwd")
-		|| !ft_strcmp(cmd, "export") || !ft_strcmp(cmd, "env") || !ft_strcmp(cmd, "exit") || !ft_strcmp(cmd, "unset"));
+	return (!ft_strcmp(cmd, "echo") || !ft_strcmp(cmd, "cd")
+		|| !ft_strcmp(cmd, "pwd") || !ft_strcmp(cmd, "export")
+		|| !ft_strcmp(cmd, "env") || !ft_strcmp(cmd, "exit")
+		|| !ft_strcmp(cmd, "unset"));
 }
