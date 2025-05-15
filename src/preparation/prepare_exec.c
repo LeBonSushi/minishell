@@ -6,13 +6,13 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 14:35:21 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/15 04:32:51 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 04:37:19 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-t_token	*copy_token2(t_token *src)
+t_token	*copy_token(t_token *src)
 {
 	t_token	*new;
 
@@ -40,7 +40,7 @@ t_token	*copy_token_list(t_token *start, t_token *end)
 	curr = start;
 	while (curr && curr != end)
 	{
-		new = copy_token2(curr);
+		new = copy_token(curr);
 		if (!new)
 			return (NULL);
 		if (!head)

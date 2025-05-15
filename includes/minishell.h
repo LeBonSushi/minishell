@@ -165,7 +165,6 @@ t_token			*ft_parse_word(char **str, bool sq, bool dq);
 t_token			*ft_parse_operator(char **str);
 t_token			*new_parsed_token(char	**str);
 t_token			*fill_tokens(char *str);
-t_token			*copy_token(t_token *tmp, t_token **next_ptr);
 t_token			*join_tokens(t_token *tmp, t_token *next, t_token **next_ptr);
 t_token			*merge_tokens(t_token *tokens);
 
@@ -191,7 +190,6 @@ void	handle_dollar_sign(t_all *all, char *word, int *i,
 t_token	*handle_token_expansion(t_all *all, t_token *tmp);
 t_token	*expand_tokens(t_all *all, t_token *tokens);
 char	*expand_word(t_all *all, char *word);
-t_token	*create_tokens_without_space(t_token *tokens);
 t_token	*create_expand_tokens(t_all *all, t_token *tokens);
 bool	is_same_quote(t_token *token, t_token *token_to_compare);
 // t_token	*create_regular_token(t_token *tmp);
@@ -217,7 +215,6 @@ void	free_all_env(t_env *env);
 void	free_all_token(t_token *token);
 void	free_all(t_all *all);
 void	free_all_cmds(t_cmd *cmds);
-void	free_token(t_token *token);
 void	skip_all_cmds(t_cmd *cmds);
 
 //--------------------BUILTINS---------------------------
@@ -267,7 +264,7 @@ char	*get_cmd_path(t_all *all, char *cmd, char **env);
 char	**tokens_to_tab(t_token *tokens);
 void	exec_cmds(t_all *all, t_cmd *cmds);
 int		ft_exit2(t_all *all, int exit_code);
-t_token	*copy_token2(t_token *src);
+t_token	*copy_token(t_token *src);
 bool	contain_redir_errors(t_cmd *cmds, int *status, bool print);
 
 //---------------------HEREDOC-----------------------------

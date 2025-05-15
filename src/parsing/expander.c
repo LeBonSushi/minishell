@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 04:28:23 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/11 07:52:36 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 04:39:47 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,23 +40,6 @@ char *join_token_values(t_token *first, t_token *second)
 	return (joined);
 }
 
-t_token	*token_new2(t_token_type token_type, char *value,
-			bool single_q, bool double_q)
-{
-	t_token	*new;
-
-	new = malloc(sizeof(t_token));
-	if (!new)
-		return (NULL);
-	new->token_type = token_type;
-	new->value = value;
-	new->single_quoted = single_q;
-	new->double_quoted = double_q;
-	new->space_after = true;
-	new->next = NULL;
-	return (new);
-}
-
 t_token	*join_tokens(t_token *tmp, t_token *next, t_token **next_ptr)
 {
 	t_token	*new;
@@ -70,46 +53,9 @@ t_token	*join_tokens(t_token *tmp, t_token *next, t_token **next_ptr)
 	return (new);
 }
 
-t_token	*copy_token(t_token *tmp, t_token **next_ptr)
-{
-	t_token	*new;
-
-	new = token_new(tmp->token_type, ft_strdup(tmp->value),
-			tmp->single_quoted, tmp->double_quoted);
-	new->space_after = tmp->space_after;
-	*next_ptr = tmp->next;
-	return (new);
-}
-
-t_token	*create_tokens_without_space(t_token *tokens)
-{
-	t_token	*new_tokens;
-	t_token	*tmp;
-	t_token	*next;
-	t_token	*new;
-
-	new_tokens = NULL;
-	tmp = tokens;
-	while (tmp)
-	{
-		next = tmp->next;
-		if (next && is_same_type(tmp, next, WORD)
-			&& is_same_quote(tmp, next) && !tmp->space_after)
-			new = join_tokens(tmp, next, &next);
-		else
-		{
-			new = token_new(tmp->token_type, tmp->value, tmp->single_quoted, tmp->double_quoted);
-			tmp = next;
-		}
-		token_addback(&new_tokens, new);
-	}
-	free_all_token(tokens);
-	return (new_tokens);
-}
-
 char *get_env_value(t_all *all, char *var_name)
 {
-	t_env *env;
+	t_env	*env;
 
 	env = all->env;
 	while (env)
@@ -118,21 +64,14 @@ char *get_env_value(t_all *all, char *var_name)
 			return (ft_strdup(env->value));
 		env = env->next;
 	}
-	// return (ft_strdup(""));  // Return empty string if not found
-	return (ft_strdup(""));  // Return empty string if not found
+	return (ft_strdup(""));
 }
 
 char *expand_status(t_all *all, int *i)
 {
 	(void)all;
-	(*i) += 2;  // Skip $?
+	(*i) += 2;
 	return (ft_itoa(g_zebi.g_exit));
-}
-
-char *expand_digit(int *i)
-{
-	(*i) += 2;  // Skip $n
-	return (ft_strdup(""));  // $n expands to nothing in bash when n is a digit
 }
 
 bool	ft_isspecial(char c)
@@ -141,22 +80,6 @@ bool	ft_isspecial(char c)
 		return (true);
 	return (false);
 }
-
-// char	*ft_strjoinchar(char *s1, const char c)
-// {
-// 	int	len;
-// 	char	*str;
-// 	len = ft_strlen(s1);
-	
-// 	str = (char *)malloc(sizeof(char) * (len + 2));
-// 	if (!str)
-// 		return (NULL);
-// 	ft_strlcpy(str, s1, len + 1);
-// 	str[len] = c;
-// 	str[len + 1] = '\0';
-// 	free(s1);
-// 	return (str);
-// }
 
 char	*ft_strjoinchar(char *s1, const char c)
 {
@@ -207,7 +130,6 @@ char	*expand_variable(t_all *all, char *word, int *i)
 	else
 		skip_variable_chars(word, i);
 	var_name = ft_substr(word, start, *i - start);
-	// printf("%s\n", var_name);
 	value = get_env_value(all, var_name);
 	free(var_name);
 	return (value);
@@ -217,29 +139,12 @@ void	handle_variable_expansion(t_all *all, char *word, int *i, char **new_word)
 {
 	char	*expansion;
 	
-	// printf("ouais\n")
 	expansion = expand_variable(all, word, i);
-	// if (!expansion)
-	// 	printf("NULL");
-	// else
-	// 	printf("%s\n", expansion);
 	*new_word = ft_strjoin(*new_word, expansion, 1, 1);
-}
-
-void	handle_special_char(char *word, int *i, char **new_word)
-{
-	if (ft_isspecial(word[*i + 1]) && word[*i + 1] != '_' && word[*i + 2])
-	{
-		(*i) += 2;
-		*new_word = ft_strjoinchar(*new_word, word[(*i)++]);
-	}
-	else
-		*new_word = ft_strjoinchar(*new_word, word[(*i)++]);
 }
 
 void	handle_dollar_sign(t_all *all, char *word, int *i, char **new_word)
 {
-	// printf("Ouais\n");
 	if (word[*i + 1] == '?')
 		*new_word = ft_strjoin(*new_word, expand_status(all, i), 1, 1);
     else if (!ft_isalpha(word[*i + 1]) && !ft_isdigit(word[*i + 1]) && word[*i + 1] != '_')
@@ -337,7 +242,6 @@ t_token	*expand_tokens(t_all *all, t_token *tokens)
 		if (!new)
 		{
 			free_all_token(expanded_tokens);
-			// free_all_token(tokens);
 			return (NULL);
 		}
 		new->space_after = tmp->space_after;
@@ -346,7 +250,6 @@ t_token	*expand_tokens(t_all *all, t_token *tokens)
 		token_addback(&expanded_tokens, new);
 		tmp = tmp->next;
 	}
-	// free_all_token(tokens);
 	return (expanded_tokens);
 }
 
@@ -358,14 +261,6 @@ bool	is_redir(t_token *token)
 		|| token->token_type == REDIR_HEREDOC);
 }
 
-void	free_token(t_token *token)
-{
-	if (!token)
-		return ;
-	if (token->value)
-		free(token->value);
-}
-
 static void init_tokens(bool *merged, t_token **curr, t_token *tokens)
 {
 	*merged = false;
@@ -374,9 +269,8 @@ static void init_tokens(bool *merged, t_token **curr, t_token *tokens)
 
 t_token *merge_tokens(t_token *tokens)
 {
-	t_token *curr;
-	// t_token *next;
-	bool     merged;
+	t_token	*curr;
+	bool	merged;
 
 	if (!tokens || !tokens->next)
 		return (tokens);
@@ -399,20 +293,13 @@ t_token *merge_tokens(t_token *tokens)
 	return (tokens);
 }
 
-
 t_token *create_expand_tokens(t_all *all, t_token *tokens)
 {
 	t_token *expanded_tokens;
-	// t_token *token_after;
 
 	if (!tokens)
 		return (NULL);
-	// print_tokens(tokens);
-	// token_after = create_tokens_without_space(tokens);
-	// print_tokens(token_after);
 	expanded_tokens = expand_tokens(all, tokens);
-	// print_tokens(expanded_tokens);
-	
 	free_all_token(tokens);
 	return (expanded_tokens);
 }
