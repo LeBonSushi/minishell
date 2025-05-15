@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 05:02:03 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/15 10:44:02 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 11:02:54 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ t_token	*token_new(t_token_type token_type, char *value,
 	new->single_quoted = single_q;
 	new->double_quoted = double_q;
 	new->space_after = true;
+	new->expanded = false;
 	new->next = NULL;
 	return (new);
 }

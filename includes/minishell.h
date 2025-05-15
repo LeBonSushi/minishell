@@ -88,6 +88,7 @@ typedef struct s_token
 	bool					single_quoted;
 	bool					double_quoted;
 	bool					space_after;
+	bool					expanded;
 	char					*value;
 	struct s_token			*next;
 }							t_token;
@@ -272,7 +273,7 @@ char						*find_exec_path(char *cmd, char **paths);
 char						**get_paths(t_all *all, char **env);
 int							tokens_size(t_token *tokens);
 bool						is_file(char *cmd);
-void						exec_error(t_all *all, char *cmd);
+void						exec_error(char *cmd);
 char						*get_cmd_path(t_all *all, char *cmd, char **env);
 void						pipe_error(t_all *all, int *fd);
 void						fork_error(t_all *all, int *fd);

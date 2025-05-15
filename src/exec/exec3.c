@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:03 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/15 10:44:02 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 11:10:55 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	child_process(t_all *all, t_cmd *cmd, int *fd, char **env)
 	else
 	{
 		execve(cmd->path, cmd->args, env);
-		exec_error(all, cmd->args[0]);
+		exec_error(cmd->args[0]);
 	}
 	free_multiple(all, env);
 	exit(g_zebi.g_exit);

@@ -6,7 +6,7 @@
 /*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:57:02 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/15 10:44:02 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/15 11:04:29 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ t_token	*token_new4(t_token_type token_type, char *value,
 	new->single_quoted = single_q;
 	new->double_quoted = double_q;
 	new->space_after = true;
+	new->expanded = false;
 	free(value);
 	new->next = NULL;
 	return (new);
@@ -81,6 +82,7 @@ t_token	*handle_token_expansion(t_all *all, t_token *tmp)
 			return (NULL);
 		new = token_new4(tmp->token_type, expanded_value,
 				tmp->single_quoted, tmp->double_quoted);
+		new->expanded = true;
 	}
 	else if (tmp->token_type == TILDE && !tmp->single_quoted)
 	{
@@ -89,6 +91,7 @@ t_token	*handle_token_expansion(t_all *all, t_token *tmp)
 			return (NULL);
 		new = token_new(WORD, expanded_value,
 				tmp->single_quoted, tmp->double_quoted);
+		new->expanded = true;
 	}
 	else
 	{
