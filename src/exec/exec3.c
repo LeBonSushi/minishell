@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec3.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:03 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/15 11:10:55 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/16 11:08:23 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,11 @@ int	wait_all_exitcode(t_cmd *cmd, int tmp)
 		else if (WTERMSIG(tmp) == SIGSEGV)
 			ft_fprintf(2, "[1]    %d segmentation fault (core dumped)  %s\n",
 				cmd->pid, cmd->args[0]);
+		else if (WTERMSIG(tmp) == SIGPIPE)
+		{
+			if (!cmd->next)
+				ft_fprintf(2, "Broken pipe\n");
+		}
 	}
 	return (exit);
 }
@@ -87,12 +92,9 @@ void	waitall(t_cmd *cmds)
 			continue ;
 		}
 		waitpid(cmd->pid, &tmp, 0);
+		g_zebi.g_exit = wait_all_exitcode(cmd, tmp);
 		cmd = cmd->next;
 	}
-	cmd = cmds;
-	while (cmd->next)
-		cmd = cmd->next;
-	g_zebi.g_exit = wait_all_exitcode(cmd, tmp);
 	contain_redir_errors(cmds, &g_zebi.g_exit, false);
 }
 

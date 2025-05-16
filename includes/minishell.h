@@ -162,7 +162,6 @@ t_token						*fill_tokens(char *str);
 t_token						*join_tokens(t_token *tmp, t_token *next,
 								t_token **next_ptr);
 t_token						*merge_tokens(t_token *tokens);
-void						print_tokens(t_token *tokens);
 bool						manage_expansion_error(t_token *token);
 bool						is_error_expansion_char(char c);
 
@@ -238,10 +237,8 @@ int							manage_redirections(t_cmd *cmds);
 //---------------------UTILS---------------------------
 
 bool						is_redir(t_token *token);
-void						print_list(t_string_list *list);
 void						delete_token2(t_token **tokens,
 								t_token *token_to_del);
-void						debug_print_cmdlist(t_cmd *cmd_list);
 char						**env_to_tab(t_env *env);
 void						free_tab(char **tab);
 bool						ft_compare(char *limiter, char *line);
@@ -283,6 +280,7 @@ void						waitall(t_cmd *cmds);
 
 //---------------------SIGNAL-------------------------------
 
+void						handle_sigpipe(int sig);
 void						handle_sigint(int sig);
 void						handle_sigquit(int sig);
 void						setup_signals(void);
