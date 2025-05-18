@@ -36,7 +36,7 @@ typedef struct s_zebi
 	int						g_exit;
 	int						g_in_cmd_execution;
 	int						in_here;
-	int						stop_here;
+	int						heredoc_interrupted;
 }							t_zebi;
 
 extern t_zebi				g_zebi;
@@ -122,6 +122,7 @@ typedef struct s_all
 	pid_t					pid;
 	t_cmd					*cmds;
 	int						status;
+	char					*limiter;
 }							t_all;
 
 void						free_all2(t_all *all);
@@ -232,7 +233,7 @@ void						minishell_loop(t_all *all);
 t_cmd						*create_cmdlist(t_token *token);
 t_cmd						*cmd_new(t_token *tokens);
 void						cmd_addback(t_cmd **cmd, t_cmd *new);
-int							manage_redirections(t_cmd *cmds);
+int							manage_redirections(t_all *all, t_cmd *cmds);
 
 //---------------------UTILS---------------------------
 
@@ -255,13 +256,13 @@ bool						contain_redir_errors(t_cmd *cmds, int *status,
 
 //---------------------HEREDOC-----------------------------
 
-int							do_heredoc(t_cmd *cmd, t_token *curr_token,
+int							do_heredoc(t_all *all, t_cmd *cmd, t_token *curr_token,
 								bool is_last);
 bool						is_last(t_token *token);
 int							redir_in(t_cmd *curr_cmd,
 								t_token *curr_token);
 bool						is_redir_out(t_token *token);
-int							manage_cmd_redir(t_cmd *curr_cmd);
+int							manage_cmd_redir(t_all *all, t_cmd *curr_cmd);
 
 //----------------------EXEC-------------------------------
 
@@ -280,7 +281,7 @@ void						waitall(t_cmd *cmds);
 
 //---------------------SIGNAL-------------------------------
 
-void						handle_sigpipe(int sig);
+void						handle_sigint_here(int sig);
 void						handle_sigint(int sig);
 void						handle_sigquit(int sig);
 void						setup_signals(void);

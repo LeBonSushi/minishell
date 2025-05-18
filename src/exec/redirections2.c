@@ -3,55 +3,142 @@
 /*                                                        :::      ::::::::   */
 /*   redirections2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:53:14 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/15 10:44:02 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/17 18:23:38 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	do_heredoc(t_cmd *cmd, t_token *curr_token, bool is_last)
-{
-	char	*line;
-	char	*limiter;
-	char	*heredoc_file;
-	int		i;
-	char	*tmp;
+// int	do_heredoc(t_all *all, t_cmd *cmd, t_token *curr_token, bool is_last)
+// {
+// 	char	*line;
+// 	char	*limiter;
+// 	pid_t	pid;
+// 	int		status;
+	
+// 	status = 0;
+// 	pid = fork();
+// 	signal(SIGINT, SIG_IGN);
+// 	signal(SIGQUIT, SIG_IGN);
+// 	if (pid == 0)
+// 	{
+// 		signal(SIGINT, SIG_DFL);
+// 		signal(SIGQUIT, SIG_IGN);
+// 		if (cmd->infile_fd > 0)
+// 			close(cmd->infile_fd);
+// 		cmd->infile_fd = open("/tmp/.heredoc", O_RDWR | O_TRUNC | O_CREAT, 0664);
+// 		limiter = ft_strdup(curr_token->next->value);
+// 		while (1)
+// 		{
+// 			line = readline("ministress heredoc> ");
+// 			if (!line || ft_compare(limiter, line))
+// 			{
+// 				if (line)
+// 					free(line);
+// 				free(limiter);
+// 				break ;
+// 			}
+// 			ft_fprintf(cmd->infile_fd, "%s\n", line);
+// 			free(line);
+// 		}
+// 		close(cmd->infile_fd);
+// 	}
+// 	waitpid(pid, &status, 0);
 
-	if (cmd->infile_fd > 0)
-		close(cmd->infile_fd);
-	i = 0;
-	heredoc_file = ft_strdup(".heredoc");
-	while (access(heredoc_file, F_OK) == 0)
+// 	if (WIFSIGNALED(status))
+// 	{
+// 		if (WTERMSIG(status) == SIGINT)
+// 		{
+// 			write(1, "\n", 1);
+// 			rl_on_new_line();
+// 			rl_replace_line("", 0);
+// 			rl_redisplay();
+// 			skip_all_cmds(all->cmds);
+// 			return (130);
+// 		}
+// 	}
+// 	if (is_last)
+// 		cmd->infile_fd = open("/tmp/.heredoc", O_RDONLY);
+// 	unlink("/tmp/.heredoc");
+// 	return (status);
+// }
+
+#include <termios.h>  // Ajoutez cet en-tête pour les fonctions de terminal
+
+int	do_heredoc(t_all *all, t_cmd *cmd, t_token *curr_token, bool is_last)
+{
+	char			*line;
+	pid_t			pid;
+	int				status;
+	struct termios	orig_termios;
+	struct termios	new_termios;
+	
+	tcgetattr(STDIN_FILENO, &orig_termios);
+	
+	status = 0;
+	pid = fork();
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+	if (pid == 0)
 	{
-		tmp = heredoc_file;
-		heredoc_file = ft_strjoin(".heredoc", ft_itoa(i++), 0, 1);
-		free(tmp);
-	}
-	cmd->infile_fd = open(heredoc_file, O_RDWR | O_TRUNC | O_CREAT, 0664);
-	limiter = ft_strdup(curr_token->next->value);
-	while (1)
-	{
-		line = readline("ministress heredoc> ");
-		if (!line || ft_compare(limiter, line))
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_IGN);
+		if (cmd->infile_fd > 0)
+			close(cmd->infile_fd);
+		cmd->infile_fd = open("/tmp/.heredoc", O_RDWR | O_TRUNC | O_CREAT, 0664);
+		if (cmd->infile_fd < 0)
+			exit(1);
+		all->limiter = ft_strdup(curr_token->next->value);
+		if (!all->limiter)
+			exit(1);
+		tcgetattr(STDIN_FILENO, &new_termios);
+		new_termios.c_lflag &= ~(ECHO | ICANON);
+		tcsetattr(STDIN_FILENO, TCSANOW, &new_termios);
+		
+		while (1)
 		{
-			if (line)
-				free(line);
-			free(limiter);
-			break ;
+			write(STDOUT_FILENO, "ministress heredoc> ", 20);
+			line = readline("");
+			if (!line || ft_compare(all->limiter, line))
+			{
+				if (line)
+					free(line);
+				free(all->limiter);
+				break ;
+			}
+			ft_fprintf(cmd->infile_fd, "%s\n", line);
+			free(line);
 		}
-		ft_fprintf(cmd->infile_fd, "%s\n", line);
-		free(line);
+		close(cmd->infile_fd);
+		tcsetattr(STDIN_FILENO, TCSANOW, &orig_termios);
+		exit(0);
 	}
-	cmd->here_doc = true;
-	close(cmd->infile_fd);
+	waitpid(pid, &status, 0);
+	
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+	
+	tcsetattr(STDIN_FILENO, TCSANOW, &orig_termios);
+
+	if (WIFSIGNALED(status))
+	{
+		if (WTERMSIG(status) == SIGINT)
+		{
+			write(1, "\n", 1);
+			rl_on_new_line();
+			rl_replace_line("", 0);
+			// rl_redisplay();
+			skip_all_cmds(all->cmds);
+			return (130);
+		}
+	}
 	if (is_last)
-		cmd->infile_fd = open(heredoc_file, O_RDONLY);
-	unlink(heredoc_file);
-	free(heredoc_file);
-	return (0);
+		cmd->infile_fd = open("/tmp/.heredoc", O_RDONLY);
+	unlink("/tmp/.heredoc");
+	return (status);
 }
 
 bool	is_last(t_token *token)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections4.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:53:24 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/15 10:44:02 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/16 15:56:37 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	skip_all_cmds(t_cmd *cmds)
 	}
 }
 
-int	manage_redirections(t_cmd *cmds)
+int	manage_redirections(t_all *all, t_cmd *cmds)
 {
 	t_cmd	*curr;
 	int		status;
@@ -73,7 +73,7 @@ int	manage_redirections(t_cmd *cmds)
 		return (skip_all_cmds(cmds), status);
 	while (curr)
 	{
-		status = manage_cmd_redir(curr);
+		status = manage_cmd_redir(all, curr);
 		curr = curr->next;
 	}
 	return (status);
