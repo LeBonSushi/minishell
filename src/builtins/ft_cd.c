@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 23:02:42 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/15 10:44:02 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/18 15:11:10 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ void	ft_cd(t_token *tokens, t_env *env)
 		if (!path)
 			return (ft_putstr_fd("ministress: cd: OLDPWD not set\n", 2));
 		resolved_path = resolve_path(path);
+		free(path);
 		if (!resolved_path)
 			return (perror("cd"));
 		old_pwd = ft_getenv_value(env, "PWD");

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:38:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/15 10:44:02 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/18 15:16:59 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,11 @@ bool	str_isvalid(char *str, t_all *all)
 		i = 1;
 	while (str[i])
 	{
+		if (i > 11)
+		{
+			ft_fprintf(2, "bash: exit: %s: numeric argument required\n", str);
+			return (false);
+		}
 		if (!ft_isdigit(str[i]))
 		{
 			ft_fprintf(2, "ministress: exit: %s: \

@@ -37,3 +37,7 @@ DOIT renvoyer une erreur
 
 - Tentative de suppression de variables internes système ou intégrées :
  DOIT renvoyer un msg d erreur ? par exemple si on unset PATH, peu de commande marchent ensuite car on a plus acces au path pour les retrouver.
+
+ exit | exit leaks
+
+ cd . supposed to do nothing

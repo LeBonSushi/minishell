@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/17 15:27:33 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/18 17:48:39 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ int	main(int ac, char **av, char **envp)
 
 	init_readline();
 	init_all(&all, ac, av, envp);
+	print_env(all.env);
 	minishell_loop(&all);
 	free_all(&all);
 	return (g_zebi.g_exit);

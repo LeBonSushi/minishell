@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander3.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:57:02 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/15 11:04:29 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/18 14:56:31 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ t_token	*handle_token_expansion(t_all *all, t_token *tmp)
 			return (NULL);
 		new = token_new(WORD, expanded_value,
 				tmp->single_quoted, tmp->double_quoted);
+		free(expanded_value);
 		new->expanded = true;
 	}
 	else

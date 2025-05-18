@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 00:17:58 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/15 10:44:02 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/18 15:31:19 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,17 +75,15 @@ char	*find_value(const char *envp_value)
 
 void	update_env(t_env **env, char *name, char *value, bool overwrite)
 {
-	int		len;
 	t_env	*tmp;
 	t_env	*new_node;
 
 	if (!name || !value)
 		return ;
-	len = ft_strlen(name);
 	tmp = *env;
 	while (tmp)
 	{
-		if (ft_strncmp(tmp->key, name, len) == 0 && tmp->key[len] == '\0')
+		if (!ft_strcmp(tmp->key, name))
 		{
 			if (!overwrite)
 				return ;
@@ -101,11 +99,6 @@ void	update_env(t_env **env, char *name, char *value, bool overwrite)
 	new_node->key = ft_strdup(name);
 	new_node->value = ft_strdup(value);
 	new_node->next = NULL;
-	if (!(*env))
-	{
-		*env = new_node;
-		return ;
-	}
 	env_addback(env, new_node);
 }
 
