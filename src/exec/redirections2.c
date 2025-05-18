@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:53:14 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/17 18:23:38 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/18 19:14:38 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,13 +95,12 @@ int	do_heredoc(t_all *all, t_cmd *cmd, t_token *curr_token, bool is_last)
 		if (!all->limiter)
 			exit(1);
 		tcgetattr(STDIN_FILENO, &new_termios);
-		new_termios.c_lflag &= ~(ECHO | ICANON);
+		new_termios.c_lflag &= ~(ICANON);
 		tcsetattr(STDIN_FILENO, TCSANOW, &new_termios);
 		
 		while (1)
 		{
-			write(STDOUT_FILENO, "ministress heredoc> ", 20);
-			line = readline("");
+			line = readline("heredoc> ");
 			if (!line || ft_compare(all->limiter, line))
 			{
 				if (line)

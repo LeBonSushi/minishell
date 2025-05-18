@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:03 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/17 19:20:15 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/18 19:24:18 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,16 +62,16 @@ int	wait_all_exitcode(t_cmd *cmd, int tmp)
 	{
 		exit = WTERMSIG(tmp) + 128;
 		if (WTERMSIG(tmp) == SIGINT)
-			write(2, "\n", 1);
+			write(1, "\n", 1);
 		else if (WTERMSIG(tmp) == SIGQUIT)
-			write(2, "Quit (core dumped)\n", 19);
+			write(1, "Quit (core dumped)\n", 19);
 		else if (WTERMSIG(tmp) == SIGSEGV)
 			ft_fprintf(2, "[1]    %d segmentation fault (core dumped)  %s\n",
 				cmd->pid, cmd->args[0]);
 		else if (WTERMSIG(tmp) == SIGPIPE)
 		{
 			if (!cmd->next)
-				ft_fprintf(2, "Broken pipe\n");
+				write(1, "Broken pipe\n", 13);
 		}
 	}
 	return (exit);
