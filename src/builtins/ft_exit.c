@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lebonsushi <lebonsushi@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:38:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/18 15:16:59 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/19 18:16:07 by lebonsushi       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,17 +58,15 @@ numeric argument required\n", str);
 void	ft_exit(t_token *tokens, t_all *all)
 {
 	t_token	*current;
-	int		i;
 	int		res;
 
 	ft_fprintf(1, "exit\n");
 	current = tokens->next;
 	if (get_token_size(tokens) == 1)
 	{
-		free_all2(all);
+		free_all(all);
 		exit(g_zebi.g_exit);
 	}
-	i = 0;
 	if (!str_isvalid(current->value, all))
 		exit(2);
 	if (get_token_size(tokens) > 2)
@@ -78,7 +76,7 @@ void	ft_exit(t_token *tokens, t_all *all)
 		return ;
 	}
 	res = ft_atoi(current->value) % 256;
-	free_all2(all);
+	free_all(all);
 	g_zebi.g_exit = res;
 	exit(g_zebi.g_exit);
 }

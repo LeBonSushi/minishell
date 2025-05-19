@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec3.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lebonsushi <lebonsushi@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:03 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/18 19:24:18 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/19 18:14:18 by lebonsushi       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,11 @@ void	child_process(t_all *all, t_cmd *cmd, int *fd, char **env)
 		dup2(fd[1], STDOUT_FILENO);
 	close(fd[1]);
 	if (is_builtin(cmd->args[0]))
+	{
+		if (!ft_strcmp(cmd->args[0], "exit"))
+			free_tab(env);
 		execute_builtins(cmd, cmd->args, &all->env, all);
+	}
 	else
 	{
 		execve(cmd->path, cmd->args, env);

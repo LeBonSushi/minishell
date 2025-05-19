@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec4.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lebonsushi <lebonsushi@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:50 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/16 11:05:55 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/19 18:17:00 by lebonsushi       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 				dup2(curr->outfile_fd, STDOUT_FILENO);
 				close(curr->outfile_fd);
 			}
+			free_tab(env);
 			execute_builtins(curr, curr->args, &all->env, all);
 			dup2(saved_fd[0], STDIN_FILENO);
 			dup2(saved_fd[1], STDOUT_FILENO);
