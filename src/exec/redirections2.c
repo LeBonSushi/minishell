@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lebonsushi <lebonsushi@student.42.fr>      +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:53:14 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/20 15:05:19 by lebonsushi       ###   ########.fr       */
+/*   Updated: 2025/05/20 20:15:53 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ void test2(t_all *all, t_cmd *cmd, struct termios orig_termios)
 
 int	do_heredoc(t_all *all, t_cmd *cmd, t_token *curr_token, bool is_last)
 {
-	char			*line;
 	pid_t			pid;
 	int				status;
 	struct termios	orig_termios;

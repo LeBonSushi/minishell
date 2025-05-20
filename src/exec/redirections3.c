@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:53:18 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/16 15:58:14 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/20 20:13:22 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,25 @@ int	redir_out_append(t_cmd *curr_cmd, t_token *curr_token)
 	if (curr_cmd->outfile_fd == -1)
 	{
 		ft_putstr_fd("minishell: ", 2);
-		perror(file->value);
-		curr_cmd->skip_cmd = true;
-		return (1);
+		return (perror(file->value), curr_cmd->skip_cmd = true, 1);
 	}
 	return (0);
+}
+
+int	do_redir(t_all *all, t_cmd *curr_cmd, t_token *curr_token)
+{
+	int	status;
+
+	status = 0;
+	if (curr_token->token_type == REDIR_HEREDOC)
+		status = do_heredoc(all, curr_cmd, curr_token, is_last(curr_token));
+	else if (curr_token->token_type == REDIR_IN && !curr_cmd->skip_cmd)
+		status = redir_in(curr_cmd, curr_token);
+	else if ((curr_token->token_type == REDIR_APPEND
+			|| curr_token->token_type == REDIR_OUT)
+		&& !curr_cmd->skip_cmd)
+		status = redir_out_append(curr_cmd, curr_token);
+	return (status);
 }
 
 int	manage_cmd_redir(t_all *all, t_cmd *curr_cmd)
@@ -73,14 +87,7 @@ int	manage_cmd_redir(t_all *all, t_cmd *curr_cmd)
 		next = curr_token->next->next;
 		if (is_redir(curr_token))
 		{
-			if (curr_token->token_type == REDIR_HEREDOC)
-				status = do_heredoc(all, curr_cmd, curr_token, is_last(curr_token));
-			else if (curr_token->token_type == REDIR_IN && !curr_cmd->skip_cmd)
-				status = redir_in(curr_cmd, curr_token);
-			else if ((curr_token->token_type == REDIR_APPEND
-					|| curr_token->token_type == REDIR_OUT)
-				&& !curr_cmd->skip_cmd)
-				status = redir_out_append(curr_cmd, curr_token);
+			status = do_redir(all, curr_cmd, curr_token);
 			delete_token(&curr_cmd->tokens, curr_token->next);
 			delete_token(&curr_cmd->tokens, curr_token);
 			curr_token = next;

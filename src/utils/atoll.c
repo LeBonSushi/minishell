@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   atoll.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lebonsushi <lebonsushi@student.42.fr>      +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 10:55:55 by lebonsushi        #+#    #+#             */
-/*   Updated: 2025/05/20 10:58:08 by lebonsushi       ###   ########.fr       */
+/*   Updated: 2025/05/20 19:13:46 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 bool	ft_atoll(const char *str, long long *result)
 {
-	int		i;
-	int		sign;
+	int			i;
+	int			sign;
 	long long	num;
 
 	i = 0;

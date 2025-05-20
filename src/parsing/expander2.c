@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:55:54 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/15 11:08:22 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/20 19:13:04 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,6 @@ t_token	*expand_tokens(t_all *all, t_token *tokens)
 	}
 	return (expanded_tokens);
 }
-
 
 bool	is_redir(t_token *token)
 {

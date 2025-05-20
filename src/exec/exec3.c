@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec3.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lebonsushi <lebonsushi@student.42.fr>      +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:03 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/20 14:54:42 by lebonsushi       ###   ########.fr       */
+/*   Updated: 2025/05/20 20:16:24 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ void	child_process(t_all *all, t_cmd *cmd, int *fd, char **env)
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	close(fd[0]);
-	closedir(cmd);
 	if (cmd->next)
 		dup2(fd[1], STDOUT_FILENO);
 	close(fd[1]);
@@ -68,6 +67,7 @@ int	wait_all_exitcode(t_cmd *cmd, int tmp)
 	}
 	return (exit);
 }
+
 
 void	waitall(t_cmd *cmds)
 {
