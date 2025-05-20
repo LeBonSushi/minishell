@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lebonsushi <lebonsushi@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 05:18:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/15 10:44:02 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/20 14:29:58 by lebonsushi       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,12 +75,14 @@ char	**get_paths(t_all *all, char **env)
 	return (paths);
 }
 
-char	*find_exec_path(char *cmd, char **paths)
+char	*find_exec_path(char *cmd, char **paths, char **args)
 {
 	int		i;
 	char	*exec_path;
 	char	*tmp;
 
+	if (!args)
+		return (NULL);
 	if (!paths)
 		return (ft_strdup(cmd));
 	i = 0;

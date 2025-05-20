@@ -6,7 +6,7 @@
 /*   By: lebonsushi <lebonsushi@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:38:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/19 18:16:07 by lebonsushi       ###   ########.fr       */
+/*   Updated: 2025/05/20 14:51:26 by lebonsushi       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ bool	str_isvalid(char *str, t_all *all)
 
 	i = 0;
 	if (!str)
-		return (false);
+		return (true);
 	if (str[0] == '-' || str[0] == '+')
 		i = 1;
 	while (str[i])
@@ -59,6 +59,7 @@ void	ft_exit(t_token *tokens, t_all *all)
 {
 	t_token	*current;
 	int		res;
+	long long	a;
 
 	ft_fprintf(1, "exit\n");
 	current = tokens->next;
@@ -67,7 +68,8 @@ void	ft_exit(t_token *tokens, t_all *all)
 		free_all(all);
 		exit(g_zebi.g_exit);
 	}
-	if (!str_isvalid(current->value, all))
+	ft_atoll(current->value, &a);
+	if (!str_isvalid(current->value, all) || (a > LONG_MAX || a < LONG_MIN))
 		exit(2);
 	if (get_token_size(tokens) > 2)
 	{

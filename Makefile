@@ -15,7 +15,10 @@ SRC		:=	src/minishell.c \
 			src/parsing/expander4.c \
 \
 			src/utils/free.c \
+			src/utils/search.c \
+			src/utils/atoll.c \
 			src/utils/free_all.c \
+			src/utils/fd.c \
 			src/utils/init.c \
 			src/utils/env_utils.c \
 			src/utils/print_utils.c \

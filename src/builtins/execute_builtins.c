@@ -6,7 +6,7 @@
 /*   By: lebonsushi <lebonsushi@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 01:58:22 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/19 18:14:53 by lebonsushi       ###   ########.fr       */
+/*   Updated: 2025/05/20 14:46:55 by lebonsushi       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,7 @@ void	execute_builtins(t_cmd *cmd, char **args, t_env **env, t_all *all)
 	else if (!ft_strcmp(args[0], "env"))
 		ft_env(all->env);
 	else if (!ft_strcmp(args[0], "exit"))
-	{
 		ft_exit(cmd->tokens, all);
-	}
 	else if (!ft_strcmp(args[0], "unset"))
 		ft_unset(cmd->tokens, env);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec2.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lebonsushi <lebonsushi@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:50:22 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/15 11:12:07 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/20 14:42:58 by lebonsushi       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,7 @@ char	*get_cmd_path(t_all *all, char *cmd, char **env)
 		return (NULL);
 	}
 	paths = get_paths(all, env);
-	exe_path = find_exec_path(cmd, paths);
+	exe_path = find_exec_path(cmd, paths, paths);
 	free_tab(paths);
 	return (exe_path);
 }
