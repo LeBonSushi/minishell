@@ -26,6 +26,7 @@
 # include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <termios.h>
 # include <string.h>
 # include <strings.h>
 # include <sys/stat.h>
