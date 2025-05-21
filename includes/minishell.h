@@ -144,6 +144,7 @@ t_env						*env_create_sorted(t_env *env);
 //---------------------TOKENS----------------------------
 
 bool						is_operator(char *str);
+bool						is_redir(t_token *token);
 bool						is_quote(char c);
 bool						is_quotes_closed(char *str);
 bool						is_valid_tokens(t_token *token);

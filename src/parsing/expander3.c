@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:57:02 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/18 14:56:31 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/21 11:14:19 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,6 @@ t_token	*handle_token_expansion(t_all *all, t_token *tmp)
 	if (tmp->token_type == WORD && !tmp->single_quoted)
 	{
 		expanded_value = expand_word(all, tmp->value);
-		if (!expanded_value)
-			return (NULL);
 		new = token_new4(tmp->token_type, expanded_value,
 				tmp->single_quoted, tmp->double_quoted);
 		new->expanded = true;
@@ -87,11 +85,8 @@ t_token	*handle_token_expansion(t_all *all, t_token *tmp)
 	else if (tmp->token_type == TILDE && !tmp->single_quoted)
 	{
 		expanded_value = get_value(all->env, "HOME");
-		if (!expanded_value)
-			return (NULL);
-		new = token_new(WORD, expanded_value,
+		new = token_new4(WORD, expanded_value,
 				tmp->single_quoted, tmp->double_quoted);
-		free(expanded_value);
 		new->expanded = true;
 	}
 	else
