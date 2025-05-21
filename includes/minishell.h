@@ -258,8 +258,8 @@ bool						contain_redir_errors(t_cmd *cmds, int *status,
 
 //---------------------HEREDOC-----------------------------
 
-int							do_heredoc(t_all *all, t_cmd *cmd, t_token *curr_token,
-								bool is_last);
+int							do_heredoc(t_all *all, t_cmd *cmd,
+								t_token *curr_token, bool is_last);
 bool						is_last(t_token *token);
 int							redir_in(t_cmd *curr_cmd,
 								t_token *curr_token);

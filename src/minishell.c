@@ -6,17 +6,19 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/21 10:31:40 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/21 11:10:08 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include <termios.h>
+
 t_zebi	g_zebi;
 
 void	minishell_loop(t_all *all)
 {
 	char	*line;
+
 	while (1)
 	{
 		all->tokens = NULL;
@@ -48,7 +50,6 @@ int	main(int ac, char **av, char **envp)
 
 	init_readline();
 	init_all(&all, ac, av, envp);
-	// print_env(all.env);
 	minishell_loop(&all);
 	free_all(&all);
 	return (g_zebi.g_exit);
