@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lebonsushi <lebonsushi@student.42.fr>      +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 22:10:59 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/20 11:07:07 by lebonsushi       ###   ########.fr       */
+/*   Updated: 2025/05/15 10:58:51 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,17 +32,28 @@ bool	check_valid_key_export(const char *key)
 	int	i;
 
 	if (!key || !key[0])
-		return (g_zebi.g_exit = 1, false);
-	if (!ft_isalpha(key[0]) && key[0] != '_')
-		return (g_zebi.g_exit = 1, false);
+	{
+		g_zebi.g_exit = 1;
+		return (false);
+	}
+	if (!('a' <= key[0] && key[0] <= 'z') && !('A' <= key[0]
+			&& key[0] <= 'Z') && key[0] != '_')
+	{
+		g_zebi.g_exit = 1;
+		return (false);
+	}
 	i = 1;
 	while (key[i])
 	{
-		if (!ft_isalpha(key[i]) && key[i] != '_' && !ft_isdigit(key[i]))
+		if (!('a' <= key[i] && key[i] <= 'z') && !('A' <= key[i]
+				&& key[i] <= 'Z') && key[i] != '_'
+			&& !('0' <= key[i] && key[i] <= '9'))
 		{
-			ft_fprintf(2, "minishell: export: `%s': not a valid \
-identifier\n", key);
-			return (g_zebi.g_exit = 1, false);
+			ft_putstr_fd("minishell: export: `", 2);
+			ft_putstr_fd((char *)key, 2);
+			ft_putstr_fd("': not a valid identifier\n", 2);
+			g_zebi.g_exit = 1;
+			return (false);
 		}
 		i++;
 	}

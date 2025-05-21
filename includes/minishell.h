@@ -20,13 +20,11 @@
 # include <errno.h>
 # include <fcntl.h>
 # include <readline/history.h>
-# include <limits.h>
 # include <readline/readline.h>
 # include <signal.h>
 # include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include <termios.h>
 # include <string.h>
 # include <strings.h>
 # include <sys/stat.h>
@@ -128,16 +126,14 @@ typedef struct s_all
 }							t_all;
 
 void						free_all2(t_all *all);
-bool						ft_atoll(const char *str, long long *result);
+void						print_tab(char **tab);
 
 //---------------------ENV-------------------------------
 
 void						print_env(t_env *env);
-void						print_sorted_env(t_env *env);
 void						update_env(t_env **env, char *name, char *val,
 								bool overwrite);
 char						*ft_getenv_value(t_env *env, char *key);
-t_env						*getnode_env_value(t_env *env, char *key);
 t_env						*env_new(char *key, char *value);
 t_env						*env_get_last(t_env *env);
 void						env_addback(t_env **env, t_env *new);
@@ -215,14 +211,16 @@ void						free_multiple(t_all *all, char **env);
 //--------------------BUILTINS---------------------------
 
 bool						is_builtin(char *cmd);
-void						execute_builtins(t_cmd *cmd, char **args,
+void						execute_builtins(t_cmd *cmd, char **envp,
+								t_env **env, t_all *all);
+void						pipe_execute_builtins(t_cmd *cmd, char **envp,
 								t_env **env, t_all *all);
 void						ft_unset(t_token *tokens, t_env **env);
 void						ft_echo(t_token *tokens);
 void						ft_cd(t_token *tokens, t_env *env);
 void						ft_pwd(void);
 void						ft_env(t_env *env);
-void						ft_exit(t_token *tokens, t_all *all);
+void						ft_exit(t_token *tokens, t_all *all, char **envp);
 void						unset_value(t_env **env_head, t_env *env_to_unset);
 void						ft_export(t_token *tokens, t_env **env);
 bool						check_valid_key_export(const char *key);
@@ -260,8 +258,8 @@ bool						contain_redir_errors(t_cmd *cmds, int *status,
 
 //---------------------HEREDOC-----------------------------
 
-int							do_heredoc(t_all *all, t_cmd *cmd,
-								t_token *curr_token, bool is_last);
+int							do_heredoc(t_all *all, t_cmd *cmd, t_token *curr_token,
+								bool is_last);
 bool						is_last(t_token *token);
 int							redir_in(t_cmd *curr_cmd,
 								t_token *curr_token);
@@ -271,7 +269,7 @@ int							manage_cmd_redir(t_all *all, t_cmd *curr_cmd);
 //----------------------EXEC-------------------------------
 
 bool						is_dir(t_all *all, char *cmd);
-char						*find_exec_path(char *cmd, char **paths, char **args);
+char						*find_exec_path(char *cmd, char **paths);
 char						**get_paths(t_all *all, char **env);
 int							tokens_size(t_token *tokens);
 bool						is_file(char *cmd);
@@ -282,7 +280,6 @@ void						fork_error(t_all *all, int *fd);
 void						do_pipes(t_all *all, t_cmd *curr, char **env,
 								int fd[2]);
 void						waitall(t_cmd *cmds);
-void						close_fds(t_cmd *cmd);
 
 //---------------------SIGNAL-------------------------------
 

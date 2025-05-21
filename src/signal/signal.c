@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lebonsushi <lebonsushi@student.42.fr>      +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 19:50:56 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/20 10:38:32 by lebonsushi       ###   ########.fr       */
+/*   Updated: 2025/05/17 16:20:47 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ void	setup_signals(void)
 	sigemptyset(&sa_quit.sa_mask);
 	sa_quit.sa_handler = &handle_sigquit;
 	sa_quit.sa_flags = 0;
+	
+	
 	sigaction(SIGINT, &sa_int, NULL);
 	sigaction(SIGQUIT, &sa_quit, NULL);
 }

@@ -105,15 +105,3 @@ void	debug_print_cmdlist(t_cmd *cmd_list)
 	}
 }
 */
-
-void	print_sorted_env(t_env *env)
-{
-	t_env	*sorted_env;
-
-	sorted_env = env_create_sorted(env);
-	if (sorted_env)
-	{
-		print_env(sorted_env);
-		free_all_env(sorted_env);
-	}
-}

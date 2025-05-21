@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lebonsushi <lebonsushi@student.42.fr>      +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 23:02:42 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/20 14:44:00 by lebonsushi       ###   ########.fr       */
+/*   Updated: 2025/05/18 15:11:10 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,6 @@ char	*resolve_path(const char *path)
 
 char	*ft_getenv_value(t_env *env, char *key)
 {
-	if (!env || !key)
-		return (NULL);
 	while (env)
 	{
 		if (!ft_strcmp(env->key, key))
@@ -52,55 +50,12 @@ char	*ft_getenv_value(t_env *env, char *key)
 	return (NULL);
 }
 
-void	manage_cd_minus(t_env *env)
-{
-	char	*path;
-	char	*o_p;
-	char	*r_p;
-
-	path = ft_getenv_value(env, "OLDPWD");
-	if (!path)
-		return (ft_putstr_fd("ministress: cd: OLDPWD not set\n", 2));
-	r_p = resolve_path(path);
-	free(path);
-	if (!r_p)
-		return (perror("cd"));
-	o_p = ft_getenv_value(env, "PWD");
-	if (chdir(r_p) == -1)
-	{
-		free(r_p);
-		return (g_zebi.g_exit = 1, perror("cd"));
-	}
-	update_env(&env, "PWD", r_p, 1);
-	update_env(&env, "OLDPWD", o_p, 1);
-	free(o_p);
-	free (r_p);
-	g_zebi.g_exit = 0;
-	return ;
-}
-
-void	update_free_end_cd(t_env *env, char *o_p, char *r_p)
-{
-	update_env(&env, "OLDPWD", o_p, 1);
-	update_env(&env, "PWD", r_p, 1);
-	free(o_p);
-	free(r_p);
-}
-
-static void	cd_error(char *r_p, char *o_p)
-{
-	free(r_p);
-	free(o_p);
-	g_zebi.g_exit = 1;
-	perror("cd");
-}
-
 void	ft_cd(t_token *tokens, t_env *env)
 {
 	t_token	*current;
 	char	*path;
-	char	*o_p;
-	char	*r_p;
+	char	*old_pwd;
+	char	*resolved_path;
 
 	current = tokens->next;
 	if (!current)
@@ -108,18 +63,56 @@ void	ft_cd(t_token *tokens, t_env *env)
 		path = ft_getenv_value(env, "HOME");
 		if (!path)
 			return (ft_putstr_fd("ministress: cd: HOME not set\n", 2));
-		free(path);
 	}
 	else if (current && current->next)
-		return (g_zebi.g_exit = 1, ft_putstr_fd("cd: too many \
-arguments\n", 2));
+	{
+		g_zebi.g_exit = 1;
+		return (ft_putstr_fd("cd: too many arguments\n", 2));
+	}
 	else if (ft_strcmp(current->value, "-") == 0)
-		return (manage_cd_minus(env));
-	r_p = resolve_path(current->value);
-	if (!r_p)
-		return (g_zebi.g_exit = 1, perror("cd"));
-	o_p = ft_getenv_value(env, "PWD");
-	if (chdir(r_p) == -1)
-		return (cd_error(r_p, o_p));
-	update_free_end_cd(env, o_p, r_p);
+	{
+		path = ft_getenv_value(env, "OLDPWD");
+		if (!path)
+			return (ft_putstr_fd("ministress: cd: OLDPWD not set\n", 2));
+		resolved_path = resolve_path(path);
+		free(path);
+		if (!resolved_path)
+			return (perror("cd"));
+		old_pwd = ft_getenv_value(env, "PWD");
+		if (chdir(resolved_path) == -1)
+		{
+			free(resolved_path);
+			g_zebi.g_exit = 1;
+			return (perror("cd"));
+		}
+		update_env(&env, "PWD", resolved_path, 1);
+		update_env(&env, "OLDPWD", old_pwd, 1);
+		free(old_pwd);
+		free (resolved_path);
+		g_zebi.g_exit = 0;
+		return ;
+	}
+	else
+		path = current->value;
+	resolved_path = resolve_path(path);
+	if (!resolved_path)
+	{
+		g_zebi.g_exit = 1;
+		return (perror("cd"));
+	}
+	old_pwd = ft_getenv_value(env, "PWD");
+	if (!old_pwd)
+		old_pwd = NULL;
+	if (chdir(resolved_path) == -1)
+	{
+		free(resolved_path);
+		free(old_pwd);
+		g_zebi.g_exit = 1;
+		perror("cd");
+		return ;
+	}
+	update_env(&env, "OLDPWD", old_pwd, 1);
+	update_env(&env, "PWD", resolved_path, 1);
+	free(old_pwd);
+	free(resolved_path);
 }

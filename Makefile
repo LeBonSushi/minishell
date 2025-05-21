@@ -1,5 +1,5 @@
 CC		:= cc
-CFLAGS	:= -Werror -Wextra -Wall -Iincludes/ -I/opt/homebrew/opt/readline/include -g3 #-fsanitize=address,leak
+CFLAGS	:= -Werror -Wextra -Wall -Iincludes/ -I/opt/homebrew/opt/readline/include -g3 -fsanitize=address,leak
 LDFLAGS	:= -L/opt/homebrew/opt/readline/lib -lreadline
 
 NAME	:= minishell
@@ -15,10 +15,7 @@ SRC		:=	src/minishell.c \
 			src/parsing/expander4.c \
 \
 			src/utils/free.c \
-			src/utils/search.c \
-			src/utils/atoll.c \
 			src/utils/free_all.c \
-			src/utils/fd.c \
 			src/utils/init.c \
 			src/utils/env_utils.c \
 			src/utils/print_utils.c \
