@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/21 11:10:08 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/24 14:32:09 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ t_zebi	g_zebi;
 void	minishell_loop(t_all *all)
 {
 	char	*line;
+	char	*post_quote_i;
 
 	while (1)
 	{
@@ -26,15 +27,25 @@ void	minishell_loop(t_all *all)
 		all->paths = NULL;
 		set_interactive_mode();
 		line = readline("ministress$ ");
+		all->num_line++;
 		if (line == NULL)
 		{
 			write(STDOUT_FILENO, "exit\n", 5);
 			break ;
 		}
-		all->tokens = fill_tokens(line);
+		if (*line)
+			add_history(line);
+		post_quote_i = handle_line_continuation(line);
 		free(line);
+		all->tokens = fill_tokens(post_quote_i);
+		free(post_quote_i);
 		all->tokens = create_expand_tokens(all, all->tokens);
 		all->tokens = merge_tokens(all->tokens);
+		if (!is_valid_tokens(all->tokens))
+		{
+			free_all_token(all->tokens);
+			continue ;
+		}
 		all->cmds = create_cmdlist(all->tokens);
 		g_zebi.g_exit = manage_redirections(all, all->cmds);
 		exec_cmds(all, all->cmds);

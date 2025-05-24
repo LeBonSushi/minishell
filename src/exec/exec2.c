@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec2.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:50:22 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/15 11:12:07 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/24 14:59:23 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,11 +61,7 @@ void	exec_error(char *cmd)
 		g_zebi.g_exit = 127;
 		return ;
 	}
-	
-	// Vérifier si le fichier existe
 	stat_result = stat(cmd, &file_stat);
-	
-	// Gestion des chemins absolus et relatifs (./, ../, /)
 	if (ft_strncmp(cmd, "./", 2) == 0 || ft_strncmp(cmd, "../", 3) == 0 || 
 		ft_strncmp(cmd, "/", 1) == 0)
 	{
@@ -88,35 +84,6 @@ void	exec_error(char *cmd)
 			return ;
 		}
 	}
-	// Gestion des noms de fichiers simples (sans ./ ou ../ ou /)
-	else
-	{
-		// Vérifier si le fichier existe mais n'est pas dans le PATH
-		if (stat_result == 0)
-		{
-			// Si c'est un répertoire dans le répertoire courant
-			if (S_ISDIR(file_stat.st_mode))
-			{
-				ft_fprintf(2, "ministress: %s: command not found\n", cmd);
-				g_zebi.g_exit = 127;
-				return ;
-			}
-			else
-			{
-				ft_fprintf(2, "ministress: %s: command not found\n", cmd);
-				g_zebi.g_exit = 127;
-				return ;
-			}
-		}
-		else
-		{
-			ft_fprintf(2, "ministress: %s: command not found\n", cmd);
-			g_zebi.g_exit = 127;
-			return ;
-		}
-	}
-	
-	// Par défaut, commande non trouvée
 	ft_fprintf(2, "ministress: %s: command not found\n", cmd);
 	g_zebi.g_exit = 127;
 }

@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:53:18 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/16 15:58:14 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/22 15:36:15 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int	manage_cmd_redir(t_all *all, t_cmd *curr_cmd)
 		if (is_redir(curr_token))
 		{
 			if (curr_token->token_type == REDIR_HEREDOC)
-				status = do_heredoc(all, curr_cmd, curr_token, is_last(curr_token));
+				status = do_heredoc(all, curr_cmd, curr_token);
 			else if (curr_token->token_type == REDIR_IN && !curr_cmd->skip_cmd)
 				status = redir_in(curr_cmd, curr_token);
 			else if ((curr_token->token_type == REDIR_APPEND
@@ -96,3 +96,23 @@ bool	is_redir_out(t_token *token)
 	return (token->token_type == REDIR_APPEND
 		|| token->token_type == REDIR_OUT);
 }
+
+int	redir_in(t_cmd *curr_cmd, t_token *curr_token)
+{
+	t_token	*file;
+	char	*error;
+
+	if (curr_cmd->infile_fd > 0)
+		close(curr_cmd->infile_fd);
+	file = curr_token->next;
+	error = ft_strjoin("ministress: ", file->value, 0, 0);
+	if (access(file->value, F_OK | R_OK))
+	{
+		curr_cmd->skip_cmd = true;
+		return (perror(error), free(error), 1);
+	}
+	free(error);
+	curr_cmd->infile_fd = open(file->value, O_RDONLY);
+	return (0);
+}
+

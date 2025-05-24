@@ -1,5 +1,5 @@
 CC		:= cc
-CFLAGS	:= -Werror -Wextra -Wall -Iincludes/ -I/opt/homebrew/opt/readline/include -g3 -fsanitize=address,leak
+CFLAGS	:= -Werror -Wextra -Wall -Iincludes/ -I/opt/homebrew/opt/readline/include -g3 #-fsanitize=address,leak
 LDFLAGS	:= -L/opt/homebrew/opt/readline/lib -lreadline
 
 NAME	:= minishell
@@ -7,6 +7,7 @@ NAME	:= minishell
 SRC		:=	src/minishell.c \
 			src/parsing/tokenizer.c \
 			src/parsing/merge.c \
+			src/parsing/errors_parsing.c \
 			src/parsing/tokenizer2.c \
 			src/parsing/tokenizer3.c \
 			src/parsing/tokenizer4.c \
@@ -39,8 +40,8 @@ SRC		:=	src/minishell.c \
 			src/preparation/cmd_prepare.c \
 			src/preparation/prepare_exec.c \
 \
+			src/exec/heredoc.c \
 			src/exec/redirections.c \
-			src/exec/redirections2.c \
 			src/exec/redirections3.c \
 			src/exec/redirections4.c \
 			src/exec/exec.c \

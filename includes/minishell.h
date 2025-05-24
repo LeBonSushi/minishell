@@ -23,6 +23,7 @@
 # include <readline/readline.h>
 # include <signal.h>
 # include <stdbool.h>
+# include <termios.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
@@ -123,6 +124,7 @@ typedef struct s_all
 	t_cmd					*cmds;
 	int						status;
 	char					*limiter;
+	int			num_line;
 }							t_all;
 
 void						free_all2(t_all *all);
@@ -166,6 +168,9 @@ t_token						*join_tokens(t_token *tmp, t_token *next,
 t_token						*merge_tokens(t_token *tokens);
 bool						manage_expansion_error(t_token *token);
 bool						is_error_expansion_char(char c);
+void						check_quotes_pipe(char **line);
+char						*handle_line_continuation(char *line);
+bool						check_invalids(t_token *tokens);
 
 //---------------------EXPANDER--------------------------
 
@@ -260,7 +265,7 @@ bool						contain_redir_errors(t_cmd *cmds, int *status,
 //---------------------HEREDOC-----------------------------
 
 int							do_heredoc(t_all *all, t_cmd *cmd,
-								t_token *curr_token, bool is_last);
+								t_token *curr_token);
 bool						is_last(t_token *token);
 int							redir_in(t_cmd *curr_cmd,
 								t_token *curr_token);
