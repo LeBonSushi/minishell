@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 13:31:35 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/24 20:52:33 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/24 21:15:37 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 bool	check_token_errors(t_token *curr)
 {
-	if (is_redir(curr) && is_redir(curr->next))
+	if ((is_redir(curr) && is_redir(curr->next)) || (curr->token_type == PIPE && curr->next->token_type == PIPE))
 	{
 		ft_fprintf(2, "ministress: syntax error near "
 		"unexpected token `%s'\n", curr->next->value);
@@ -46,7 +46,7 @@ bool	check_invalids(t_token *tokens)
 	}
 	if (is_redir(curr))
 		return(free_all_token(tokens), 
-		ft_putstr_fd("syntax error near unexpected "
+		ft_putstr_fd("ministress: syntax error near unexpected "
 		"token `newline'\n", 2), 1);
 	return (false);
 }
@@ -124,9 +124,39 @@ static int	has_incomplete_redirection(char *line)
 	return (0);
 }
 
+// static int	check_pipe_continuation(char *line)
+// {
+// 	int	i;
+// 	int	tmp;
+
+// 	if (check_quote_continuation(line))
+// 		return (0);
+// 	if (is_redirection_before_pipe(line))
+// 		return (0);
+// 	if (has_incomplete_redirection(line))
+// 		return (0);
+// 	i = ft_strlen(line) - 1;
+// 	while (i >= 0 && ft_isspace(line[i]))
+// 		i--;
+// 	tmp = i;
+// 	if (i >= 0 && !ft_strncmp(line + i, "|", 1))
+// 	{
+// 		while (ft_isspace(line[i]))
+// 			i--;
+// 		if (i >= 0 && !ft_strncmp(line + i, "|", 1))
+// 			return (0);
+// 	}
+// 	i = tmp;
+// 	if (i >= 0 && line[i] == '|')
+// 		return (1);
+// 	return (0);
+// }
+
+
 static int	check_pipe_continuation(char *line)
 {
 	int	i;
+	int	j;
 
 	if (check_quote_continuation(line))
 		return (0);
@@ -138,10 +168,16 @@ static int	check_pipe_continuation(char *line)
 	while (i >= 0 && ft_isspace(line[i]))
 		i--;
 	if (i >= 0 && line[i] == '|')
+	{
+		j = i - 1;
+		while (j >= 0 && ft_isspace(line[j]))
+			j--;
+		if (j >= 0 && line[j] == '|')
+			return (0);
 		return (1);
+	}
 	return (0);
 }
-
 
 static char	*get_continuation_prompt(char *line)
 {
