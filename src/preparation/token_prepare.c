@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_prepare.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 05:02:03 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/15 11:02:54 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/24 16:26:04 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ void	token_addback(t_token **lst, t_token *new)
 {
 	t_token	*tmp;
 
+	if (!lst)
+		return ;
 	if (!*lst)
 	{
 		*lst = new;

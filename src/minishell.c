@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/24 14:32:09 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/24 16:47:41 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,10 @@ void	minishell_loop(t_all *all)
 		free(line);
 		all->tokens = fill_tokens(post_quote_i);
 		free(post_quote_i);
+		if (check_invalids(all->tokens))
+			continue ;
+		// print_tokens(all->tokens);
+		manage_ugly_cases(all->tokens);
 		all->tokens = create_expand_tokens(all, all->tokens);
 		all->tokens = merge_tokens(all->tokens);
 		if (!is_valid_tokens(all->tokens))

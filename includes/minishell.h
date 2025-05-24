@@ -171,6 +171,8 @@ bool						is_error_expansion_char(char c);
 void						check_quotes_pipe(char **line);
 char						*handle_line_continuation(char *line);
 bool						check_invalids(t_token *tokens);
+void	print_tokens(t_token *tokens);
+void						manage_ugly_cases(t_token *tokens);
 
 //---------------------EXPANDER--------------------------
 

@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 09:47:18 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/24 14:03:43 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/24 15:08:51 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,23 +65,12 @@ char	*manage_unclosed_quote(char *str, char quote)
 t_token	*fill_tokens(char *str)
 {
 	t_token	*tokens;
-	char	*modified_str;
-	char	*tmp;
 
 	if (!str)
 		return (NULL);
-	if (!is_quotes_closed(str))
-		modified_str = manage_unclosed_quote(str, get_unclose_quote(str));
-	else
-		modified_str = ft_strdup(str);
-	if (!modified_str)
-		return (NULL);
-	if (*modified_str)
-		add_history(modified_str);
+	
 	tokens = NULL;
-	tmp = modified_str;
-	while (*modified_str)
-		token_addback(&tokens, new_parsed_token(&modified_str));
-	free(tmp);
+	while (*str)
+		token_addback(&tokens, new_parsed_token(&str));
 	return (tokens);
 }

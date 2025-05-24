@@ -6,11 +6,50 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 13:31:35 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/24 14:27:34 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/24 16:24:23 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+bool	check_token_errors(t_token *curr)
+{
+	if (is_redir(curr) && is_redir(curr->next))
+	{
+		ft_fprintf(2, "ministress: syntax error near "
+		"unexpected token `%s'\n", curr->next->value);
+		return (true);
+	}
+	return (false);
+}
+
+bool	check_invalids(t_token *tokens)
+{
+	t_token	*curr;
+	bool	error;
+
+	if (!tokens)
+		return (true);
+	if (tokens->token_type == PIPE)
+	{
+		free_all_token(tokens);
+		ft_fprintf(2, "ministress: syntax error near unexpected token `|'\n");
+		return (true);
+	}
+	curr = tokens;
+	while (curr->next)
+	{
+		error = check_token_errors(curr);
+		if (error == true)
+			return (free_all_token(tokens), true);
+		curr = curr->next;
+	}
+	if (is_redir(curr))
+		return(free_all_token(tokens), 
+		ft_putstr_fd("syntax error near unexpected "
+		"token `newline'\n", 2), 1);
+	return (false);
+}
 
 static int	check_quote_continuation(char *line)
 {
