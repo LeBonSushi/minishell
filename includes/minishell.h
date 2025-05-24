@@ -148,6 +148,7 @@ t_env						*env_create_sorted(t_env *env);
 bool						is_operator(char *str);
 bool						is_redir(t_token *token);
 bool						is_quote(char c);
+char						get_unclosed_quote(char *str);
 bool						is_quotes_closed(char *str);
 bool						is_valid_tokens(t_token *token);
 void						delete_token(t_token **head_ref,
@@ -169,7 +170,7 @@ t_token						*merge_tokens(t_token *tokens);
 bool						manage_expansion_error(t_token *token);
 bool						is_error_expansion_char(char c);
 void						check_quotes_pipe(char **line);
-char						*handle_line_continuation(char *line);
+char						*handle_line_continuation(char *line, t_all *all);
 bool						check_invalids(t_token *tokens);
 void	print_tokens(t_token *tokens);
 void						manage_ugly_cases(t_token *tokens);

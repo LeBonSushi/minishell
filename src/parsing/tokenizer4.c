@@ -6,13 +6,13 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 09:47:18 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/24 15:08:51 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/24 20:47:08 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	get_unclose_quote(char *str)
+char	get_unclosed_quote(char *str)
 {
 	int		i;
 	bool	sq;

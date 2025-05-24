@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:38:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/21 10:40:18 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/24 20:54:23 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,13 +56,13 @@ void	ft_exit(t_token *tokens, t_all *all, char **envp)
 	int		res;
 
 	ft_fprintf(1, "exit\n");
-	current = tokens->next;
-	if (get_token_size(tokens) == 1)
+	if (get_token_size(tokens) == 0 || get_token_size(tokens) == 1)
 	{
 		free_all(all);
 		free_tab(envp);
 		exit(g_zebi.g_exit);
 	}
+	current = tokens->next;
 	if (!str_isvalid(current->value, all))
 	{
 		free_tab(envp);

@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/24 18:13:15 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/24 20:52:12 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	minishell_loop(t_all *all)
 		}
 		if (*line)
 			add_history(line);
-		post_quote_i = handle_line_continuation(line);
+		post_quote_i = handle_line_continuation(line, all);
 		free(line);
 		all->tokens = fill_tokens(post_quote_i);
 		free(post_quote_i);

@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 13:31:35 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/24 16:24:23 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/24 20:52:33 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,25 @@ static char	*join_lines(char *old_line, char *new_line)
 	return (result);
 }
 
-char	*handle_line_continuation(char *line)
+void	print_error_continuation(char *input, t_all *all)
+{
+	char	*close;
+
+	close = get_continuation_prompt(input);
+	g_zebi.g_exit = 2;
+	if (!ft_strcmp(close, "quote> "))
+	{
+		ft_fprintf(2, "ministress: unexpected EOF while looking for matching `%c'\n", get_unclosed_quote(input));
+		ft_fprintf(2, "ministress: syntax error: unexpected end of file\n");
+	}
+	else if (!ft_strcmp(close, "pipe> "))
+	{
+		ft_fprintf(2, "ministress: syntax error: unexpected end of file\n");
+		ft_exit(NULL, all, NULL);
+	}
+}
+
+char	*handle_line_continuation(char *line, t_all *all)
 {
 	char	*continuation_line;
 	char	*full_line;
@@ -184,6 +202,7 @@ char	*handle_line_continuation(char *line)
 		continuation_line = readline(prompt);
 		if (!continuation_line)
 		{
+			print_error_continuation(full_line, all);
 			free(full_line);
 			return (NULL);
 		}
