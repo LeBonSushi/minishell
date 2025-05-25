@@ -1,5 +1,5 @@
 CC		:= cc
-CFLAGS	:= -Werror -Wextra -Wall -Iincludes/ -I/opt/homebrew/opt/readline/include -g3 -fsanitize=address,leak
+CFLAGS	:= -Werror -Wextra -Wall -Iincludes/ -I/opt/homebrew/opt/readline/include -g3 #-fsanitize=address,leak
 LDFLAGS	:= -L/opt/homebrew/opt/readline/lib -lreadline
 
 NAME	:= minishell
@@ -147,5 +147,13 @@ fclean:
 	@printf $(GREEN)"\r\033[KForce cleaned 🗑\n"$(RESET)
 
 re: fclean all
+
+tester:
+	@if [ -d minishell_tester ]; then \
+		printf $(CYAN)"\r\033[KRemoving old tester... "$(RESET)"⏳ \n"; \
+		rm -rf minishell_tester; \
+	fi
+	@printf $(CYAN)"\r\033[KDownloading Tester... "$(RESET)"⏳ \n"
+	@git clone https://github.com/LucasKuhn/minishell_tester.git
 
 .PHONY: all clean fclean re  load run

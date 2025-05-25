@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errors_parsing.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lebonsushi <lebonsushi@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 13:31:35 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/24 21:15:37 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/26 00:32:31 by lebonsushi       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ bool	check_invalids(t_token *tokens)
 	bool	error;
 
 	if (!tokens)
-		return (true);
+		return (false);
 	if (tokens->token_type == PIPE)
 	{
 		free_all_token(tokens);
@@ -41,13 +41,12 @@ bool	check_invalids(t_token *tokens)
 	{
 		error = check_token_errors(curr);
 		if (error == true)
-			return (free_all_token(tokens), true);
+			return (true);
 		curr = curr->next;
 	}
 	if (is_redir(curr))
-		return(free_all_token(tokens), 
-		ft_putstr_fd("ministress: syntax error near unexpected "
-		"token `newline'\n", 2), 1);
+		return(ft_putstr_fd("ministress: syntax error near unexpected "
+		"token `newline'\n", 2), true);
 	return (false);
 }
 

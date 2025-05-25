@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections3.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lebonsushi <lebonsushi@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:53:18 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/22 15:36:15 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/26 00:25:16 by lebonsushi       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,8 @@ int	manage_cmd_redir(t_all *all, t_cmd *curr_cmd)
 	if (!curr_cmd)
 		return (0);
 	curr_token = curr_cmd->tokens;
-	status = g_zebi.g_exit;
+	// status = g_zebi.g_exit;
+	status = 0;
 	while (curr_token && curr_token->next)
 	{
 		next = curr_token->next->next;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec3.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: lebonsushi <lebonsushi@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:03 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/24 20:25:21 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/26 00:21:24 by lebonsushi       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ void	waitall(t_cmd *cmds)
 		g_zebi.g_exit = wait_all_exitcode(cmd, tmp);
 		cmd = cmd->next;
 	}
-	contain_redir_errors(cmds, &g_zebi.g_exit, false);
+	// contain_redir_errors(cmds, &g_zebi.g_exit, false);
 }
 
 void	do_pipes(t_all *all, t_cmd *curr, char **env, int fd[2])

@@ -1,6 +1,9 @@
 # Prerequisites
 *.d
 
+# submodules .git
+minishell_tester/.git
+
 # Object files
 *.o
 *.ko
