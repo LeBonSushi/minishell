@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lebonsushi <lebonsushi@student.42.fr>      +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 13:30:19 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/26 00:32:36 by lebonsushi       ###   ########.fr       */
+/*   Updated: 2025/05/26 14:15:44 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ void	minishell_loop(t_all *all)
 			add_history(line);
 		post_quote_i = handle_line_continuation(line, all);
 		free(line);
+		if (!post_quote_i)
+			continue ;
 		all->tokens = fill_tokens(post_quote_i);
 		free(post_quote_i);
 		if (check_invalids(all->tokens))

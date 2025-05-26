@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errors_parsing.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lebonsushi <lebonsushi@student.42.fr>      +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 13:31:35 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/26 00:32:31 by lebonsushi       ###   ########.fr       */
+/*   Updated: 2025/05/26 14:13:18 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,9 @@ bool	check_invalids(t_token *tokens)
 		return (false);
 	if (tokens->token_type == PIPE)
 	{
-		free_all_token(tokens);
 		ft_fprintf(2, "ministress: syntax error near unexpected token `|'\n");
 		return (true);
-	}
+	}	
 	curr = tokens;
 	while (curr->next)
 	{
@@ -223,18 +222,28 @@ char	*handle_line_continuation(char *line, t_all *all)
 	char	*continuation_line;
 	char	*full_line;
 	char	*prompt;
+	int		fd;
 
 	if (!line)
 		return (NULL);
 	full_line = ft_strdup(line);
 	if (!full_line)
 		return (NULL);
+	signal(SIGINT, signal_heredoc);
+	fd = dup(0);
 	while (1)
 	{
 		prompt = get_continuation_prompt(full_line);
 		if (!prompt)
 			break ;
 		continuation_line = readline(prompt);
+		if (!continuation_line && g_zebi.g_exit == 99)
+		{
+			dup2(fd, 0);
+			g_zebi.g_exit = 130;
+			signal(SIGINT, &signal_heredoc);
+			return (NULL);
+		}
 		if (!continuation_line)
 		{
 			print_error_continuation(full_line, all);

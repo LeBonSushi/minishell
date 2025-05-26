@@ -292,7 +292,7 @@ void						waitall(t_cmd *cmds);
 
 //---------------------SIGNAL-------------------------------
 
-void						handle_sigint_here(int sig);
+void						signal_heredoc(int sig);
 void						handle_sigint(int sig);
 void						handle_sigquit(int sig);
 void						setup_signals(void);

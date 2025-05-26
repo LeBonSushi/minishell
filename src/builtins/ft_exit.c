@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:38:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/24 20:54:23 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/26 11:20:54 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,7 @@ void	ft_exit(t_token *tokens, t_all *all, char **envp)
 	}
 	current = tokens->next;
 	if (!str_isvalid(current->value, all))
-	{
-		free_tab(envp);
-		exit(2);
-	}
+		return (free_tab(envp), exit(2));
 	if (get_token_size(tokens) > 2)
 	{
 		ft_fprintf(2, "ministress: exit: too many arguments\n");
