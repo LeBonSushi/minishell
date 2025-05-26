@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:50:22 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/24 14:59:23 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/26 14:26:12 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,36 +25,33 @@ bool	is_file(char *cmd)
 	return (false);
 }
 
-// void	exec_error(t_all *all, char *cmd)
-// {
-// 	(void)all;
-// 	if (errno == EACCES && g_zebi.g_exit == 0 && !is_file(cmd) && ft_strcmp(cmd,
-// 			""))
-// 	{
-// 		ft_fprintf(2, "%s: Permission denied\n", cmd);
-// 		g_zebi.g_exit = 126;
-// 		return ;
-// 	}
-// 	else if ((!ft_strncmp(cmd, "./", 2) || !ft_strncmp(cmd, "/", 1))
-// 		&& g_zebi.g_exit == 0)
-// 	{
-// 		perror(cmd);
-// 		if (errno != ENOENT)
-// 		{
-// 			g_zebi.g_exit = 126;
-// 			return ;
-// 		}
-// 	}
-// 	else
-// 		ft_fprintf(2, "%s: command not found\n", cmd);
-// 	g_zebi.g_exit = 127;
-// }
+void	check_perm(struct stat file_stat, int stat_result, char *cmd)
+{
+	if (stat_result == 0 && S_ISDIR(file_stat.st_mode))
+	{
+		ft_fprintf(2, "ministress: %s: Is a directory\n", cmd);
+		g_zebi.g_exit = 126;
+		return ;
+	}
+	else if (stat_result == 0 && !(file_stat.st_mode & S_IXUSR))
+	{
+		ft_fprintf(2, "ministress: %s: Permission denied\n", cmd);
+		g_zebi.g_exit = 126;
+		return ;
+	}
+	else if (stat_result != 0)
+	{
+		ft_fprintf(2, "ministress: %s: No such file or directory\n", cmd);
+		g_zebi.g_exit = 127;
+		return ;
+	}
+}
 
 void	exec_error(char *cmd)
 {
 	struct stat	file_stat;
 	int			stat_result;
-	
+
 	if (!cmd || !*cmd)
 	{
 		ft_fprintf(2, "ministress: : command not found\n");
@@ -62,51 +59,11 @@ void	exec_error(char *cmd)
 		return ;
 	}
 	stat_result = stat(cmd, &file_stat);
-	if (ft_strncmp(cmd, "./", 2) == 0 || ft_strncmp(cmd, "../", 3) == 0 || 
-		ft_strncmp(cmd, "/", 1) == 0)
-	{
-		if (stat_result == 0 && S_ISDIR(file_stat.st_mode))
-		{
-			ft_fprintf(2, "ministress: %s: Is a directory\n", cmd);
-			g_zebi.g_exit = 126;
-			return ;
-		}
-		else if (stat_result == 0 && !(file_stat.st_mode & S_IXUSR))
-		{
-			ft_fprintf(2, "ministress: %s: Permission denied\n", cmd);
-			g_zebi.g_exit = 126;
-			return ;
-		}
-		else if (stat_result != 0)
-		{
-			ft_fprintf(2, "ministress: %s: No such file or directory\n", cmd);
-			g_zebi.g_exit = 127;
-			return ;
-		}
-	}
+	if (ft_strncmp(cmd, "./", 2) == 0 || ft_strncmp(cmd, "../", 3) == 0
+		|| ft_strncmp(cmd, "/", 1) == 0)
+		return (check_perm(file_stat, stat_result, cmd));
 	ft_fprintf(2, "ministress: %s: command not found\n", cmd);
 	g_zebi.g_exit = 127;
-}
-
-
-char	*get_cmd_path(t_all *all, char *cmd, char **env)
-{
-	char	**paths;
-	char	*exe_path;
-
-	if (!cmd)
-		return (NULL);
-	if (!access(cmd, X_OK) && !is_dir(all, cmd))
-		return (ft_strdup(cmd));
-	if (!*env)
-	{
-		perror(cmd);
-		return (NULL);
-	}
-	paths = get_paths(all, env);
-	exe_path = find_exec_path(cmd, paths);
-	free_tab(paths);
-	return (exe_path);
 }
 
 void	pipe_error(t_all *all, int *fd)

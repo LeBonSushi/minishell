@@ -6,29 +6,67 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:50 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/21 10:42:15 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/26 14:50:34 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	tab_len(char **args)
+void	dup_fds(int *saved_fd)
 {
-	int	i;
+	dup2(saved_fd[0], STDIN_FILENO);
+	dup2(saved_fd[1], STDOUT_FILENO);
+	close(saved_fd[0]);
+	close(saved_fd[1]);
+}
 
-	i = 0;
-	while (args[i])
-		i++;
-	return (i);
+void	exec_cmd(t_cmd *curr, int *fd, t_all *all)
+{
+	char	**env;
+	int		saved_fd[2];
+
+	env = env_to_tab(all->env);
+	if (all->cmds && !all->cmds->next && is_builtin(curr->args[0]))
+	{
+		saved_fd[0] = dup(STDIN_FILENO);
+		saved_fd[1] = dup(STDOUT_FILENO);
+		if (curr->infile_fd > 0)
+		{
+			dup2(curr->infile_fd, STDIN_FILENO);
+			close(curr->infile_fd);
+		}
+		if (curr->outfile_fd > 0)
+		{
+			dup2(curr->outfile_fd, STDOUT_FILENO);
+			close(curr->outfile_fd);
+		}
+		execute_builtins(curr, env, &all->env, all);
+		dup_fds(saved_fd);
+	}
+	else
+		do_pipes(all, curr, env, fd);
+}
+
+static void	prepare_cmd(t_all *all, t_cmd *cmd)
+{
+	char	**paths;
+	char	**env;
+
+	env = env_to_tab(all->env);
+	paths = get_paths(all, env);
+	free_tab(env);
+	cmd->args = tokens_to_tab(cmd->tokens);
+	if (!cmd->args)
+		cmd->path = NULL;
+	else
+		cmd->path = find_exec_path(cmd->args[0], paths);
+	free_tab(paths);
 }
 
 void	exec_cmds(t_all *all, t_cmd *cmds)
 {
 	t_cmd	*curr;
 	int		fd[2];
-	char	**paths;
-	int		saved_fd[2];
-	char	**env;
 
 	if (!cmds)
 		return ;
@@ -36,46 +74,16 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 	set_execution_mode();
 	while (curr)
 	{
-		env = env_to_tab(all->env);
-		paths = get_paths(all, env);
-		curr->args = tokens_to_tab(curr->tokens);
-		if (!curr->args)
-			curr->path = NULL;
-		else
-			curr->path = find_exec_path(curr->args[0], paths);
-		free_tab(paths);
+		prepare_cmd(all, curr);
 		if (!curr->path || !curr->args[0] || curr->skip_cmd)
 		{
-			free_tab(env);
+			if (curr->next && curr->next->infile_fd < 0)
+				curr->next->infile_fd = open("/dev/null", O_RDONLY);
 			curr = curr->next;
-			if (curr && curr->infile_fd < 0)
-				curr->infile_fd = open("/dev/null", O_RDONLY);
 			continue ;
 		}
 		update_env(&all->env, "_", curr->args[tab_len(curr->args) - 1], true);
-		if (cmds && !cmds->next && is_builtin(curr->args[0]))
-		{
-			saved_fd[0] = dup(STDIN_FILENO);
-			saved_fd[1] = dup(STDOUT_FILENO);
-			if (curr->infile_fd > 0)
-			{
-				dup2(curr->infile_fd, STDIN_FILENO);
-				close(curr->infile_fd);
-			}
-			if (curr->outfile_fd > 0)
-			{
-				dup2(curr->outfile_fd, STDOUT_FILENO);
-				close(curr->outfile_fd);
-			}
-			execute_builtins(curr, env, &all->env, all);
-			dup2(saved_fd[0], STDIN_FILENO);
-			dup2(saved_fd[1], STDOUT_FILENO);
-			close(saved_fd[0]);
-			close(saved_fd[1]);
-		}
-		else
-			do_pipes(all, curr, env, fd);
-		free_tab(env);
+		exec_cmd(curr, fd, all);
 		curr = curr->next;
 	}
 	waitall(cmds);

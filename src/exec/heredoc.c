@@ -6,22 +6,11 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:51:59 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/22 13:52:30 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/26 14:51:31 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-
-void	signal_heredoc(int sig)
-{
-	if (sig == SIGINT)
-	{
-		rl_on_new_line();
-		close(0);
-		g_zebi.g_exit = 99;
-	}
-}
 
 int	here_doc_eof(t_all *all, char *limiter)
 {
@@ -31,7 +20,7 @@ int	here_doc_eof(t_all *all, char *limiter)
 	return (1);
 }
 
-void free_write(int *pipe_fd, char *input)
+void	free_write(int *pipe_fd, char *input)
 {
 	write(pipe_fd[1], input, ft_strlen(input));
 	write(pipe_fd[1], "\n", 1);

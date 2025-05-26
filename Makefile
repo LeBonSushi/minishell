@@ -22,6 +22,7 @@ SRC		:=	src/minishell.c \
 			src/utils/token.c \
 			src/utils/free_all.c \
 			src/utils/init.c \
+			src/utils/arrays.c \
 			src/utils/env_utils.c \
 			src/utils/print_utils.c \
 			src/utils/token_utils.c \

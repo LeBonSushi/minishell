@@ -133,6 +133,7 @@ void						print_tab(char **tab);
 //---------------------ENV-------------------------------
 
 void						print_env(t_env *env);
+void						print_sorted_env(t_env *env);
 void						update_env(t_env **env, char *name, char *val,
 								bool overwrite);
 char						*ft_getenv_value(t_env *env, char *key);
@@ -249,6 +250,7 @@ int							manage_redirections(t_all *all, t_cmd *cmds);
 //---------------------UTILS---------------------------
 
 bool						is_redir(t_token *token);
+int							tab_len(char **args);
 void						delete_token2(t_token **tokens,
 								t_token *token_to_del);
 char						**env_to_tab(t_env *env);
@@ -257,7 +259,6 @@ bool						ft_compare(char *limiter, char *line);
 
 //---------------------REDIRECTION---------------------------
 
-char						*get_cmd_path(t_all *all, char *cmd, char **env);
 char						**tokens_to_tab(t_token *tokens);
 void						exec_cmds(t_all *all, t_cmd *cmds);
 int							ft_exit2(t_all *all, int exit_code);
@@ -283,7 +284,6 @@ char						**get_paths(t_all *all, char **env);
 int							tokens_size(t_token *tokens);
 bool						is_file(char *cmd);
 void						exec_error(char *cmd);
-char						*get_cmd_path(t_all *all, char *cmd, char **env);
 void						pipe_error(t_all *all, int *fd);
 void						fork_error(t_all *all, int *fd);
 void						do_pipes(t_all *all, t_cmd *curr, char **env,

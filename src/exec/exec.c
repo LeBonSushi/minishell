@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 05:18:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/24 20:26:54 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/26 14:20:41 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,9 @@ char	*find_exec_path(char *cmd, char **paths)
 	char	*exec_path;
 	char	*tmp;
 
-	if (!paths || !ft_strncmp(cmd, "/", 1) || !ft_strncmp(cmd, "./", 2) || !ft_strncmp(cmd, "../", 3))
+	if (!paths || !ft_strncmp(cmd, "/", 1)
+		|| !ft_strncmp(cmd, "./", 2)
+		|| !ft_strncmp(cmd, "../", 3))
 		return (ft_strdup(cmd));
 	i = 0;
 	while (paths[i])
