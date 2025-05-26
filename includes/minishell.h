@@ -226,7 +226,7 @@ void						pipe_execute_builtins(t_cmd *cmd, char **envp,
 void						ft_unset(t_token *tokens, t_env **env);
 void						ft_echo(t_token *tokens);
 void						ft_cd(t_token *tokens, t_env *env);
-void						ft_pwd(void);
+void						ft_pwd(t_env *env);
 void						ft_env(t_env *env);
 void						ft_exit(t_token *tokens, t_all *all, char **envp);
 void						unset_value(t_env **env_head, t_env *env_to_unset);

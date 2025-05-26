@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errors_parsing.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 13:31:35 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/26 23:31:39 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/27 01:09:02 by jd-halle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,13 @@ char	*join_lines_nl(char *old_line, char *new_line)
 	char	*result;
 
 	if (!old_line || !new_line)
+	{
+		if (new_line)
+			free(new_line);
+		if (old_line)
+			free(old_line);
 		return (NULL);
+	}
 	result = ft_strjoin(old_line, "\n", 1, 0);
 	if (!result)
 		return (NULL);
