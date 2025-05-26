@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec4.c                                            :+:      :+:    :+:   */
+/*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:50 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/26 14:50:34 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/26 22:49:04 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ void	exec_cmd(t_cmd *curr, int *fd, t_all *all)
 	}
 	else
 		do_pipes(all, curr, env, fd);
+	free_tab(env);
 }
 
 static void	prepare_cmd(t_all *all, t_cmd *cmd)
