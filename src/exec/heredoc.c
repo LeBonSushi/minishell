@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:51:59 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/26 14:51:31 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/27 01:22:36 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	here_doc_eof(t_all *all, char *limiter)
 {
 	ft_fprintf(2, "error: warning: here-document at line %d "
 		"delimited by end-of-line (wanted `%s')\n", all->num_line, limiter);
-	g_zebi.g_exit = 0;
+	g_exit = 0;
 	return (1);
 }
 
@@ -50,10 +50,10 @@ int	do_heredoc(t_all *all, t_cmd *cmd, t_token *curr_token)
 	while (1)
 	{
 		input = readline("> ");
-		if (!input && g_zebi.g_exit == 99)
+		if (!input && g_exit == 99)
 		{
 			dup2(fd, 0);
-			g_zebi.g_exit = 130;
+			g_exit = 130;
 			signal(SIGINT, &signal_heredoc);
 			break ;
 		}

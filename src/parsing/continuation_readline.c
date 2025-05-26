@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 22:40:39 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/26 22:43:04 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/27 01:22:36 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@ static char	*read_one_continuation(char *prompt,
 	char	*continuation_line;
 
 	continuation_line = readline(prompt);
-	if (!continuation_line && g_zebi.g_exit == 99)
+	if (!continuation_line && g_exit == 99)
 	{
 		dup2(fd, 0);
-		g_zebi.g_exit = 130;
+		g_exit = 130;
 		signal(SIGINT, &signal_heredoc);
 		free(full_line);
 		return (NULL);

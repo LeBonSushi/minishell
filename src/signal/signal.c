@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 19:50:56 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/26 14:51:22 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/27 01:22:36 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,13 @@ void	handle_sigint(int sig)
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-	g_zebi.g_exit = 130;
+	g_exit = 130;
 }
 
 void	handle_sigquit(int sig)
 {
 	(void)sig;
-	g_zebi.g_exit = 131;
+	g_exit = 131;
 }
 
 void	signal_heredoc(int sig)
@@ -40,7 +40,7 @@ void	signal_heredoc(int sig)
 	{
 		rl_on_new_line();
 		close(0);
-		g_zebi.g_exit = 99;
+		g_exit = 99;
 	}
 }
 

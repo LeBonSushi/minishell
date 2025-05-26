@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 01:38:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/26 23:29:59 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/27 01:22:36 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	ft_exit(t_token *tokens, t_all *all, char **envp)
 	{
 		free_all(all);
 		free_tab(envp);
-		exit(g_zebi.g_exit);
+		exit(g_exit);
 	}
 	current = tokens->next;
 	if (!str_isvalid(current->value, all))
@@ -68,20 +68,20 @@ void	ft_exit(t_token *tokens, t_all *all, char **envp)
 	if (get_token_size(tokens) > 2)
 	{
 		ft_fprintf(2, "ministress: exit: too many arguments\n");
-		g_zebi.g_exit = 1;
+		g_exit = 1;
 		return ;
 	}
 	res = ft_atoi(current->value) % 256;
 	free_all(all);
 	free_tab(envp);
-	g_zebi.g_exit = res;
+	g_exit = res;
 	rl_clear_history();
-	exit(g_zebi.g_exit);
+	exit(g_exit);
 }
 
 int	ft_exit2(t_all *all, int exit_code)
 {
 	(void)all;
-	g_zebi.g_exit = exit_code;
+	g_exit = exit_code;
 	exit(exit_code);
 }

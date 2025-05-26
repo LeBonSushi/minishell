@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errors_parsing.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 13:31:35 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/27 01:09:02 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/27 01:22:36 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void	print_error_continuation(char *input, t_all *all)
 	char	*close;
 
 	close = get_continuation_prompt(input);
-	g_zebi.g_exit = 2;
+	g_exit = 2;
 	if (!ft_strcmp(close, "quote> "))
 	{
 		ft_fprintf(2, "ministress: unexpected EOF while looking for matching "

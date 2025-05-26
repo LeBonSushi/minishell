@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:55:39 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/26 22:20:30 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/27 01:22:36 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	child_process(t_all *all, t_cmd *cmd, int *fd, char **env)
 	close(fd[1]);
 	exec_child_proc(all, cmd, env);
 	free_multiple(all, env);
-	exit(g_zebi.g_exit);
+	exit(g_exit);
 }
 
 void	do_pipes(t_all *all, t_cmd *curr, char **env, int fd[2])

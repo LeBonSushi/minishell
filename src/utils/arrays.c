@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:27:51 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/26 22:22:31 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/27 01:22:36 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ char	**get_paths(t_all *all, char **env)
 	}
 	if (!paths)
 	{
-		g_zebi.g_exit = 127;
+		g_exit = 127;
 		return (NULL);
 	}
 	return (paths);

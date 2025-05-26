@@ -32,15 +32,7 @@
 # include <sys/wait.h>
 # include <unistd.h>
 
-typedef struct s_zebi
-{
-	int						g_exit;
-	int						g_in_cmd_execution;
-	int						in_here;
-	int						heredoc_interrupted;
-}							t_zebi;
-
-extern t_zebi				g_zebi;
+extern int				g_exit;
 
 typedef enum e_token_type
 {
@@ -219,6 +211,9 @@ void						free_multiple(t_all *all, char **env);
 //--------------------BUILTINS---------------------------
 
 bool						is_builtin(char *cmd);
+char						*resolve_path(const char *path);
+void						manage_cd_minus(t_env *env);
+void						update_free_end_cd(t_env *env, char *o_p, char *r_p);
 void						execute_builtins(t_cmd *cmd, char **envp,
 								t_env **env, t_all *all);
 void						pipe_execute_builtins(t_cmd *cmd, char **envp,

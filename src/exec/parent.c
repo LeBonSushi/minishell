@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:53:14 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/26 22:17:34 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/27 01:22:36 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	wait_all_exitcode(t_cmd *cmd, int tmp)
 {
 	int	exit;
 
-	exit = g_zebi.g_exit;
+	exit = g_exit;
 	if (WIFEXITED(tmp))
 		exit = WEXITSTATUS(tmp);
 	else if (WIFSIGNALED(tmp))
@@ -63,7 +63,7 @@ void	waitall(t_cmd *cmds)
 			continue ;
 		}
 		waitpid(cmd->pid, &tmp, 0);
-		g_zebi.g_exit = wait_all_exitcode(cmd, tmp);
+		g_exit = wait_all_exitcode(cmd, tmp);
 		cmd = cmd->next;
 	}
 }

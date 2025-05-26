@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:43:10 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/26 23:19:53 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/27 01:22:36 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static int	handle_var_with_value(t_env **env, const char *token_value)
 	{
 		free(key);
 		free(value);
-		return (g_zebi.g_exit = 1, 1);
+		return (g_exit = 1, 1);
 	}
 	existing = find_env_var(*env, key);
 	if (existing)
@@ -70,7 +70,7 @@ static int	handle_var_without_value(t_env **env, const char *token_value)
 	key = find_key(token_value);
 	if (!key || !check_valid_key_export(key))
 	{
-		g_zebi.g_exit = 1;
+		g_exit = 1;
 		free(key);
 		return (1);
 	}
@@ -99,9 +99,9 @@ void	ft_export(t_token *tokens, t_env **env)
 	while (current)
 	{
 		if (ft_strchr(current->value, '='))
-			g_zebi.g_exit = handle_var_with_value(env, current->value);
+			g_exit = handle_var_with_value(env, current->value);
 		else
-			g_zebi.g_exit = handle_var_without_value(env, current->value);
+			g_exit = handle_var_without_value(env, current->value);
 		current = current->next;
 	}
 }

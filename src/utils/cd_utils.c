@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 01:11:29 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/27 01:12:40 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/27 01:22:36 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,13 +56,13 @@ void	manage_cd_minus(t_env *env)
 	if (chdir(r_p) == -1)
 	{
 		free(r_p);
-		return (g_zebi.g_exit = 1, perror("cd"));
+		return (g_exit = 1, perror("cd"));
 	}
 	update_env(&env, "PWD", r_p, 1);
 	update_env(&env, "OLDPWD", o_p, 1);
 	free(o_p);
 	free (r_p);
-	g_zebi.g_exit = 0;
+	g_exit = 0;
 	return ;
 }
 
