@@ -1,29 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec2.c                                            :+:      :+:    :+:   */
+/*   exec_errors.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/29 21:50:22 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/26 14:26:12 by macorso          ###   ########.fr       */
+/*   Created: 2025/05/26 14:54:36 by macorso           #+#    #+#             */
+/*   Updated: 2025/05/26 22:22:42 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-bool	is_file(char *cmd)
-{
-	int	fd;
-
-	fd = open(cmd, O_RDONLY);
-	if (fd >= 0)
-	{
-		close(fd);
-		return (true);
-	}
-	return (false);
-}
 
 void	check_perm(struct stat file_stat, int stat_result, char *cmd)
 {

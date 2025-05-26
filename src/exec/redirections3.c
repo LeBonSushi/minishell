@@ -3,117 +3,39 @@
 /*                                                        :::      ::::::::   */
 /*   redirections3.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lebonsushi <lebonsushi@student.42.fr>      +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/29 21:53:18 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/26 00:25:16 by lebonsushi       ###   ########.fr       */
+/*   Created: 2025/04/29 21:53:24 by jd-halle          #+#    #+#             */
+/*   Updated: 2025/05/26 22:21:28 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	redir_append(t_cmd *curr_cmd, t_token *curr_token)
+void	skip_all_cmds(t_cmd *cmds)
 {
-	t_token	*file;
-	char	*error;
-
-	if (curr_cmd->outfile_fd > 0)
-		close(curr_cmd->outfile_fd);
-	file = curr_token->next;
-	error = ft_strjoin("ministress: ", file->value, 0, 0);
-	curr_cmd->outfile_fd = open(file->value, O_RDWR | O_APPEND | O_CREAT, 0644);
-	if (access(file->value, R_OK))
-		return (perror(error), free(error), 1);
-	return (0);
+	if (!cmds)
+		return ;
+	while (cmds)
+	{
+		cmds->skip_cmd = true;
+		cmds = cmds->next;
+	}
 }
 
-int	redir_out_append(t_cmd *curr_cmd, t_token *curr_token)
+int	manage_redirections(t_all *all, t_cmd *cmds)
 {
-	t_token	*file;
-	int		flags;
-	mode_t	mode;
-
-	if (curr_cmd->outfile_fd > 0)
-		close(curr_cmd->outfile_fd);
-	file = curr_token->next;
-	if (!file || file->token_type != WORD)
-	{
-		ft_putstr_fd("minishell: syntax error near unexpected token\n", 2);
-		return (1);
-	}
-	mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
-	flags = O_WRONLY | O_CREAT;
-	if (curr_token->token_type == REDIR_OUT)
-		flags |= O_TRUNC;
-	else if (curr_token->token_type == REDIR_APPEND)
-		flags |= O_APPEND;
-	curr_cmd->outfile_fd = open(file->value, flags, mode);
-	if (curr_cmd->outfile_fd == -1)
-	{
-		ft_putstr_fd("minishell: ", 2);
-		perror(file->value);
-		curr_cmd->skip_cmd = true;
-		return (1);
-	}
-	return (0);
-}
-
-int	manage_cmd_redir(t_all *all, t_cmd *curr_cmd)
-{
-	t_token	*curr_token;
-	t_token	*next;
+	t_cmd	*curr;
 	int		status;
 
-	if (!curr_cmd)
+	if (!cmds)
 		return (0);
-	curr_token = curr_cmd->tokens;
-	// status = g_zebi.g_exit;
+	curr = cmds;
 	status = 0;
-	while (curr_token && curr_token->next)
+	while (curr)
 	{
-		next = curr_token->next->next;
-		if (is_redir(curr_token))
-		{
-			if (curr_token->token_type == REDIR_HEREDOC)
-				status = do_heredoc(all, curr_cmd, curr_token);
-			else if (curr_token->token_type == REDIR_IN && !curr_cmd->skip_cmd)
-				status = redir_in(curr_cmd, curr_token);
-			else if ((curr_token->token_type == REDIR_APPEND
-					|| curr_token->token_type == REDIR_OUT)
-				&& !curr_cmd->skip_cmd)
-				status = redir_out_append(curr_cmd, curr_token);
-			delete_token(&curr_cmd->tokens, curr_token->next);
-			delete_token(&curr_cmd->tokens, curr_token);
-			curr_token = next;
-		}
-		else
-			curr_token = curr_token->next;
+		status = manage_cmd_redir(all, curr);
+		curr = curr->next;
 	}
 	return (status);
 }
-
-bool	is_redir_out(t_token *token)
-{
-	return (token->token_type == REDIR_APPEND
-		|| token->token_type == REDIR_OUT);
-}
-
-int	redir_in(t_cmd *curr_cmd, t_token *curr_token)
-{
-	t_token	*file;
-	char	*error;
-
-	if (curr_cmd->infile_fd > 0)
-		close(curr_cmd->infile_fd);
-	file = curr_token->next;
-	error = ft_strjoin("ministress: ", file->value, 0, 0);
-	if (access(file->value, F_OK | R_OK))
-	{
-		curr_cmd->skip_cmd = true;
-		return (perror(error), free(error), 1);
-	}
-	free(error);
-	curr_cmd->infile_fd = open(file->value, O_RDONLY);
-	return (0);
-}
-

@@ -1,118 +1,91 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec.c                                             :+:      :+:    :+:   */
+/*   exec4.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/06 05:18:28 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/26 14:20:41 by macorso          ###   ########.fr       */
+/*   Created: 2025/04/29 21:51:50 by jd-halle          #+#    #+#             */
+/*   Updated: 2025/05/26 14:50:34 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	tokens_size(t_token *tokens)
+void	dup_fds(int *saved_fd)
 {
-	t_token	*curr;
-	int		i;
-
-	curr = tokens;
-	i = 0;
-	while (curr)
-	{
-		i++;
-		curr = curr->next;
-	}
-	return (i);
+	dup2(saved_fd[0], STDIN_FILENO);
+	dup2(saved_fd[1], STDOUT_FILENO);
+	close(saved_fd[0]);
+	close(saved_fd[1]);
 }
 
-char	**tokens_to_tab(t_token *tokens)
+void	exec_cmd(t_cmd *curr, int *fd, t_all *all)
 {
-	char	**tab;
-	t_token	*curr;
-	int		i;
+	char	**env;
+	int		saved_fd[2];
 
-	if (!tokens)
-		return (NULL);
-	curr = tokens;
-	tab = malloc(sizeof(char *) * (tokens_size(tokens) + 1));
-	if (!tab)
-		return (NULL);
-	i = 0;
-	while (curr)
+	env = env_to_tab(all->env);
+	if (all->cmds && !all->cmds->next && is_builtin(curr->args[0]))
 	{
-		tab[i] = ft_strdup(curr->value);
-		i++;
-		curr = curr->next;
-	}
-	tab[i] = NULL;
-	return (tab);
-}
-
-char	**get_paths(t_all *all, char **env)
-{
-	int		i;
-	char	**paths;
-
-	(void)all;
-	i = 0;
-	paths = NULL;
-	while (env[i])
-	{
-		if (ft_strncmp(env[i], "PATH=", 5) == 0)
+		saved_fd[0] = dup(STDIN_FILENO);
+		saved_fd[1] = dup(STDOUT_FILENO);
+		if (curr->infile_fd > 0)
 		{
-			paths = ft_split(env[i] + 5, ':');
-			break ;
+			dup2(curr->infile_fd, STDIN_FILENO);
+			close(curr->infile_fd);
 		}
-		i++;
+		if (curr->outfile_fd > 0)
+		{
+			dup2(curr->outfile_fd, STDOUT_FILENO);
+			close(curr->outfile_fd);
+		}
+		execute_builtins(curr, env, &all->env, all);
+		dup_fds(saved_fd);
 	}
-	if (!paths)
-	{
-		g_zebi.g_exit = 127;
-		return (NULL);
-	}
-	return (paths);
+	else
+		do_pipes(all, curr, env, fd);
 }
 
-char	*find_exec_path(char *cmd, char **paths)
+static void	prepare_cmd(t_all *all, t_cmd *cmd)
 {
-	int		i;
-	char	*exec_path;
-	char	*tmp;
+	char	**paths;
+	char	**env;
 
-	if (!paths || !ft_strncmp(cmd, "/", 1)
-		|| !ft_strncmp(cmd, "./", 2)
-		|| !ft_strncmp(cmd, "../", 3))
-		return (ft_strdup(cmd));
-	i = 0;
-	while (paths[i])
-	{
-		tmp = ft_strjoin(paths[i], "/", 0, 0);
-		exec_path = ft_strjoin(tmp, cmd, 1, 0);
-		if (!access(exec_path, X_OK))
-			return (exec_path);
-		free(exec_path);
-		exec_path = NULL;
-		i++;
-	}
-	return (ft_strdup(cmd));
+	env = env_to_tab(all->env);
+	paths = get_paths(all, env);
+	free_tab(env);
+	cmd->args = tokens_to_tab(cmd->tokens);
+	if (!cmd->args)
+		cmd->path = NULL;
+	else
+		cmd->path = find_exec_path(cmd->args[0], paths);
+	free_tab(paths);
 }
 
-bool	is_dir(t_all *all, char *cmd)
+void	exec_cmds(t_all *all, t_cmd *cmds)
 {
-	int		fd;
-	char	*error;
+	t_cmd	*curr;
+	int		fd[2];
 
-	(void)all;
-	fd = open(cmd, O_RDONLY);
-	error = ft_strjoin("ministress: ", cmd, 0, 0);
-	if (fd < 0 && errno == EISDIR)
+	if (!cmds)
+		return ;
+	curr = cmds;
+	set_execution_mode();
+	while (curr)
 	{
-		perror(error);
-		g_zebi.g_exit = 1;
+		prepare_cmd(all, curr);
+		if (!curr->path || !curr->args[0] || curr->skip_cmd)
+		{
+			if (curr->next && curr->next->infile_fd < 0)
+				curr->next->infile_fd = open("/dev/null", O_RDONLY);
+			curr = curr->next;
+			continue ;
+		}
+		update_env(&all->env, "_", curr->args[tab_len(curr->args) - 1], true);
+		exec_cmd(curr, fd, all);
+		curr = curr->next;
 	}
-	free(error);
-	close(fd);
-	return (false);
+	waitall(cmds);
+	set_interactive_mode();
 }

@@ -1,5 +1,5 @@
 CC		:= cc
-CFLAGS	:= -Werror -Wextra -Wall -Iincludes/ -I/opt/homebrew/opt/readline/include -g3 #-fsanitize=address,leak
+CFLAGS	:= -Werror -Wextra -Wall -Iincludes/ -I/opt/homebrew/opt/readline/include -g3 -O3 #-fsanitize=address,leak
 LDFLAGS	:= -L/opt/homebrew/opt/readline/lib -lreadline
 
 NAME	:= minishell
@@ -23,6 +23,7 @@ SRC		:=	src/minishell.c \
 			src/utils/free_all.c \
 			src/utils/init.c \
 			src/utils/arrays.c \
+			src/utils/exec_errors.c \
 			src/utils/env_utils.c \
 			src/utils/print_utils.c \
 			src/utils/token_utils.c \
@@ -44,12 +45,12 @@ SRC		:=	src/minishell.c \
 \
 			src/exec/heredoc.c \
 			src/exec/redirections.c \
+			src/exec/redir_in.c \
+			src/exec/redirections2.c \
 			src/exec/redirections3.c \
-			src/exec/redirections4.c \
 			src/exec/exec.c \
-			src/exec/exec2.c \
-			src/exec/exec3.c \
-			src/exec/exec4.c \
+			src/exec/child.c \
+			src/exec/parent.c \
 \
 			src/signal/signal.c \
 			src/signal/signal_setm.c \

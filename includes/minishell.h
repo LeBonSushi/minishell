@@ -260,11 +260,11 @@ bool						ft_compare(char *limiter, char *line);
 //---------------------REDIRECTION---------------------------
 
 char						**tokens_to_tab(t_token *tokens);
+int							get_redir_status(t_all *all, t_cmd *curr_cmd, t_token *curr_token, int s);
+int							redir_in(t_cmd *curr_cmd, t_token *curr_token);
 void						exec_cmds(t_all *all, t_cmd *cmds);
 int							ft_exit2(t_all *all, int exit_code);
 t_token						*copy_token(t_token *src);
-bool						contain_redir_errors(t_cmd *cmds, int *status,
-								bool print);
 
 //---------------------HEREDOC-----------------------------
 
@@ -278,11 +278,10 @@ int							manage_cmd_redir(t_all *all, t_cmd *curr_cmd);
 
 //----------------------EXEC-------------------------------
 
-bool						is_dir(t_all *all, char *cmd);
 char						*find_exec_path(char *cmd, char **paths);
 char						**get_paths(t_all *all, char **env);
 int							tokens_size(t_token *tokens);
-bool						is_file(char *cmd);
+void						parent_process(t_cmd *curr, int *fd);
 void						exec_error(char *cmd);
 void						pipe_error(t_all *all, int *fd);
 void						fork_error(t_all *all, int *fd);

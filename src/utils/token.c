@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 11:11:39 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/21 11:11:47 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/26 22:21:55 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,4 +18,19 @@ bool	is_redir(t_token *token)
 		|| token->token_type == REDIR_OUT
 		|| token->token_type == REDIR_APPEND
 		|| token->token_type == REDIR_HEREDOC);
+}
+
+int	tokens_size(t_token *tokens)
+{
+	t_token	*curr;
+	int		i;
+
+	curr = tokens;
+	i = 0;
+	while (curr)
+	{
+		i++;
+		curr = curr->next;
+	}
+	return (i);
 }

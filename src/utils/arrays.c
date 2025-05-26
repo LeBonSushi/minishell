@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 14:27:51 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/26 14:27:59 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/26 22:22:31 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,4 +20,76 @@ int	tab_len(char **args)
 	while (args[i])
 		i++;
 	return (i);
+}
+
+char	**tokens_to_tab(t_token *tokens)
+{
+	char	**tab;
+	t_token	*curr;
+	int		i;
+
+	if (!tokens)
+		return (NULL);
+	curr = tokens;
+	tab = malloc(sizeof(char *) * (tokens_size(tokens) + 1));
+	if (!tab)
+		return (NULL);
+	i = 0;
+	while (curr)
+	{
+		tab[i] = ft_strdup(curr->value);
+		i++;
+		curr = curr->next;
+	}
+	tab[i] = NULL;
+	return (tab);
+}
+
+char	**get_paths(t_all *all, char **env)
+{
+	int		i;
+	char	**paths;
+
+	(void)all;
+	i = 0;
+	paths = NULL;
+	while (env[i])
+	{
+		if (ft_strncmp(env[i], "PATH=", 5) == 0)
+		{
+			paths = ft_split(env[i] + 5, ':');
+			break ;
+		}
+		i++;
+	}
+	if (!paths)
+	{
+		g_zebi.g_exit = 127;
+		return (NULL);
+	}
+	return (paths);
+}
+
+char	*find_exec_path(char *cmd, char **paths)
+{
+	int		i;
+	char	*exec_path;
+	char	*tmp;
+
+	if (!paths || !ft_strncmp(cmd, "/", 1)
+		|| !ft_strncmp(cmd, "./", 2)
+		|| !ft_strncmp(cmd, "../", 3))
+		return (ft_strdup(cmd));
+	i = 0;
+	while (paths[i])
+	{
+		tmp = ft_strjoin(paths[i], "/", 0, 0);
+		exec_path = ft_strjoin(tmp, cmd, 1, 0);
+		if (!access(exec_path, X_OK))
+			return (exec_path);
+		free(exec_path);
+		exec_path = NULL;
+		i++;
+	}
+	return (ft_strdup(cmd));
 }
