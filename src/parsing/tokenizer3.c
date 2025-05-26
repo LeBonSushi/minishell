@@ -3,53 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer3.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jd-halle <jd-halle@student.42.fr>          +#+  +:+       +#+        */
+/*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 09:46:54 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/15 09:47:16 by jd-halle         ###   ########.fr       */
+/*   Updated: 2025/05/26 23:20:37 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-bool	manage_expansion_error(t_token *token)
-{
-	int	i;
-
-	i = 0;
-	if (token->token_type == WORD)
-	{
-		while (token->value[i])
-		{
-			if ((token->value[i] == '$')
-				&& is_error_expansion_char(token->value[i + 1])
-				&& !token->value[i + 2])
-			{
-				g_zebi.g_exit = 2;
-				printf("ministress: syntax error near unexpected token `%c\'\n",
-					token->value[i + 1]);
-				return (true);
-			}
-			i++;
-		}
-	}
-	return (false);
-}
-
-bool	is_valid_tokens(t_token *token)
-{
-	if (!token)
-		return (true);
-	while (token)
-	{
-		if (manage_error_redir(token))
-			return (false);
-		if (manage_expansion_error(token))
-			return (false);
-		token = token->next;
-	}
-	return (true);
-}
 
 void	delete_token2(t_token **tokens, t_token *token_to_del)
 {

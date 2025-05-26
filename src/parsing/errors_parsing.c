@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 13:31:35 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/26 22:41:53 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/26 23:31:39 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,12 @@ bool	check_token_errors(t_token *curr)
 {
 	if ((is_redir(curr) && is_redir(curr->next))
 		|| (curr->token_type == PIPE && curr->next->token_type == PIPE))
+	{
+		ft_fprintf(2, "ministress: syntax error near "
+			"unexpected token `%s'\n", curr->next->value);
+		return (true);
+	}
+	if (is_redir(curr) && curr->next->token_type == PIPE)
 	{
 		ft_fprintf(2, "ministress: syntax error near "
 			"unexpected token `%s'\n", curr->next->value);

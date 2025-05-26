@@ -6,19 +6,11 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 15:43:10 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/26 14:17:13 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/26 23:19:53 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-
-static bool	contains_equal_sign(const char *str)
-{
-	if (!str)
-		return (false);
-	return (ft_strchr(str, '=') != NULL);
-}
 
 static t_env	*find_env_var(t_env *env, const char *key)
 {
@@ -54,7 +46,7 @@ static int	handle_var_with_value(t_env **env, const char *token_value)
 	{
 		free(key);
 		free(value);
-		return (1);
+		return (g_zebi.g_exit = 1, 1);
 	}
 	existing = find_env_var(*env, key);
 	if (existing)
@@ -68,7 +60,7 @@ static int	handle_var_with_value(t_env **env, const char *token_value)
 		free(key);
 		free(value);
 	}
-	return (0);  // Success
+	return (0);
 }
 
 static int	handle_var_without_value(t_env **env, const char *token_value)
@@ -78,6 +70,7 @@ static int	handle_var_without_value(t_env **env, const char *token_value)
 	key = find_key(token_value);
 	if (!key || !check_valid_key_export(key))
 	{
+		g_zebi.g_exit = 1;
 		free(key);
 		return (1);
 	}
@@ -87,9 +80,7 @@ static int	handle_var_without_value(t_env **env, const char *token_value)
 		free(key);
 	}
 	else
-	{
 		free(key);
-	}
 	return (0);
 }
 
@@ -100,16 +91,14 @@ void	ft_export(t_token *tokens, t_env **env)
 	if (!tokens || !env || !(*env))
 		return ;
 	current = tokens->next;
-	
 	if (!current)
 	{
 		print_sorted_env(*env);
 		return ;
 	}
-	
 	while (current)
 	{
-		if (contains_equal_sign(current->value))
+		if (ft_strchr(current->value, '='))
 			g_zebi.g_exit = handle_var_with_value(env, current->value);
 		else
 			g_zebi.g_exit = handle_var_without_value(env, current->value);
