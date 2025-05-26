@@ -124,7 +124,7 @@ typedef struct s_all
 	t_cmd					*cmds;
 	int						status;
 	char					*limiter;
-	int			num_line;
+	int						num_line;
 }							t_all;
 
 void						free_all2(t_all *all);
@@ -170,10 +170,8 @@ t_token						*join_tokens(t_token *tmp, t_token *next,
 t_token						*merge_tokens(t_token *tokens);
 bool						manage_expansion_error(t_token *token);
 bool						is_error_expansion_char(char c);
-void						check_quotes_pipe(char **line);
 char						*handle_line_continuation(char *line, t_all *all);
 bool						check_invalids(t_token *tokens);
-void	print_tokens(t_token *tokens);
 void						manage_ugly_cases(t_token *tokens);
 
 //---------------------EXPANDER--------------------------
@@ -250,6 +248,9 @@ int							manage_redirections(t_all *all, t_cmd *cmds);
 //---------------------UTILS---------------------------
 
 bool						is_redir(t_token *token);
+char						*join_lines_nl(char *old_line, char *new_line);
+void						print_error_continuation(char *input, t_all *all);
+char						*get_continuation_prompt(char *line);
 int							tab_len(char **args);
 void						delete_token2(t_token **tokens,
 								t_token *token_to_del);
@@ -260,7 +261,8 @@ bool						ft_compare(char *limiter, char *line);
 //---------------------REDIRECTION---------------------------
 
 char						**tokens_to_tab(t_token *tokens);
-int							get_redir_status(t_all *all, t_cmd *curr_cmd, t_token *curr_token, int s);
+int							get_redir_status(t_all *all, t_cmd *curr_cmd,
+								t_token *curr_token, int s);
 int							redir_in(t_cmd *curr_cmd, t_token *curr_token);
 void						exec_cmds(t_all *all, t_cmd *cmds);
 int							ft_exit2(t_all *all, int exit_code);

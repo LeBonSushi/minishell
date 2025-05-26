@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 09:47:18 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/24 20:47:08 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/26 22:29:02 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ t_token	*fill_tokens(char *str)
 
 	if (!str)
 		return (NULL);
-	
 	tokens = NULL;
 	while (*str)
 		token_addback(&tokens, new_parsed_token(&str));

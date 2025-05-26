@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 16:41:11 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/26 14:05:10 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/26 22:29:41 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,10 @@ void	manage_ugly_cases(t_token *tokens)
 	curr = tokens;
 	while (curr && curr->next)
 	{
-		if (ft_strlen(curr->value) >= 1 && curr->value[ft_strlen(curr->value) - 1] == '$'
-			&& curr->next->double_quoted && !curr->double_quoted && !curr->single_quoted)
+		if (ft_strlen(curr->value) >= 1
+			&& curr->value[ft_strlen(curr->value) - 1] == '$'
+			&& curr->next->double_quoted
+			&& !curr->double_quoted && !curr->single_quoted)
 		{
 			new_value = ft_substr(curr->value, 0, ft_strlen(curr->value) - 1);
 			free(curr->value);

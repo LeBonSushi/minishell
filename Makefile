@@ -5,6 +5,8 @@ LDFLAGS	:= -L/opt/homebrew/opt/readline/lib -lreadline
 NAME	:= minishell
 
 SRC		:=	src/minishell.c \
+			src/parsing/continuation.c \
+			src/parsing/continuation_readline.c \
 			src/parsing/tokenizer.c \
 			src/parsing/merge.c \
 			src/parsing/errors_parsing.c \
