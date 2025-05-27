@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 22:40:39 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/27 01:22:36 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/27 12:34:06 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char	*handle_line_continuation(char *line, t_all *all)
 	char	*prompt;
 	int		fd;
 
-	if (!line)
+	if (!line || !*line)
 		return (NULL);
 	full_line = ft_strdup(line);
 	if (!full_line)
