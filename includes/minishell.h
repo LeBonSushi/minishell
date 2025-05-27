@@ -143,7 +143,6 @@ bool						is_redir(t_token *token);
 bool						is_quote(char c);
 char						get_unclosed_quote(char *str);
 bool						is_quotes_closed(char *str);
-bool						is_valid_tokens(t_token *token);
 void						delete_token(t_token **head_ref,
 								t_token *node_to_delete);
 void						edit_token(t_token **token, t_token_type type,
@@ -160,8 +159,6 @@ t_token						*fill_tokens(char *str);
 t_token						*join_tokens(t_token *tmp, t_token *next,
 								t_token **next_ptr);
 t_token						*merge_tokens(t_token *tokens);
-bool						manage_expansion_error(t_token *token);
-bool						is_error_expansion_char(char c);
 char						*handle_line_continuation(char *line, t_all *all);
 bool						check_invalids(t_token *tokens);
 void						manage_ugly_cases(t_token *tokens);
@@ -228,11 +225,15 @@ void						ft_exit(t_token *tokens, t_all *all, char **envp);
 void						unset_value(t_env **env_head, t_env *env_to_unset);
 void						ft_export(t_token *tokens, t_env **env);
 bool						check_valid_key_export(const char *key);
-bool						find_egal_in_token(char *str);
 
 //---------------------PARSING---------------------------
 
 void						minishell_loop(t_all *all);
+int							has_incomplete_redirection(char *line);
+int							is_redirection_before_pipe(char *line);
+int							is_double_pipe(char *line, int pipe_pos);
+int							check_quote_continuation(char *line);
+int							has_content_before_pipe(char *line, int pos);
 
 //------------------------CMDS-------------------------
 

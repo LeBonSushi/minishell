@@ -6,11 +6,19 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 13:31:35 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/27 16:37:12 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/27 16:45:33 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static void	print_error_pipe(t_token *tokens)
+{
+	if (tokens->next && tokens->next->token_type == PIPE)
+		ft_fprintf(2, "ministress: syntax error near unexpected token `||'\n");
+	else
+		ft_fprintf(2, "ministress: syntax error near unexpected token `|'\n");
+}
 
 bool	check_token_errors(t_token *curr)
 {
@@ -39,10 +47,7 @@ bool	check_invalids(t_token *tokens)
 		return (false);
 	if (tokens->token_type == PIPE)
 	{
-		if (tokens->next && tokens->next->token_type == PIPE)
-			ft_fprintf(2, "ministress: syntax error near unexpected token `||'\n");
-		else
-			ft_fprintf(2, "ministress: syntax error near unexpected token `|'\n");
+		print_error_pipe(tokens);
 		return (true);
 	}
 	curr = tokens;

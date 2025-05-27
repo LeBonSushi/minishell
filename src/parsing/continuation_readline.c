@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 22:40:39 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/27 12:34:06 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/27 16:44:35 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,4 +58,37 @@ char	*handle_line_continuation(char *line, t_all *all)
 			return (NULL);
 	}
 	return (full_line);
+}
+
+int	check_pipe_continuation(char *line)
+{
+	int	i;
+
+	if (check_quote_continuation(line))
+		return (0);
+	if (is_redirection_before_pipe(line))
+		return (0);
+	if (has_incomplete_redirection(line))
+		return (0);
+	i = ft_strlen(line) - 1;
+	while (i >= 0 && ft_isspace(line[i]))
+		i--;
+	if (i >= 0 && line[i] == '|')
+	{
+		if (is_double_pipe(line, i))
+			return (0);
+		if (!has_content_before_pipe(line, i - 1))
+			return (0);
+		return (1);
+	}
+	return (0);
+}
+
+char	*get_continuation_prompt(char *line)
+{
+	if (check_quote_continuation(line))
+		return ("quote> ");
+	if (check_pipe_continuation(line))
+		return ("pipe> ");
+	return (NULL);
 }
