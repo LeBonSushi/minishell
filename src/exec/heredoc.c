@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:51:59 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/27 01:22:36 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/27 13:48:19 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	end_heredoc(char *input, int *pipe_fd, t_cmd *cmd)
 	if (cmd->infile_fd > 0)
 		close(cmd->infile_fd);
 	cmd->infile_fd = pipe_fd[0];
-	return (0);
+	return (g_exit);
 }
 
 int	do_heredoc(t_all *all, t_cmd *cmd, t_token *curr_token)

@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:51:50 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/26 22:49:04 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/27 13:46:06 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ void	exec_cmds(t_all *all, t_cmd *cmds)
 		prepare_cmd(all, curr);
 		if (!curr->path || !curr->args[0] || curr->skip_cmd)
 		{
+			printf("cavala\n");
 			if (curr->next && curr->next->infile_fd < 0)
 				curr->next->infile_fd = open("/dev/null", O_RDONLY);
 			curr = curr->next;
