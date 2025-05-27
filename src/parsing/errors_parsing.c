@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 13:31:35 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/27 01:22:36 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/27 16:37:12 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,10 @@ bool	check_invalids(t_token *tokens)
 		return (false);
 	if (tokens->token_type == PIPE)
 	{
-		ft_fprintf(2, "ministress: syntax error near unexpected token `|'\n");
+		if (tokens->next && tokens->next->token_type == PIPE)
+			ft_fprintf(2, "ministress: syntax error near unexpected token `||'\n");
+		else
+			ft_fprintf(2, "ministress: syntax error near unexpected token `|'\n");
 		return (true);
 	}
 	curr = tokens;

@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 22:38:17 by macorso           #+#    #+#             */
-/*   Updated: 2025/05/26 22:42:46 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/27 16:35:22 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,10 +85,36 @@ static int	has_incomplete_redirection(char *line)
 	return (0);
 }
 
+static int	has_content_before_pipe(char *line, int pos)
+{
+	int	j;
+
+	j = pos;
+	while (j >= 0)
+	{
+		if (!ft_isspace(line[j]) && line[j] != '|')
+			return (1);
+		j--;
+	}
+	return (0);
+}
+
+/* Helper function to check for double pipe */
+static int	is_double_pipe(char *line, int pipe_pos)
+{
+	int	j;
+
+	j = pipe_pos - 1;
+	while (j >= 0 && ft_isspace(line[j]))
+		j--;
+	if (j >= 0 && line[j] == '|')
+		return (1);
+	return (0);
+}
+
 int	check_pipe_continuation(char *line)
 {
 	int	i;
-	int	j;
 
 	if (check_quote_continuation(line))
 		return (0);
@@ -101,15 +127,15 @@ int	check_pipe_continuation(char *line)
 		i--;
 	if (i >= 0 && line[i] == '|')
 	{
-		j = i - 1;
-		while (j >= 0 && ft_isspace(line[j]))
-			j--;
-		if (j >= 0 && line[j] == '|')
+		if (is_double_pipe(line, i))
+			return (0);
+		if (!has_content_before_pipe(line, i - 1))
 			return (0);
 		return (1);
 	}
 	return (0);
 }
+
 
 char	*get_continuation_prompt(char *line)
 {
