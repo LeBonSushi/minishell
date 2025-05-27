@@ -6,7 +6,7 @@
 /*   By: macorso <macorso@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 21:53:18 by jd-halle          #+#    #+#             */
-/*   Updated: 2025/05/27 13:47:41 by macorso          ###   ########.fr       */
+/*   Updated: 2025/05/27 13:50:06 by macorso          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,6 @@ int	manage_cmd_redir(t_all *all, t_cmd *curr_cmd)
 		if (is_redir(curr_token))
 		{
 			status = get_redir_status(all, curr_cmd, curr_token, status);
-			printf("status: %d\n", status);
 			delete_token(&curr_cmd->tokens, curr_token->next);
 			delete_token(&curr_cmd->tokens, curr_token);
 			curr_token = next;
